@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cartru — The Dealer Antidote</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f9fa; color: #1a1a2e; }
+
+  .hero { background: #1a1a2e; color: white; padding: 48px 24px; text-align: center; }
+  .hero h1 { font-size: 2.4rem; font-weight: 800; letter-spacing: -1px; }
+  .hero h1 span { color: #00d4aa; }
+  .hero p { margin-top: 12px; font-size: 1.1rem; opacity: 0.8; max-width: 520px; margin-left: auto; margin-right: auto; }
+  .trust-badge { margin-top: 16px; display: inline-block; background: rgba(0,212,170,0.15); border: 1px solid #00d4aa; color: #00d4aa; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
+
+  .form-section { max-width: 680px; margin: 40px auto; padding: 0 24px; }
+  .card { background: white; border-radius: 12px; padding: 32px; box-shadow: 0 2px 16px rgba(0,0,0,0.08); }
+  .card h2 { font-size: 1.2rem; margin-bottom: 24px; color: #1a1a2e; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .form-row.single { grid-template-columns: 1fr; }
+  .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: #666; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .form-group input, .form-group select { width: 100%; padding: 12px 14px; border: 2px solid #e8e8e8; border-radius: 8px; font-size: 1rem; transition: border-color 0.2s; background: white; }
+  .form-group input:focus, .form-group select:focus { outline: none; border-color: #00d4aa; }
+  .optional-label { font-size: 0.75rem; color: #999; font-weight: normal; margin-left: 4px; }
+
+  .btn { width: 100%; padding: 16px; background: #1a1a2e; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 700; cursor: pointer; margin-top: 8px; transition: background 0.2s; }
+  .btn:hover { background: #00d4aa; }
+  .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .disclaimer { font-size: 0.78rem; color: #999; text-align: center; margin-top: 12px; }
+
+  /* Results */
+  #results { max-width: 680px; margin: 0 auto 60px; padding: 0 24px; display: none; }
+
+  .signal { display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-radius: 10px; margin-bottom: 24px; font-weight: 700; font-size: 1.1rem; }
+  .signal.GREEN { background: #e8faf4; color: #00a878; border: 2px solid #00d4aa; }
+  .signal.YELLOW { background: #fff8e1; color: #f59e0b; border: 2px solid #fcd34d; }
+  .signal.RED { background: #fef2f2; color: #ef4444; border: 2px solid #fca5a5; }
+
+  .verdict { text-align: center; padding: 20px; border-radius: 10px; margin-bottom: 24px; }
+  .verdict.BUY { background: #e8faf4; border: 2px solid #00d4aa; }
+  .verdict.NEGOTIATE { background: #fff8e1; border: 2px solid #fcd34d; }
+  .verdict["WALK AWAY"] { background: #fef2f2; border: 2px solid #fca5a5; }
+  .verdict-label { font-size: 0.85rem; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+  .verdict-value { font-size: 2rem; font-weight: 800; margin-top: 4px; }
+
+  .section-title { font-size: 0.85rem; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #f0f0f0; }
+
+  .cost-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+  .cost-item { background: #f8f9fa; padding: 16px; border-radius: 8px; }
+  .cost-item .label { font-size: 0.8rem; color: #888; font-weight: 600; text-transform: uppercase; }
+  .cost-item .value { font-size: 1.3rem; font-weight: 800; color: #1a1a2e; margin-top: 4px; }
+  .cost-item.total { background: #1a1a2e; color: white; grid-column: 1 / -1; }
+  .cost-item.total .label { color: rgba(255,255,255,0.7); }
+  .cost-item.total .value { color: #00d4aa; font-size: 1.8rem; }
+
+  .recall-item { padding: 14px; border-left: 4px solid #ef4444; background: #fef2f2; border-radius: 0 8px 8px 0; margin-bottom: 10px; }
+  .recall-item h4 { font-size: 0.9rem; font-weight: 700; color: #ef4444; }
+  .recall-item p { font-size: 0.85rem; color: #666; margin-top: 4px; line-height: 1.5; }
+
+  .no-recalls { padding: 20px; background: #e8faf4; border-radius: 8px; color: #00a878; font-weight: 600; text-align: center; }
+
+  .nego-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
+  .nego-row:last-child { border-bottom: none; }
+  .nego-label { font-size: 0.9rem; color: #666; }
+  .nego-value { font-size: 1rem; font-weight: 700; color: #1a1a2e; }
+  .nego-value.highlight { color: #00d4aa; }
+  .nego-value.warning { color: #ef4444; }
+
+  .playbook { background: #f8f9fa; border-radius: 8px; padding: 20px; margin-top: 8px; }
+  .playbook h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 12px; color: #1a1a2e; }
+  .tactic { display: flex; gap: 10px; margin-bottom: 10px; font-size: 0.88rem; }
+  .tactic-name { font-weight: 700; color: #1a1a2e; min-width: 180px; }
+  .tactic-desc { color: #666; line-height: 1.5; }
+
+  .loading { text-align: center; padding: 40px; color: #666; }
+  .spinner { width: 40px; height: 40px; border: 4px solid #f0f0f0; border-top-color: #00d4aa; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>The Dealer <span>Antidote</span></h1>
+  <p>Everything the dealer knows — now in your pocket. Before you walk in.</p>
+  <div class="trust-badge">🔒 100% buyer-funded. We never take dealer money.</div>
+</div>
+
+<div class="form-section">
+  <div class="card">
+    <h2>Get Your Free Car Report</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Year</label>
+        <select id="year" onchange="loadMakes()">
+          <option value="">Select year</option>
+          <script>
+            for(let y = 2025; y >= 2015; y--) document.write(`<option value="${y}">${y}</option>`);
+          </script>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Make</label>
+        <select id="make" onchange="loadModels()" disabled>
+          <option value="">Select year first</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Model</label>
+        <select id="model" disabled>
+          <option value="">Select make first</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Annual Miles</label>
+        <select id="annual_miles">
+          <option value="8000">8,000 miles/yr</option>
+          <option value="12000" selected>12,000 miles/yr</option>
+          <option value="15000">15,000 miles/yr</option>
+          <option value="20000">20,000 miles/yr</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>MSRP / Sticker Price <span class="optional-label">(optional)</span></label>
+        <input type="number" id="msrp" placeholder="e.g. 32000">
+      </div>
+      <div class="form-group">
+        <label>Dealer's Offer <span class="optional-label">(optional)</span></label>
+        <input type="number" id="dealer_offer" placeholder="e.g. 30500">
+      </div>
+    </div>
+    <button class="btn" onclick="getReport()" id="btn">Get My Free Report →</button>
+    <p class="disclaimer">No email required. No dealer leads. Just the truth.</p>
+  </div>
+</div>
+
+<div id="results">
+  <div id="report-content"></div>
+</div>
+
+<script>
+async function loadMakes() {
+  const year = document.getElementById('year').value;
+  if (!year) return;
+  const makeEl = document.getElementById('make');
+  makeEl.innerHTML = '<option>Loading...</option>';
+  makeEl.disabled = true;
+  const res = await fetch(`/makes?year=${year}`);
+  const makes = await res.json();
+  makeEl.innerHTML = '<option value="">Select make</option>' + makes.map(m => `<option value="${m}">${m}</option>`).join('');
+  makeEl.disabled = false;
+  document.getElementById('model').innerHTML = '<option value="">Select make first</option>';
+  document.getElementById('model').disabled = true;
+}
+
+async function loadModels() {
+  const year = document.getElementById('year').value;
+  const make = document.getElementById('make').value;
+  if (!make) return;
+  const modelEl = document.getElementById('model');
+  modelEl.innerHTML = '<option>Loading...</option>';
+  modelEl.disabled = true;
+  const res = await fetch(`/models?year=${year}&make=${make}`);
+  const models = await res.json();
+  modelEl.innerHTML = '<option value="">Select model</option>' + models.map(m => `<option value="${m}">${m}</option>`).join('');
+  modelEl.disabled = false;
+}
+
+async function getReport() {
+  const year  = document.getElementById('year').value;
+  const make  = document.getElementById('make').value;
+  const model = document.getElementById('model').value;
+  if (!year || !make || !model) { alert('Please select year, make, and model.'); return; }
+
+  const btn = document.getElementById('btn');
+  btn.disabled = true;
+  btn.textContent = 'Analyzing...';
+
+  const resultsEl = document.getElementById('results');
+  const contentEl = document.getElementById('report-content');
+  resultsEl.style.display = 'block';
+  contentEl.innerHTML = '<div class="loading"><div class="spinner"></div>Pulling recall data, fuel economy, and market intelligence...</div>';
+  resultsEl.scrollIntoView({behavior: 'smooth'});
+
+  const payload = {
+    year, make, model,
+    msrp: document.getElementById('msrp').value,
+    dealer_offer: document.getElementById('dealer_offer').value,
+    annual_miles: document.getElementById('annual_miles').value,
+  };
+
+  const res = await fetch('/report', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+  const d = await res.json();
+
+  let html = '';
+
+  // Safety signal
+  const signals = { GREEN: '✅ Clean Safety Record', YELLOW: '⚠️ Some Issues Found', RED: '🔴 Significant Concerns' };
+  html += `<div class="signal ${d.safety_signal}">${signals[d.safety_signal]} — ${d.recall_count} recall(s), ${d.complaints.total} complaints on record</div>`;
+
+  // Verdict
+  if (d.negotiation && d.negotiation.verdict) {
+    const verdictColors = { 'BUY': '#00a878', 'NEGOTIATE': '#f59e0b', 'WALK AWAY': '#ef4444' };
+    html += `<div class="card" style="margin-bottom:24px; border-top: 4px solid ${verdictColors[d.negotiation.verdict]}">
+      <div style="text-align:center">
+        <div style="font-size:0.85rem;color:#666;text-transform:uppercase;letter-spacing:1px">Our Verdict</div>
+        <div style="font-size:2.2rem;font-weight:800;color:${verdictColors[d.negotiation.verdict]};margin:8px 0">${d.negotiation.verdict}</div>
+        ${d.negotiation.savings_available > 0 ? `<div style="color:#666">~$${d.negotiation.savings_available.toLocaleString()} left on the table</div>` : '<div style="color:#00a878">This is a fair offer</div>'}
+      </div>
+    </div>`;
+  }
+
+  // True Cost
+  if (d.true_cost) {
+    html += `<div class="card" style="margin-bottom:24px">
+      <div class="section-title">5-Year True Cost of Ownership</div>
+      <div class="cost-grid">
+        <div class="cost-item"><div class="label">Depreciation</div><div class="value">$${d.true_cost.depreciation_5yr.toLocaleString()}</div></div>
+        <div class="cost-item"><div class="label">Fuel (${d.true_cost.annual_miles.toLocaleString()} mi/yr)</div><div class="value">$${d.true_cost.fuel_5yr.toLocaleString()}</div></div>
+        <div class="cost-item"><div class="label">Insurance (est.)</div><div class="value">$${d.true_cost.insurance_5yr.toLocaleString()}</div></div>
+        <div class="cost-item"><div class="label">Maintenance</div><div class="value">$${d.true_cost.maintenance_5yr.toLocaleString()}</div></div>
+        <div class="cost-item"><div class="label">Financing Cost</div><div class="value">$${d.true_cost.financing_cost.toLocaleString()}</div></div>
+        <div class="cost-item"><div class="label">Taxes & Fees</div><div class="value">$${d.true_cost.taxes_fees.toLocaleString()}</div></div>
+        <div class="cost-item total"><div class="label">TRUE 5-YEAR COST</div><div class="value">$${d.true_cost.total_5yr.toLocaleString()}</div></div>
+      </div>
+      <div style="text-align:center;color:#666;font-size:0.9rem">That's <strong>$${d.true_cost.cost_per_month.toLocaleString()}/month</strong> — not just the car payment</div>
+    </div>`;
+  }
+
+  // Negotiation
+  if (d.negotiation) {
+    html += `<div class="card" style="margin-bottom:24px">
+      <div class="section-title">Negotiation Intelligence</div>
+      <div class="nego-row"><span class="nego-label">Estimated Invoice Price</span><span class="nego-value highlight">$${d.negotiation.estimated_invoice.toLocaleString()}</span></div>
+      <div class="nego-row"><span class="nego-label">Your Target Offer</span><span class="nego-value highlight">$${d.negotiation.target_offer.toLocaleString()}</span></div>
+      <div class="nego-row"><span class="nego-label">Walk Away If Above</span><span class="nego-value warning">$${d.negotiation.walk_away_price.toLocaleString()}</span></div>
+      <div class="nego-row"><span class="nego-label">Potential Savings vs. MSRP</span><span class="nego-value highlight">$${d.negotiation.potential_savings.toLocaleString()}</span></div>
+      ${d.negotiation.dealer_offer ? `<div class="nego-row"><span class="nego-label">Dealer's Offer</span><span class="nego-value">$${d.negotiation.dealer_offer.toLocaleString()}</span></div>` : ''}
+      <div class="playbook">
+        <h4>⚠️ What They'll Try — The Dealer Playbook</h4>
+        <div class="tactic"><span class="tactic-name">The Monthly Payment Trick</span><span class="tactic-desc">They'll quote $499/month. Always negotiate the total price first, never the payment.</span></div>
+        <div class="tactic"><span class="tactic-name">The Manager Trip</span><span class="tactic-desc">"Let me check with my manager" is a pressure tactic. Stay firm. Your number doesn't change.</span></div>
+        <div class="tactic"><span class="tactic-name">The F&I Gauntlet</span><span class="tactic-desc">Extended warranty, gap insurance, paint protection — all negotiable, most unnecessary. Say no to everything, negotiate later.</span></div>
+        <div class="tactic"><span class="tactic-name">The Urgency Close</span><span class="tactic-desc">"This deal is only good today." It isn't. Walk out. The car will be there tomorrow.</span></div>
+        <div class="tactic"><span class="tactic-name">The Trade-In Trap</span><span class="tactic-desc">Never discuss your trade-in until the new car price is agreed. They'll use it to hide the real deal.</span></div>
+      </div>
+    </div>`;
+  }
+
+  // Recalls
+  html += `<div class="card" style="margin-bottom:24px">
+    <div class="section-title">Recalls (${d.recall_count} found)</div>`;
+  if (d.recalls.length === 0) {
+    html += `<div class="no-recalls">✅ No open recalls found for this vehicle</div>`;
+  } else {
+    d.recalls.forEach(r => {
+      html += `<div class="recall-item">
+        <h4>🔴 ${r.component}</h4>
+        <p>${r.summary}</p>
+        ${r.remedy ? `<p style="margin-top:6px;color:#444"><strong>Remedy:</strong> ${r.remedy}</p>` : ''}
+      </div>`;
+    });
+    html += `<p style="font-size:0.85rem;color:#666;margin-top:12px">💡 Use open recalls to negotiate a price reduction or require the dealer to resolve them before signing.</p>`;
+  }
+  html += `</div>`;
+
+  // Fuel Economy
+  if (d.fuel_economy) {
+    const fe = d.fuel_economy;
+    html += `<div class="card" style="margin-bottom:24px">
+      <div class="section-title">Fuel Economy</div>
+      <div class="cost-grid">
+        <div class="cost-item"><div class="label">City</div><div class="value">${fe.city_mpg} MPG</div></div>
+        <div class="cost-item"><div class="label">Highway</div><div class="value">${fe.highway_mpg} MPG</div></div>
+        <div class="cost-item"><div class="label">Combined</div><div class="value">${fe.combined_mpg} MPG</div></div>
+        <div class="cost-item"><div class="label">Est. Annual Fuel Cost</div><div class="value">$${fe.annual_fuel_cost}</div></div>
+      </div>
+      ${fe.engine ? `<p style="font-size:0.85rem;color:#666">${fe.engine}L ${fe.cylinders}-cylinder • ${fe.transmission}</p>` : ''}
+    </div>`;
+  }
+
+  contentEl.innerHTML = html;
+  btn.disabled = false;
+  btn.textContent = 'Get My Free Report →';
+}
+</script>
+</body>
+</html>
