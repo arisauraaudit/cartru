@@ -5,675 +5,1786 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cartru — Don't Sign a Bad New-Car Deal</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f4f6f9; color: #1a1a2e; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-  /* ── Hero ── */
-  .hero { background: #1a1a2e; color: white; padding: 56px 24px 48px; text-align: center; }
-  .hero h1 { font-size: 2.6rem; font-weight: 800; letter-spacing: -1px; line-height: 1.15; }
-  .hero h1 span { color: #00d4aa; }
-  .hero p { margin-top: 14px; font-size: 1.1rem; opacity: 0.8; max-width: 540px; margin-left: auto; margin-right: auto; line-height: 1.6; }
-  .trust-badge { margin-top: 20px; display: inline-block; background: rgba(0,212,170,0.12); border: 1px solid rgba(0,212,170,0.5); color: #00d4aa; padding: 7px 18px; border-radius: 24px; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.3px; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #0f1724;
+  color: #e8edf5;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
 
-  /* ── Form Card ── */
-  .form-section { max-width: 700px; margin: -24px auto 0; padding: 0 24px 40px; position: relative; z-index: 10; }
-  .card { background: white; border-radius: 14px; padding: 32px; box-shadow: 0 4px 24px rgba(0,0,0,0.10); }
-  .card + .card { margin-top: 20px; }
-  .card-title { font-size: 1rem; font-weight: 700; color: #1a1a2e; margin-bottom: 22px; display: flex; align-items: center; gap: 8px; }
+a { color: #00d4aa; text-decoration: none; }
+a:hover { text-decoration: underline; }
 
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-  .form-row.triple { grid-template-columns: 1fr 1fr 1fr; }
-  .form-row.single { grid-template-columns: 1fr; }
-  @media (max-width: 540px) {
-    .form-row, .form-row.triple { grid-template-columns: 1fr; }
-  }
-  .form-group label { display: block; font-size: 0.78rem; font-weight: 700; color: #555; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.6px; }
-  .required-star { color: #ef4444; margin-left: 2px; }
-  .form-group input, .form-group select {
-    width: 100%; padding: 11px 13px; border: 2px solid #e4e8ef; border-radius: 8px;
-    font-size: 0.97rem; transition: border-color 0.2s; background: white; color: #1a1a2e;
-  }
-  .form-group input:focus, .form-group select:focus { outline: none; border-color: #00d4aa; }
-  .form-group input::placeholder { color: #aaa; }
+/* ── Layout ── */
+.page { max-width: 720px; margin: 0 auto; padding: 0 20px 80px; }
 
-  /* Optional collapsible */
-  .optional-toggle { display: flex; align-items: center; gap: 8px; cursor: pointer; color: #00d4aa; font-size: 0.88rem; font-weight: 600; margin-bottom: 16px; user-select: none; border: none; background: none; padding: 0; }
-  .optional-toggle svg { transition: transform 0.2s; }
-  .optional-toggle.open svg { transform: rotate(90deg); }
-  #optional-fields { display: none; }
-  #optional-fields.open { display: block; }
+/* ── Header ── */
+.header {
+  padding: 40px 0 32px;
+  text-align: center;
+}
+.header h1 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+  color: #fff;
+}
+.header h1 em {
+  font-style: normal;
+  color: #00d4aa;
+}
+.header p {
+  margin-top: 12px;
+  font-size: 1.05rem;
+  color: #8fa3b8;
+  line-height: 1.6;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.trust-badge {
+  display: inline-block;
+  margin-top: 16px;
+  background: rgba(0,212,170,0.1);
+  border: 1px solid rgba(0,212,170,0.35);
+  color: #00d4aa;
+  padding: 6px 16px;
+  border-radius: 99px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
 
-  .btn-primary { width: 100%; padding: 15px; background: #00d4aa; color: #1a1a2e; border: none; border-radius: 9px; font-size: 1.05rem; font-weight: 800; cursor: pointer; margin-top: 6px; transition: background 0.2s, transform 0.1s; letter-spacing: 0.3px; }
-  .btn-primary:hover { background: #00bfa0; }
-  .btn-primary:active { transform: scale(0.98); }
-  .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+/* ── Step containers ── */
+.step { display: none; }
+.step.active { display: block; }
 
-  .form-disclaimer { font-size: 0.76rem; color: #aaa; text-align: center; margin-top: 11px; }
+.step-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #8fa3b8;
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  margin-bottom: 20px;
+  transition: color 0.2s;
+}
+.step-back:hover { color: #00d4aa; }
 
-  /* ── Results ── */
-  #results { max-width: 700px; margin: 0 auto 80px; padding: 0 24px; display: none; }
+.step-heading {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 6px;
+}
+.step-sub {
+  font-size: 0.88rem;
+  color: #8fa3b8;
+  margin-bottom: 20px;
+}
 
-  /* Signal badge */
-  .signal-badge { border-radius: 12px; padding: 22px 24px; margin-bottom: 20px; display: flex; align-items: flex-start; gap: 16px; }
-  .signal-badge.green { background: #e6faf5; border: 2px solid #00d4aa; }
-  .signal-badge.yellow { background: #fffbea; border: 2px solid #f59e0b; }
-  .signal-badge.red { background: #fef3f3; border: 2px solid #ef4444; }
-  .signal-icon { font-size: 2rem; flex-shrink: 0; line-height: 1; }
-  .signal-body { flex: 1; }
-  .signal-label-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
-  .signal-tag { font-size: 0.72rem; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; background: rgba(0,0,0,0.07); padding: 3px 10px; border-radius: 20px; }
-  .green .signal-tag { color: #008a6e; }
-  .yellow .signal-tag { color: #b45309; }
-  .red .signal-tag { color: #b91c1c; }
-  .signal-name { font-size: 1.5rem; font-weight: 800; }
-  .green .signal-name { color: #006b55; }
-  .yellow .signal-name { color: #92400e; }
-  .red .signal-name { color: #991b1b; }
-  .signal-explanation { font-size: 0.88rem; color: #444; line-height: 1.6; }
+/* ── Brand Grid ── */
+.brand-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+@media (min-width: 500px) {
+  .brand-grid { grid-template-columns: repeat(4, 1fr); }
+}
+@media (min-width: 640px) {
+  .brand-grid { grid-template-columns: repeat(5, 1fr); }
+}
 
-  /* Market range bar */
-  .range-card { background: white; border-radius: 12px; padding: 20px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
-  .range-title { font-size: 0.75rem; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; }
-  .range-bar-wrap { position: relative; height: 8px; background: #e8edf3; border-radius: 99px; margin: 14px 0 8px; }
-  .range-bar-fill { position: absolute; height: 100%; border-radius: 99px; background: linear-gradient(90deg, #00d4aa, #00bfa0); }
-  .range-marker { position: absolute; top: -6px; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; transform: translateX(-50%); }
-  .range-labels { display: flex; justify-content: space-between; font-size: 0.78rem; color: #888; }
-  .range-main { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
-  .range-numbers { font-size: 1.1rem; font-weight: 800; color: #1a1a2e; }
-  .range-numbers span { color: #00d4aa; }
-  .offer-delta { font-size: 0.88rem; font-weight: 600; padding: 4px 12px; border-radius: 20px; }
-  .offer-delta.above { background: #fef3f3; color: #b91c1c; }
-  .offer-delta.below { background: #e6faf5; color: #006b55; }
-  .offer-delta.within { background: #fffbea; color: #92400e; }
-  .range-disclaimer { font-size: 0.75rem; color: #aaa; margin-top: 10px; }
+.brand-btn {
+  background: #1a2535;
+  border: 2px solid #243044;
+  border-radius: 10px;
+  padding: 14px 8px 12px;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.brand-btn:hover {
+  border-color: #00d4aa;
+  background: #1e2e42;
+  transform: translateY(-1px);
+}
+.brand-btn.selected {
+  border-color: #00d4aa;
+  background: rgba(0,212,170,0.08);
+}
+.brand-initial {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1rem;
+  color: #fff;
+  flex-shrink: 0;
+}
+.brand-name {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #c5d3e0;
+  line-height: 1.2;
+}
+.brand-btn.selected .brand-name { color: #00d4aa; }
 
-  /* Top reasons */
-  .reasons-card { background: white; border-radius: 12px; padding: 20px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
-  .reasons-title { font-size: 0.75rem; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 14px; }
-  .reason-item { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; font-size: 0.9rem; color: #333; line-height: 1.5; }
-  .reason-item:last-child { margin-bottom: 0; }
-  .reason-bullet { color: #00d4aa; font-weight: 800; flex-shrink: 0; margin-top: 2px; }
+.brand-other {
+  margin-top: 4px;
+}
+.brand-other label {
+  display: block;
+  font-size: 0.8rem;
+  color: #8fa3b8;
+  margin-bottom: 6px;
+}
+.brand-other input {
+  width: 100%;
+  max-width: 260px;
+  padding: 9px 13px;
+  background: #1a2535;
+  border: 2px solid #243044;
+  border-radius: 8px;
+  color: #e8edf5;
+  font-size: 0.9rem;
+  transition: border-color 0.2s;
+}
+.brand-other input:focus {
+  outline: none;
+  border-color: #00d4aa;
+}
+.brand-other input::placeholder { color: #4a5f75; }
 
-  /* What to say */
-  .say-card { background: #1a1a2e; border-radius: 12px; padding: 20px 24px; margin-bottom: 20px; }
-  .say-label { font-size: 0.72rem; font-weight: 700; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-  .say-text { font-size: 1rem; font-weight: 700; color: #00d4aa; line-height: 1.6; }
+/* ── Year Toggle ── */
+.year-toggle {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.year-btn {
+  padding: 8px 20px;
+  background: #1a2535;
+  border: 2px solid #243044;
+  border-radius: 8px;
+  color: #8fa3b8;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.year-btn:hover { border-color: #00d4aa; color: #00d4aa; }
+.year-btn.selected {
+  border-color: #00d4aa;
+  background: rgba(0,212,170,0.1);
+  color: #00d4aa;
+}
 
-  /* Deal Pass upsell */
-  .deal-pass-card { background: white; border: 2px solid #00d4aa; border-radius: 14px; padding: 24px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,212,170,0.15); }
-  .deal-pass-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
-  .deal-pass-title { font-size: 1.15rem; font-weight: 800; color: #1a1a2e; }
-  .deal-pass-price { font-size: 1.05rem; font-weight: 800; color: #00d4aa; white-space: nowrap; }
-  .deal-pass-list { list-style: none; margin-bottom: 18px; }
-  .deal-pass-list li { display: flex; gap: 9px; align-items: flex-start; font-size: 0.88rem; color: #444; margin-bottom: 7px; line-height: 1.5; }
-  .deal-pass-list li::before { content: "✓"; color: #00d4aa; font-weight: 800; flex-shrink: 0; }
-  .btn-deal-pass { width: 100%; padding: 14px; background: #1a1a2e; color: white; border: none; border-radius: 9px; font-size: 1rem; font-weight: 800; cursor: pointer; transition: background 0.2s; }
-  .btn-deal-pass:hover { background: #00d4aa; color: #1a1a2e; }
-  .deal-pass-note { text-align: center; font-size: 0.75rem; color: #aaa; margin-top: 10px; }
+/* ── Model Grid ── */
+.model-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+@media (min-width: 500px) {
+  .model-grid { grid-template-columns: repeat(3, 1fr); }
+}
 
-  /* Collapsible sections */
-  .collapsible { background: white; border-radius: 12px; margin-bottom: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow: hidden; }
-  .collapsible-header { width: 100%; background: none; border: none; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-size: 0.95rem; font-weight: 700; color: #1a1a2e; text-align: left; }
-  .collapsible-header:hover { background: #f8fafc; }
-  .collapsible-arrow { color: #00d4aa; transition: transform 0.2s; font-size: 1.1rem; }
-  .collapsible-header.open .collapsible-arrow { transform: rotate(90deg); }
-  .collapsible-body { display: none; padding: 4px 20px 20px; border-top: 1px solid #f0f3f7; }
-  .collapsible-body.open { display: block; }
+.model-btn {
+  background: #1a2535;
+  border: 2px solid #243044;
+  border-radius: 10px;
+  padding: 14px 12px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #c5d3e0;
+  line-height: 1.3;
+}
+.model-btn:hover {
+  border-color: #00d4aa;
+  background: #1e2e42;
+  transform: translateY(-1px);
+}
+.model-btn.selected {
+  border-color: #00d4aa;
+  background: rgba(0,212,170,0.08);
+  color: #00d4aa;
+}
 
-  /* Section internals */
-  .section-title { font-size: 0.75rem; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 14px; margin-top: 6px; }
+.models-loading {
+  color: #8fa3b8;
+  font-size: 0.9rem;
+  padding: 20px 0;
+  text-align: center;
+}
 
-  .recall-item { padding: 13px 15px; border-left: 4px solid #ef4444; background: #fef3f3; border-radius: 0 8px 8px 0; margin-bottom: 10px; }
-  .recall-item h4 { font-size: 0.88rem; font-weight: 700; color: #b91c1c; }
-  .recall-item p { font-size: 0.83rem; color: #555; margin-top: 4px; line-height: 1.5; }
-  .no-recalls { padding: 16px; background: #e6faf5; border-radius: 8px; color: #006b55; font-weight: 600; text-align: center; font-size: 0.9rem; }
-  .recall-tip { font-size: 0.82rem; color: #666; margin-top: 12px; line-height: 1.5; }
+/* ── Deal Form ── */
+.deal-form { }
 
-  .cost-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-  @media (max-width: 420px) { .cost-grid { grid-template-columns: 1fr; } }
-  .cost-item { background: #f4f6f9; padding: 14px; border-radius: 8px; }
-  .cost-item .ci-label { font-size: 0.75rem; color: #888; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; }
-  .cost-item .ci-value { font-size: 1.25rem; font-weight: 800; color: #1a1a2e; margin-top: 3px; }
-  .cost-item.total-item { background: #1a1a2e; grid-column: 1 / -1; }
-  .cost-item.total-item .ci-label { color: rgba(255,255,255,0.6); }
-  .cost-item.total-item .ci-value { color: #00d4aa; font-size: 1.6rem; }
-  .cost-note { font-size: 0.82rem; color: #888; text-align: center; }
+.big-input-group {
+  margin-bottom: 20px;
+}
+.big-input-group label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #8fa3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 8px;
+}
+.big-input {
+  width: 100%;
+  padding: 16px 18px;
+  background: #1a2535;
+  border: 2px solid #243044;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 1.4rem;
+  font-weight: 700;
+  transition: border-color 0.2s;
+}
+.big-input:focus {
+  outline: none;
+  border-color: #00d4aa;
+}
+.big-input::placeholder { color: #4a5f75; font-weight: 400; font-size: 1.1rem; }
 
-  .nego-row { display: flex; justify-content: space-between; align-items: center; padding: 11px 0; border-bottom: 1px solid #f0f3f7; }
-  .nego-row:last-child { border-bottom: none; }
-  .nego-label { font-size: 0.88rem; color: #555; }
-  .nego-value { font-size: 0.97rem; font-weight: 700; color: #1a1a2e; }
-  .nego-value.accent { color: #00d4aa; }
-  .nego-value.warn { color: #ef4444; }
+.zip-group {
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.zip-group input {
+  width: 140px;
+  padding: 10px 13px;
+  background: #1a2535;
+  border: 2px solid #243044;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+}
+.zip-group input:focus { outline: none; border-color: #00d4aa; }
+.zip-group input::placeholder { color: #4a5f75; }
+.zip-hint {
+  font-size: 0.82rem;
+  color: #8fa3b8;
+}
 
-  .playbook { background: #f4f6f9; border-radius: 10px; padding: 18px; margin-top: 14px; }
-  .playbook h4 { font-size: 0.85rem; font-weight: 700; color: #1a1a2e; margin-bottom: 12px; }
-  .tactic { display: flex; gap: 10px; margin-bottom: 9px; font-size: 0.85rem; }
-  .tactic-name { font-weight: 700; color: #1a1a2e; min-width: 170px; flex-shrink: 0; }
-  .tactic-desc { color: #555; line-height: 1.5; }
+.more-details-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #00d4aa;
+  font-size: 0.88rem;
+  font-weight: 600;
+  background: none;
+  border: none;
+  padding: 0;
+  margin-bottom: 16px;
+  user-select: none;
+  transition: opacity 0.2s;
+}
+.more-details-toggle:hover { opacity: 0.8; }
+.toggle-arrow { transition: transform 0.25s; display: inline-block; }
+.toggle-arrow.open { transform: rotate(90deg); }
 
-  .mpg-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
-  @media (max-width: 480px) { .mpg-grid { grid-template-columns: 1fr 1fr; } }
-  .mpg-item { background: #f4f6f9; border-radius: 8px; padding: 12px; text-align: center; }
-  .mpg-item .mi-label { font-size: 0.72rem; color: #888; font-weight: 600; text-transform: uppercase; }
-  .mpg-item .mi-value { font-size: 1.2rem; font-weight: 800; color: #1a1a2e; margin-top: 3px; }
-  .mpg-detail { font-size: 0.82rem; color: #888; }
+.more-details-panel { display: none; }
+.more-details-panel.open { display: block; }
 
-  /* Loading */
-  .loading { text-align: center; padding: 48px 24px; color: #666; }
-  .spinner { width: 38px; height: 38px; border: 4px solid #e8edf3; border-top-color: #00d4aa; border-radius: 50%; animation: spin 0.75s linear infinite; margin: 0 auto 14px; }
-  @keyframes spin { to { transform: rotate(360deg); } }
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+@media (max-width: 480px) { .form-row { grid-template-columns: 1fr; } }
 
-  /* Modal */
-  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 1000; align-items: center; justify-content: center; }
-  .modal-overlay.open { display: flex; }
-  .modal-box { background: white; border-radius: 16px; padding: 32px; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 8px 40px rgba(0,0,0,0.2); }
-  .modal-box h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 10px; color: #1a1a2e; }
-  .modal-box p { font-size: 0.9rem; color: #555; line-height: 1.6; margin-bottom: 18px; }
-  .modal-email { width: 100%; padding: 11px 13px; border: 2px solid #e4e8ef; border-radius: 8px; font-size: 0.97rem; margin-bottom: 12px; }
-  .modal-email:focus { outline: none; border-color: #00d4aa; }
-  .btn-modal-submit { width: 100%; padding: 13px; background: #00d4aa; color: #1a1a2e; border: none; border-radius: 9px; font-size: 0.97rem; font-weight: 800; cursor: pointer; margin-bottom: 10px; }
-  .btn-modal-close { background: none; border: none; color: #aaa; font-size: 0.85rem; cursor: pointer; text-decoration: underline; }
+.form-group label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #8fa3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 6px;
+}
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px 12px;
+  background: #1a2535;
+  border: 2px solid #243044;
+  border-radius: 8px;
+  color: #e8edf5;
+  font-size: 0.92rem;
+  transition: border-color 0.2s;
+}
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #00d4aa;
+}
+.form-group input::placeholder { color: #4a5f75; }
+.form-group select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238fa3b8' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+.form-group select option { background: #1a2535; }
+
+.btn-check {
+  width: 100%;
+  padding: 16px;
+  background: #00d4aa;
+  color: #0f1724;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background 0.2s, transform 0.1s;
+  letter-spacing: 0.3px;
+}
+.btn-check:hover { background: #00bfa0; }
+.btn-check:active { transform: scale(0.98); }
+.btn-check:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.form-disclaimer {
+  font-size: 0.75rem;
+  color: #4a5f75;
+  text-align: center;
+  margin-top: 10px;
+  line-height: 1.5;
+}
+
+/* ── Loading spinner ── */
+.spinner {
+  text-align: center;
+  padding: 40px 0;
+  color: #8fa3b8;
+  font-size: 0.95rem;
+}
+.spinner::before {
+  content: '';
+  display: block;
+  width: 36px;
+  height: 36px;
+  border: 3px solid #243044;
+  border-top-color: #00d4aa;
+  border-radius: 50%;
+  margin: 0 auto 16px;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Result Page ── */
+#result { display: none; }
+
+.result-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.result-nav-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.result-vehicle-label {
+  font-size: 0.88rem;
+  color: #8fa3b8;
+}
+.result-vehicle-label strong {
+  color: #e8edf5;
+  font-weight: 700;
+}
+
+/* ── Signal Badge ── */
+.signal-block {
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+}
+.signal-block.green { background: rgba(0,212,170,0.08); border: 2px solid rgba(0,212,170,0.5); }
+.signal-block.yellow { background: rgba(245,158,11,0.08); border: 2px solid rgba(245,158,11,0.5); }
+.signal-block.red { background: rgba(239,68,68,0.08); border: 2px solid rgba(239,68,68,0.5); }
+
+.signal-icon { font-size: 2.2rem; flex-shrink: 0; line-height: 1; }
+.signal-body { flex: 1; min-width: 0; }
+.signal-name {
+  font-size: 1.6rem;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+  margin-bottom: 6px;
+}
+.green .signal-name { color: #00d4aa; }
+.yellow .signal-name { color: #f59e0b; }
+.red .signal-name { color: #ef4444; }
+.signal-explanation {
+  font-size: 0.85rem;
+  color: #8fa3b8;
+  line-height: 1.6;
+}
+
+/* ── Market Range ── */
+.range-block {
+  background: #1a2535;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.range-block-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #8fa3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 12px;
+}
+.range-numbers-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.range-numbers {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #fff;
+}
+.range-numbers .range-accent { color: #00d4aa; }
+.offer-delta-pill {
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 99px;
+}
+.offer-delta-pill.above { background: rgba(239,68,68,0.15); color: #ef4444; }
+.offer-delta-pill.below { background: rgba(0,212,170,0.15); color: #00d4aa; }
+.offer-delta-pill.within { background: rgba(245,158,11,0.15); color: #f59e0b; }
+.range-bar-wrap {
+  position: relative;
+  height: 6px;
+  background: #243044;
+  border-radius: 99px;
+  margin: 12px 0 8px;
+}
+.range-bar-fill {
+  position: absolute;
+  height: 100%;
+  border-radius: 99px;
+  background: #00d4aa;
+}
+.range-bar-marker {
+  position: absolute;
+  top: -5px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 3px solid #0f1724;
+  transform: translateX(-50%);
+}
+.marker-green { background: #00d4aa; }
+.marker-yellow { background: #f59e0b; }
+.marker-red { background: #ef4444; }
+.range-bar-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: #4a5f75;
+}
+.range-disclaimer {
+  font-size: 0.73rem;
+  color: #4a5f75;
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+/* ── Top Reasons ── */
+.reasons-block {
+  background: #1a2535;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.block-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #8fa3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 14px;
+}
+.reason-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+  color: #c5d3e0;
+  line-height: 1.5;
+}
+.reason-item:last-child { margin-bottom: 0; }
+.reason-bullet { color: #00d4aa; font-weight: 800; flex-shrink: 0; margin-top: 1px; }
+
+/* ── What to Say ── */
+.say-block {
+  background: rgba(0,212,170,0.07);
+  border: 1px solid rgba(0,212,170,0.3);
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 20px;
+}
+.say-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: rgba(0,212,170,0.7);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.say-text {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #00d4aa;
+  line-height: 1.6;
+}
+
+/* ── Collapsible Sections ── */
+.section {
+  background: #1a2535;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s;
+}
+.section-header:hover { background: #1e2e42; }
+.section-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #e8edf5;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-icon { font-size: 1rem; }
+.section-chevron {
+  color: #4a5f75;
+  transition: transform 0.25s;
+  font-size: 0.8rem;
+}
+.section-chevron.open { transform: rotate(180deg); }
+.section-body {
+  padding: 0 20px 20px;
+  font-size: 0.88rem;
+  color: #c5d3e0;
+  line-height: 1.6;
+}
+.section-body.hidden { display: none; }
+
+/* OTD Table */
+.otd-table { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
+.otd-table td { padding: 8px 0; border-bottom: 1px solid #243044; }
+.otd-table td:last-child { text-align: right; font-weight: 600; color: #e8edf5; }
+.otd-table tr:last-child td { border-bottom: none; font-weight: 800; font-size: 1rem; color: #fff; }
+.otd-table .otd-total td { border-top: 2px solid #243044; padding-top: 12px; }
+.otd-note { font-size: 0.75rem; color: #4a5f75; }
+
+/* Fee verdict badge */
+.fee-verdict {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 99px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+.fee-verdict.green { background: rgba(0,212,170,0.15); color: #00d4aa; }
+.fee-verdict.yellow { background: rgba(245,158,11,0.15); color: #f59e0b; }
+.fee-verdict.red { background: rgba(239,68,68,0.15); color: #ef4444; }
+
+.fee-note-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+}
+.fee-flag-ok { color: #00d4aa; }
+.fee-flag-caution { color: #f59e0b; }
+.fee-flag-high { color: #ef4444; }
+.fee-flag-unknown { color: #8fa3b8; }
+
+.junk-addon-list { margin-top: 12px; }
+.junk-addon {
+  border: 1px solid #243044;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 8px;
+}
+.junk-addon-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+.junk-addon-name { font-weight: 700; color: #e8edf5; font-size: 0.88rem; }
+.junk-addon-verdict {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 99px;
+}
+.verdict-skip { background: rgba(239,68,68,0.15); color: #ef4444; }
+.verdict-wait { background: rgba(245,158,11,0.15); color: #f59e0b; }
+.verdict-elsewhere { background: rgba(0,212,170,0.15); color: #00d4aa; }
+.junk-addon-note { font-size: 0.8rem; color: #8fa3b8; }
+.junk-addon-cost { font-size: 0.78rem; color: #4a5f75; margin-bottom: 2px; }
+
+/* Payment trap */
+.payment-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #243044;
+  font-size: 0.88rem;
+}
+.payment-stat:last-of-type { border-bottom: none; }
+.payment-stat-label { color: #8fa3b8; }
+.payment-stat-value { font-weight: 700; color: #e8edf5; }
+.payment-stat-value.danger { color: #ef4444; }
+.payment-trap-warnings { margin-top: 14px; }
+.trap-warning {
+  padding: 10px 12px;
+  background: rgba(239,68,68,0.07);
+  border-left: 3px solid #ef4444;
+  border-radius: 0 6px 6px 0;
+  font-size: 0.83rem;
+  color: #c5d3e0;
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+.trap-warning.tip {
+  background: rgba(0,212,170,0.07);
+  border-left-color: #00d4aa;
+}
+
+/* Negotiation Script */
+.script-step {
+  margin-bottom: 16px;
+}
+.script-step-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #8fa3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 6px;
+}
+.script-step-text {
+  background: #0f1724;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 0.88rem;
+  color: #c5d3e0;
+  line-height: 1.6;
+  font-style: italic;
+}
+.email-template-wrap { position: relative; margin-top: 8px; }
+.email-template {
+  width: 100%;
+  min-height: 160px;
+  background: #0f1724;
+  border: 1px solid #243044;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 0.82rem;
+  color: #8fa3b8;
+  font-family: inherit;
+  line-height: 1.6;
+  resize: vertical;
+  cursor: text;
+}
+.copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #243044;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #00d4aa;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.copy-btn:hover { background: #2e3f58; }
+.copy-btn.copied { color: #8fa3b8; }
+.script-pro-tip {
+  font-size: 0.8rem;
+  color: #8fa3b8;
+  background: rgba(0,212,170,0.06);
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-top: 10px;
+}
+
+/* Fuel Economy */
+.mpg-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.mpg-stat {
+  flex: 1;
+  min-width: 80px;
+  background: #0f1724;
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+}
+.mpg-value { font-size: 1.6rem; font-weight: 800; color: #00d4aa; }
+.mpg-label { font-size: 0.72rem; color: #8fa3b8; margin-top: 2px; }
+
+/* True cost */
+.cost-table { width: 100%; border-collapse: collapse; }
+.cost-table td { padding: 7px 0; border-bottom: 1px solid #243044; font-size: 0.87rem; }
+.cost-table td:last-child { text-align: right; font-weight: 600; color: #e8edf5; }
+.cost-table .cost-total td { font-weight: 800; font-size: 1rem; color: #fff; border-top: 2px solid #243044; border-bottom: none; padding-top: 10px; }
+.cost-note { font-size: 0.75rem; color: #4a5f75; margin-top: 8px; }
+
+/* Recalls */
+.recall-item {
+  border: 1px solid #243044;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 8px;
+}
+.recall-component { font-weight: 700; color: #ef4444; margin-bottom: 4px; font-size: 0.88rem; }
+.recall-summary { font-size: 0.82rem; color: #8fa3b8; line-height: 1.5; }
+.no-recalls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #00d4aa;
+  font-weight: 600;
+  font-size: 0.88rem;
+}
+
+/* ── Tip Jar ── */
+.tip-jar {
+  background: #1a2535;
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 24px;
+  text-align: center;
+}
+.tip-jar-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #e8edf5;
+  margin-bottom: 8px;
+}
+.tip-jar-text {
+  font-size: 0.87rem;
+  color: #8fa3b8;
+  line-height: 1.6;
+  margin-bottom: 16px;
+  max-width: 380px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.tip-jar-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.btn-tip {
+  padding: 11px 24px;
+  background: #00d4aa;
+  color: #0f1724;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-tip:hover { background: #00bfa0; }
+.btn-skip {
+  padding: 11px 20px;
+  background: transparent;
+  color: #8fa3b8;
+  border: 1px solid #243044;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-skip:hover { border-color: #8fa3b8; color: #c5d3e0; }
+.tip-thank-you {
+  color: #00d4aa;
+  font-weight: 700;
+  font-size: 0.95rem;
+  display: none;
+}
+
+/* ── Utility ── */
+.hidden { display: none !important; }
+.mt8 { margin-top: 8px; }
+.mt12 { margin-top: 12px; }
+.mt16 { margin-top: 16px; }
+
 </style>
 </head>
 <body>
+<div class="page">
 
-<!-- ── Hero ── -->
-<div class="hero">
-  <h1>Don't sign a bad<br><span>new&#8209;car deal</span></h1>
-  <p>See the real out&#8209;the&#8209;door price, catch junk fees, and know where to push back — before you sign.</p>
-  <div class="trust-badge">🔒 100% buyer&#8209;funded. We never sell leads to dealers.</div>
-</div>
-
-<!-- ── Form ── -->
-<div class="form-section">
-  <div class="card">
-    <div class="card-title">🚗 Check this deal</div>
-
-    <div class="form-row">
-      <div class="form-group">
-        <label>Year <span class="required-star">*</span></label>
-        <select id="year" onchange="loadMakes()">
-          <option value="">Select year</option>
-          <script>for(let y=2026;y>=2015;y--) document.write(`<option value="${y}">${y}</option>`);</script>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Make <span class="required-star">*</span></label>
-        <select id="make" onchange="loadModels()" disabled>
-          <option value="">Select year first</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="form-row">
-      <div class="form-group">
-        <label>Model <span class="required-star">*</span></label>
-        <select id="model" disabled>
-          <option value="">Select make first</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>ZIP Code <span class="required-star">*</span></label>
-        <input type="text" id="zip_code" placeholder="e.g. 90210" maxlength="5" inputmode="numeric">
-      </div>
-    </div>
-
-    <div class="form-row single">
-      <div class="form-group">
-        <label>Dealer Offer / Selling Price <span class="required-star">*</span></label>
-        <input type="number" id="dealer_offer" placeholder="e.g. 31500 (the price they quoted you)">
-      </div>
-    </div>
-
-    <!-- Optional fields -->
-    <button class="optional-toggle" id="optional-toggle" onclick="toggleOptional()" type="button">
-      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4 2l4 4-4 4" stroke="#00d4aa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      Add more details (MSRP, fees, rebates)
-    </button>
-
-    <div id="optional-fields">
-      <div class="form-row">
-        <div class="form-group">
-          <label>MSRP / Sticker Price</label>
-          <input type="number" id="msrp" placeholder="e.g. 33495">
-        </div>
-        <div class="form-group">
-          <label>Destination Charge</label>
-          <input type="number" id="dest_charge" placeholder="e.g. 1095">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Rebates / Incentives</label>
-          <input type="number" id="rebates" placeholder="e.g. 2000">
-        </div>
-        <div class="form-group">
-          <label>Dealer Fees / Add-ons</label>
-          <input type="number" id="dealer_fees" placeholder="e.g. 899">
-        </div>
-      </div>
-      <div class="form-row single">
-        <div class="form-group">
-          <label>Annual Miles</label>
-          <select id="annual_miles">
-            <option value="8000">8,000 miles/yr</option>
-            <option value="12000" selected>12,000 miles/yr</option>
-            <option value="15000">15,000 miles/yr</option>
-            <option value="20000">20,000 miles/yr</option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <button class="btn-primary" onclick="getReport()" id="btn">Check this deal →</button>
-    <p class="form-disclaimer">No email required. No dealer leads. Just honest market data.</p>
+  <!-- Header (always visible) -->
+  <div class="header">
+    <h1>Don't sign a<br><em>bad new-car deal.</em></h1>
+    <p>Find out if your dealer's offer is fair — free, independent, on your side.</p>
+    <div class="trust-badge">100% buyer-funded · No dealer leads · No ads</div>
   </div>
-</div>
 
-<!-- ── Results ── -->
-<div id="results">
-  <div id="report-content"></div>
-</div>
+  <!-- ────── STEP 1: Brand Selection ────── -->
+  <div id="step1" class="step active">
+    <div class="step-heading">Choose your brand</div>
+    <div class="step-sub">Select the manufacturer you're shopping.</div>
 
-<!-- ── Deal Pass Modal ── -->
-<div class="modal-overlay" id="deal-pass-modal">
-  <div class="modal-box">
-    <h2>🚀 Deal Pass — Coming Soon</h2>
-    <p>We're putting the finishing touches on full Deal Pass access. Enter your email and we'll notify you the moment it's live — and lock in the founding price.</p>
-    <input class="modal-email" type="email" id="modal-email" placeholder="your@email.com">
-    <button class="btn-modal-submit" onclick="submitModalEmail()">Notify me when it's ready</button>
-    <br>
-    <button class="btn-modal-close" onclick="closeModal()">No thanks</button>
+    <div class="brand-grid" id="brandGrid">
+      <!-- Rendered by JS -->
+    </div>
+
+    <div class="brand-other">
+      <label>Don't see your brand? Type it in:</label>
+      <input type="text" id="brandOtherInput" placeholder="e.g. Acura, Buick, Volvo…" autocomplete="off">
+    </div>
   </div>
-</div>
+
+  <!-- ────── STEP 2: Model + Year ────── -->
+  <div id="step2" class="step">
+    <button class="step-back" onclick="goToStep(1)">← Back to brands</button>
+    <div class="step-heading" id="step2Heading">Choose your model</div>
+    <div class="step-sub">Select the year first, then pick the model.</div>
+
+    <div class="year-toggle" id="yearToggle">
+      <!-- Rendered by JS -->
+    </div>
+
+    <div id="modelGrid" class="model-grid">
+      <div class="models-loading">Loading models…</div>
+    </div>
+  </div>
+
+  <!-- ────── STEP 3: Deal Details ────── -->
+  <div id="step3" class="step">
+    <button class="step-back" onclick="goToStep(2)">← Back to model</button>
+    <div class="step-heading" id="step3Heading">Enter the deal details</div>
+    <div class="step-sub">Just the dealer's offer is required. Everything else sharpens the analysis.</div>
+
+    <div class="deal-form">
+      <div class="big-input-group">
+        <label>Dealer's offer <span style="color:#ef4444">*</span></label>
+        <input type="number" class="big-input" id="dealerOffer" placeholder="$35,000" min="1000" max="200000">
+      </div>
+
+      <div class="zip-group">
+        <input type="text" id="zipCode" placeholder="ZIP code" maxlength="5" pattern="[0-9]{5}">
+        <span class="zip-hint" id="zipHint">📍 Add ZIP for local pricing</span>
+      </div>
+
+      <button class="more-details-toggle" id="moreDetailsToggle" onclick="toggleMoreDetails()">
+        <span class="toggle-arrow" id="toggleArrow">▶</span>
+        Add more details +
+      </button>
+
+      <div class="more-details-panel" id="moreDetailsPanel">
+        <div class="form-row">
+          <div class="form-group">
+            <label>MSRP (sticker price)</label>
+            <input type="number" id="msrp" placeholder="e.g. 38,000">
+          </div>
+          <div class="form-group">
+            <label>Destination charge</label>
+            <input type="number" id="destinationCharge" placeholder="~$1,000–$1,500">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Dealer / doc fee</label>
+            <input type="number" id="dealerFees" placeholder="e.g. 299">
+          </div>
+          <div class="form-group">
+            <label>Add-ons (describe)</label>
+            <input type="text" id="addOns" placeholder="e.g. paint protection, tint">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Monthly payment offered</label>
+            <input type="number" id="monthlyPayment" placeholder="e.g. 549">
+          </div>
+          <div class="form-group">
+            <label>Loan term</label>
+            <select id="loanTerm">
+              <option value="">Not sure</option>
+              <option value="36">36 months</option>
+              <option value="48">48 months</option>
+              <option value="60" selected>60 months</option>
+              <option value="72">72 months</option>
+              <option value="84">84 months</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-check" id="checkDealBtn" onclick="checkDeal()">Check this deal →</button>
+      <div class="form-disclaimer">
+        Estimates based on market data. Not a guarantee. Always verify with your dealer's full itemized quote.
+      </div>
+    </div>
+  </div>
+
+  <!-- ────── STEP 4 / Result ────── -->
+  <div id="result">
+    <div class="result-nav">
+      <div class="result-nav-left">
+        <button class="step-back" onclick="startOver()">← Start over</button>
+        <div class="result-vehicle-label" id="resultVehicleLabel"></div>
+      </div>
+    </div>
+
+    <!-- Loading state -->
+    <div id="resultLoading" class="spinner">Analyzing your deal…</div>
+
+    <!-- Actual result content -->
+    <div id="resultContent" class="hidden">
+
+      <!-- Signal -->
+      <div id="signalBlock" class="signal-block green">
+        <div class="signal-icon" id="signalIcon">🟢</div>
+        <div class="signal-body">
+          <div class="signal-name" id="signalName">LOOKS FAIR</div>
+          <div class="signal-explanation" id="signalExplanation"></div>
+        </div>
+      </div>
+
+      <!-- Market Range -->
+      <div class="range-block">
+        <div class="range-block-title" id="rangeTitle">Similar vehicles — estimated range</div>
+        <div class="range-numbers-row">
+          <div class="range-numbers" id="rangeNumbers"></div>
+          <div class="offer-delta-pill" id="offerDelta"></div>
+        </div>
+        <div class="range-bar-wrap" id="rangeBarWrap">
+          <div class="range-bar-fill" id="rangeBarFill"></div>
+          <div class="range-bar-marker" id="rangeBarMarker"></div>
+        </div>
+        <div class="range-bar-labels" id="rangeBarLabels"></div>
+        <div class="range-disclaimer" id="rangeDisclaimer"></div>
+      </div>
+
+      <!-- Top Reasons -->
+      <div class="reasons-block">
+        <div class="block-title">Why this signal</div>
+        <div id="reasonsList"></div>
+      </div>
+
+      <!-- What to Say -->
+      <div class="say-block">
+        <div class="say-label">💬 What to say next</div>
+        <div class="say-text" id="whatToSayText"></div>
+      </div>
+
+      <!-- Section 1: OTD Breakdown -->
+      <div class="section">
+        <div class="section-header" onclick="toggleSection('otd')">
+          <div class="section-title"><span class="section-icon">📋</span> Full Out-the-Door Breakdown</div>
+          <div class="section-chevron open" id="chevron-otd">▼</div>
+        </div>
+        <div class="section-body" id="body-otd">
+          <table class="otd-table" id="otdTable"></table>
+          <div class="otd-note">* Taxes and registration vary by state — this is an estimate only.</div>
+        </div>
+      </div>
+
+      <!-- Section 2: Fee & Add-On Review -->
+      <div class="section">
+        <div class="section-header" onclick="toggleSection('fees')">
+          <div class="section-title"><span class="section-icon">🔍</span> Fee & Add-On Review</div>
+          <div class="section-chevron open" id="chevron-fees">▼</div>
+        </div>
+        <div class="section-body" id="body-fees"></div>
+      </div>
+
+      <!-- Section 3: Payment Trap (conditional) -->
+      <div class="section hidden" id="section-payment">
+        <div class="section-header" onclick="toggleSection('payment')">
+          <div class="section-title"><span class="section-icon">⚠️</span> Payment Trap Check</div>
+          <div class="section-chevron open" id="chevron-payment">▼</div>
+        </div>
+        <div class="section-body" id="body-payment"></div>
+      </div>
+
+      <!-- Section 4: Negotiation Script -->
+      <div class="section">
+        <div class="section-header" onclick="toggleSection('script')">
+          <div class="section-title"><span class="section-icon">🗣️</span> Negotiation Script</div>
+          <div class="section-chevron open" id="chevron-script">▼</div>
+        </div>
+        <div class="section-body" id="body-script"></div>
+      </div>
+
+      <!-- Section 5: Vehicle Details -->
+      <div class="section">
+        <div class="section-header" onclick="toggleSection('vehicle')">
+          <div class="section-title"><span class="section-icon">🚗</span> Vehicle Details</div>
+          <div class="section-chevron open" id="chevron-vehicle">▼</div>
+        </div>
+        <div class="section-body" id="body-vehicle">
+
+          <!-- Fuel Economy (inner collapsible) -->
+          <div class="section" style="background:#0f1724; margin-bottom:8px;">
+            <div class="section-header" onclick="toggleSection('fuel')" style="padding:12px 16px;">
+              <div class="section-title" style="font-size:0.88rem;">⛽ Fuel Economy</div>
+              <div class="section-chevron" id="chevron-fuel">▼</div>
+            </div>
+            <div class="section-body hidden" id="body-fuel" style="padding:0 16px 16px;"></div>
+          </div>
+
+          <!-- Recalls (inner collapsible) -->
+          <div class="section" style="background:#0f1724; margin-bottom:8px;">
+            <div class="section-header" onclick="toggleSection('recalls')" style="padding:12px 16px;">
+              <div class="section-title" style="font-size:0.88rem;">🔔 NHTSA Recalls</div>
+              <div class="section-chevron" id="chevron-recalls">▼</div>
+            </div>
+            <div class="section-body hidden" id="body-recalls" style="padding:0 16px 16px;"></div>
+          </div>
+
+          <!-- 5-Year Cost (inner collapsible) -->
+          <div class="section" style="background:#0f1724;">
+            <div class="section-header" onclick="toggleSection('cost')" style="padding:12px 16px;">
+              <div class="section-title" style="font-size:0.88rem;">💰 5-Year Cost of Ownership</div>
+              <div class="section-chevron" id="chevron-cost">▼</div>
+            </div>
+            <div class="section-body hidden" id="body-cost" style="padding:0 16px 16px;"></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Tip Jar -->
+      <div class="tip-jar" id="tipJar">
+        <div class="tip-jar-title">☕ If Cartru helped you save money…</div>
+        <div class="tip-jar-text">
+          You can leave a tip to keep it free and independent.<br>
+          No dealers. No ads. Just you.
+        </div>
+        <div class="tip-jar-actions" id="tipActions">
+          <button class="btn-tip" onclick="sendTip()">☕ Leave a tip</button>
+          <button class="btn-skip" onclick="skipTip()">Skip</button>
+        </div>
+        <div class="tip-thank-you" id="tipThankYou">
+          🙏 Thank you — you're keeping this tool alive and independent.
+        </div>
+      </div>
+
+    </div><!-- /resultContent -->
+  </div><!-- /result -->
+
+</div><!-- /page -->
 
 <script>
-// ── Analytics (console for now) ─────────────────────────────────
-function track(event, props = {}) {
-  console.log('[Cartru Analytics]', JSON.stringify({ event, ...props, ts: Date.now() }));
+// ── Constants ──────────────────────────────────────────────────────────────
+
+const BRANDS = [
+  { name: "Toyota",     color: "#eb0a1e" },
+  { name: "Honda",      color: "#e40521" },
+  { name: "Ford",       color: "#003087" },
+  { name: "Chevrolet",  color: "#d4a017" },
+  { name: "RAM",        color: "#c41230" },
+  { name: "Hyundai",    color: "#002c5f" },
+  { name: "Kia",        color: "#05141f" },
+  { name: "Nissan",     color: "#c3002f" },
+  { name: "Subaru",     color: "#00438a" },
+  { name: "Mazda",      color: "#1e3869" },
+  { name: "Volkswagen", color: "#00176f" },
+  { name: "Jeep",       color: "#384d48" },
+  { name: "GMC",        color: "#c8102e" },
+  { name: "Tesla",      color: "#cc0000" },
+  { name: "Dodge",      color: "#c8102e" },
+];
+
+const CURRENT_YEAR = new Date().getFullYear();
+
+// ── State ──────────────────────────────────────────────────────────────────
+
+let state = {
+  brand: null,
+  model: null,
+  year: CURRENT_YEAR - 1,
+  reportData: null,
+};
+
+// ── Analytics ─────────────────────────────────────────────────────────────
+
+function track(event, data = {}) {
+  console.log('[Cartru]', event, data);
 }
 
-// ── Optional fields toggle ───────────────────────────────────────
-function toggleOptional() {
-  const fields = document.getElementById('optional-fields');
-  const toggle = document.getElementById('optional-toggle');
-  fields.classList.toggle('open');
-  toggle.classList.toggle('open');
-}
+// ── Step Navigation ────────────────────────────────────────────────────────
 
-// ── Make / Model loaders ─────────────────────────────────────────
-async function loadMakes() {
-  const year = document.getElementById('year').value;
-  if (!year) return;
-  const makeEl = document.getElementById('make');
-  makeEl.innerHTML = '<option>Loading...</option>';
-  makeEl.disabled = true;
-  try {
-    const res = await fetch(`/makes?year=${year}`);
-    const makes = await res.json();
-    makeEl.innerHTML = '<option value="">Select make</option>' + makes.map(m => `<option value="${m}">${m}</option>`).join('');
-    makeEl.disabled = false;
-  } catch(e) {
-    makeEl.innerHTML = '<option value="">Error loading — refresh</option>';
-    makeEl.disabled = false;
+function goToStep(n) {
+  document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+  document.getElementById('step' + n).classList.add('active');
+  document.getElementById('result').style.display = 'none';
+  if (n === 1) {
+    document.querySelector('.header').style.display = '';
+  } else {
+    document.querySelector('.header').style.display = 'none';
   }
-  document.getElementById('model').innerHTML = '<option value="">Select make first</option>';
-  document.getElementById('model').disabled = true;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-async function loadModels() {
-  const year = document.getElementById('year').value;
-  const make = document.getElementById('make').value;
-  if (!make) return;
-  const modelEl = document.getElementById('model');
-  modelEl.innerHTML = '<option>Loading...</option>';
-  modelEl.disabled = true;
-  try {
-    const res = await fetch(`/models?year=${year}&make=${make}`);
-    const models = await res.json();
-    modelEl.innerHTML = '<option value="">Select model</option>' + models.map(m => `<option value="${m}">${m}</option>`).join('');
-    modelEl.disabled = false;
-  } catch(e) {
-    modelEl.innerHTML = '<option value="">Error loading — refresh</option>';
-    modelEl.disabled = false;
+function showResult() {
+  document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+  document.querySelector('.header').style.display = 'none';
+  document.getElementById('result').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function startOver() {
+  state = { brand: null, model: null, year: CURRENT_YEAR - 1, reportData: null };
+  // Clear form
+  document.getElementById('dealerOffer').value = '';
+  document.getElementById('zipCode').value = '';
+  document.getElementById('msrp').value = '';
+  document.getElementById('destinationCharge').value = '';
+  document.getElementById('dealerFees').value = '';
+  document.getElementById('addOns').value = '';
+  document.getElementById('monthlyPayment').value = '';
+  document.getElementById('loanTerm').value = '60';
+  // Deselect brands
+  document.querySelectorAll('.brand-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('brandOtherInput').value = '';
+  goToStep(1);
+  track('start_over');
+}
+
+// ── Step 1: Brand Grid ─────────────────────────────────────────────────────
+
+function renderBrandGrid() {
+  const grid = document.getElementById('brandGrid');
+  grid.innerHTML = BRANDS.map(b => `
+    <button class="brand-btn" data-brand="${b.name}" onclick="selectBrand('${b.name}')">
+      <div class="brand-initial" style="background:${b.color}">${b.name[0]}</div>
+      <div class="brand-name">${b.name}</div>
+    </button>
+  `).join('');
+}
+
+function selectBrand(name) {
+  state.brand = name;
+  document.querySelectorAll('.brand-btn').forEach(b => {
+    b.classList.toggle('selected', b.dataset.brand === name);
+  });
+  track('brand_selected', { brand: name });
+  loadModelsForBrand();
+  goToStep(2);
+}
+
+// Manual brand entry
+document.addEventListener('DOMContentLoaded', () => {
+  renderBrandGrid();
+  renderYearToggle();
+
+  document.getElementById('brandOtherInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && this.value.trim()) {
+      selectBrand(this.value.trim());
+    }
+  });
+  document.getElementById('brandOtherInput').addEventListener('blur', function() {
+    if (this.value.trim()) {
+      selectBrand(this.value.trim());
+    }
+  });
+
+  document.getElementById('zipCode').addEventListener('input', function() {
+    if (this.value.length === 5) {
+      document.getElementById('zipHint').textContent = '📍 Using your local area for pricing';
+      track('zip_entered', { zip: this.value });
+    } else {
+      document.getElementById('zipHint').textContent = '📍 Add ZIP for local pricing';
+    }
+  });
+});
+
+// ── Step 2: Year + Models ─────────────────────────────────────────────────
+
+function renderYearToggle() {
+  const toggle = document.getElementById('yearToggle');
+  const years = [CURRENT_YEAR - 2, CURRENT_YEAR - 1, CURRENT_YEAR];
+  toggle.innerHTML = years.map(y => `
+    <button class="year-btn ${y === state.year ? 'selected' : ''}" data-year="${y}" onclick="selectYear(${y})">${y}</button>
+  `).join('');
+}
+
+function selectYear(year) {
+  state.year = year;
+  document.querySelectorAll('.year-btn').forEach(b => {
+    b.classList.toggle('selected', parseInt(b.dataset.year) === year);
+  });
+  loadModelsForBrand();
+}
+
+function loadModelsForBrand() {
+  if (!state.brand) return;
+  const grid = document.getElementById('modelGrid');
+  grid.innerHTML = '<div class="models-loading">Loading models…</div>';
+  document.getElementById('step2Heading').textContent = `Choose your ${state.brand} model`;
+
+  fetch(`/models-for-brand?make=${encodeURIComponent(state.brand)}&year=${state.year}`)
+    .then(r => r.json())
+    .then(data => {
+      const models = data.models || [];
+      if (!models.length) {
+        grid.innerHTML = '<div class="models-loading">No models found for this year. Try a different year.</div>';
+        return;
+      }
+      grid.innerHTML = models.map(m => `
+        <button class="model-btn" data-model="${m}" onclick="selectModel('${escapeAttr(m)}')">${m}</button>
+      `).join('');
+    })
+    .catch(() => {
+      grid.innerHTML = '<div class="models-loading" style="color:#ef4444">Failed to load models. Check your connection.</div>';
+    });
+}
+
+function selectModel(model) {
+  state.model = model;
+  document.querySelectorAll('.model-btn').forEach(b => {
+    b.classList.toggle('selected', b.dataset.model === model);
+  });
+  track('model_selected', { brand: state.brand, model, year: state.year });
+  document.getElementById('step3Heading').textContent = `${state.year} ${state.brand} ${model}`;
+  goToStep(3);
+}
+
+// ── Step 3: More Details Toggle ────────────────────────────────────────────
+
+function toggleMoreDetails() {
+  const panel = document.getElementById('moreDetailsPanel');
+  const arrow = document.getElementById('toggleArrow');
+  const isOpen = panel.classList.contains('open');
+  panel.classList.toggle('open', !isOpen);
+  arrow.classList.toggle('open', !isOpen);
+  document.getElementById('moreDetailsToggle').textContent = '';
+  document.getElementById('moreDetailsToggle').innerHTML =
+    `<span class="toggle-arrow ${!isOpen ? 'open' : ''}" id="toggleArrow">${!isOpen ? '▶' : '▶'}</span>
+    ${!isOpen ? 'Hide extra details −' : 'Add more details +'}`;
+}
+
+// Dealer offer change → debounced re-check
+let debounceTimer = null;
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('dealerOffer').addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      const val = document.getElementById('dealerOffer').value;
+      if (val && parseFloat(val) > 1000 && document.getElementById('result').style.display === 'block') {
+        checkDeal();
+      }
+    }, 800);
+  });
+});
+
+// ── Step 4: Check Deal ────────────────────────────────────────────────────
+
+function checkDeal() {
+  const offer = document.getElementById('dealerOffer').value;
+  if (!offer || parseFloat(offer) < 1000) {
+    document.getElementById('dealerOffer').focus();
+    return;
   }
-}
-
-// ── Main report ──────────────────────────────────────────────────
-async function getReport() {
-  const year    = document.getElementById('year').value;
-  const make    = document.getElementById('make').value;
-  const model   = document.getElementById('model').value;
-  const zipCode = document.getElementById('zip_code').value.trim();
-  const dealerOffer = document.getElementById('dealer_offer').value;
-
-  if (!year || !make || !model) { alert('Please select year, make, and model.'); return; }
-  if (!zipCode) { alert('Please enter your ZIP code so we can estimate local market range.'); return; }
-  if (!dealerOffer) { alert('Please enter the dealer\'s offer price to get your Cartru Signal.'); return; }
-
-  if (zipCode) track('zip_submitted', { zip_prefix: zipCode[0] });
-
-  const btn = document.getElementById('btn');
-  btn.disabled = true;
-  btn.textContent = 'Analyzing deal...';
-
-  const resultsEl = document.getElementById('results');
-  const contentEl = document.getElementById('report-content');
-  resultsEl.style.display = 'block';
-  contentEl.innerHTML = '<div class="loading"><div class="spinner"></div><div>Pulling local market data, recalls, and fuel economy...</div></div>';
-  resultsEl.scrollIntoView({ behavior: 'smooth' });
 
   const payload = {
-    year, make, model,
-    zip_code: zipCode,
-    dealer_offer: dealerOffer,
-    msrp: document.getElementById('msrp').value || '',
-    dest_charge: document.getElementById('dest_charge').value || 0,
-    rebates: document.getElementById('rebates').value || 0,
-    dealer_fees: document.getElementById('dealer_fees').value || 0,
-    annual_miles: document.getElementById('annual_miles').value,
+    year: state.year,
+    make: state.brand,
+    model: state.model,
+    dealer_offer: offer,
+    zip_code: document.getElementById('zipCode').value.trim(),
+    msrp: document.getElementById('msrp').value || null,
+    destination_charge: document.getElementById('destinationCharge').value || 0,
+    dealer_fees: document.getElementById('dealerFees').value || 0,
+    add_ons: document.getElementById('addOns').value || '',
+    monthly_payment: document.getElementById('monthlyPayment').value || null,
+    loan_term: document.getElementById('loanTerm').value || 60,
   };
 
-  try {
-    const res = await fetch('/report', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+  track('deal_checked', { make: state.brand, model: state.model, year: state.year });
+  showResult();
+
+  document.getElementById('resultLoading').style.display = 'block';
+  document.getElementById('resultContent').classList.add('hidden');
+  document.getElementById('resultVehicleLabel').innerHTML =
+    `<strong>${state.year} ${state.brand} ${state.model}</strong>`;
+
+  fetch('/report', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+    .then(r => r.json())
+    .then(data => {
+      state.reportData = data;
+      renderResult(data);
+      document.getElementById('resultLoading').style.display = 'none';
+      document.getElementById('resultContent').classList.remove('hidden');
+      track('signal_shown', { signal: data.signal });
+    })
+    .catch(err => {
+      document.getElementById('resultLoading').innerHTML =
+        '<div style="color:#ef4444;text-align:center;padding:40px 0">Failed to analyze deal. Please try again.</div>';
     });
-    const d = await res.json();
-    renderReport(d);
+}
 
-    // Fire analytics from server response
-    if (d.analytics) {
-      track('report_generated', d.analytics);
+// ── Render Result ─────────────────────────────────────────────────────────
+
+function renderResult(d) {
+  renderSignal(d);
+  renderRange(d);
+  renderReasons(d);
+  renderWhatToSay(d);
+  renderOTD(d);
+  renderFees(d);
+  renderPaymentTrap(d);
+  renderNegotiationScript(d);
+  renderVehicleDetails(d);
+  resetTipJar();
+}
+
+function renderSignal(d) {
+  const block = document.getElementById('signalBlock');
+  const icon = document.getElementById('signalIcon');
+  const name = document.getElementById('signalName');
+  const explanation = document.getElementById('signalExplanation');
+
+  const signal = d.signal || 'N/A';
+  const color = d.signal_color || 'green';
+  block.className = 'signal-block ' + color;
+
+  const icons = { green: '🟢', yellow: '🟡', red: '🔴' };
+  icon.textContent = icons[color] || '⚪';
+  name.textContent = signal;
+  explanation.textContent = d.signal_explanation || '';
+}
+
+function renderRange(d) {
+  const lr = d.local_range;
+  const offer = d.dealer_offer;
+  const area = lr.area_label || 'National';
+
+  document.getElementById('rangeTitle').textContent =
+    `Similar ${d.vehicle.year} ${d.vehicle.make} ${d.vehicle.model} — estimated range (${area})`;
+
+  document.getElementById('rangeNumbers').innerHTML =
+    `<span class="range-accent">$${fmt(lr.low)}</span> – <span class="range-accent">$${fmt(lr.high)}</span>`;
+
+  const deltaEl = document.getElementById('offerDelta');
+  if (offer) {
+    const delta = offer - lr.base_msrp_estimate;
+    if (offer < lr.low) {
+      deltaEl.className = 'offer-delta-pill below';
+      deltaEl.textContent = `$${fmt(Math.abs(delta))} below range`;
+    } else if (offer > lr.high) {
+      deltaEl.className = 'offer-delta-pill above';
+      deltaEl.textContent = `$${fmt(delta)} above range`;
+    } else {
+      deltaEl.className = 'offer-delta-pill within';
+      deltaEl.textContent = `Within range`;
     }
-    if (d.signal) {
-      track('signal_shown', { signal: d.signal, signal_color: d.signal_color });
-    }
-    track('deal_pass_viewed', { vehicle: `${d.vehicle.year} ${d.vehicle.make} ${d.vehicle.model}` });
-  } catch(err) {
-    contentEl.innerHTML = '<div class="card"><p style="color:#ef4444">Something went wrong loading your report. Please try again.</p></div>';
-  }
-
-  btn.disabled = false;
-  btn.textContent = 'Check this deal →';
-}
-
-// ── Render Report ────────────────────────────────────────────────
-function renderReport(d) {
-  const contentEl = document.getElementById('report-content');
-  let html = '';
-
-  // ─ Cartru Signal ─
-  if (d.signal) {
-    const icons = { green: '✅', yellow: '⚠️', red: '🚨' };
-    const icon = icons[d.signal_color] || '📊';
-    html += `<div class="signal-badge ${d.signal_color}">
-      <div class="signal-icon">${icon}</div>
-      <div class="signal-body">
-        <div class="signal-label-row">
-          <span class="signal-tag">Cartru Signal</span>
-        </div>
-        <div class="signal-name">${d.signal}</div>
-        <div class="signal-explanation">${d.signal_explanation}</div>
-      </div>
-    </div>`;
-  }
-
-  // ─ Local Market Range ─
-  if (d.local_range) {
-    const lr = d.local_range;
-    const offerNum = d.dealer_offer;
-    const rangeSpan = lr.high - lr.low;
-
-    // Position the offer marker on the bar (clamp 0–100%)
-    let markerPct = 50;
-    let deltaHtml = '';
-    let deltaClass = 'within';
-
-    if (offerNum !== null && offerNum !== undefined) {
-      const rawPct = ((offerNum - lr.low) / (rangeSpan || 1)) * 100;
-      markerPct = Math.max(2, Math.min(98, rawPct));
-      const delta = Math.round(offerNum - lr.base_msrp_estimate);
-      if (delta > 0) {
-        deltaClass = 'above';
-        deltaHtml = `<span class="offer-delta ${deltaClass}">~$${Math.abs(delta).toLocaleString()} above est. range midpoint</span>`;
-      } else if (delta < 0) {
-        deltaClass = 'below';
-        deltaHtml = `<span class="offer-delta ${deltaClass}">~$${Math.abs(delta).toLocaleString()} below est. range midpoint</span>`;
-      } else {
-        deltaHtml = `<span class="offer-delta within">Right at estimated range midpoint</span>`;
-      }
-    }
-
-    // Fill width: full bar = the fair range
-    html += `<div class="range-card">
-      <div class="range-title">📍 Similar vehicles in your area (estimated)</div>
-      <div class="range-main">
-        <div class="range-numbers">
-          <span>$${lr.low.toLocaleString()}</span> – <span>$${lr.high.toLocaleString()}</span>
-        </div>
-        ${offerNum ? `<div>Your offer: <strong>$${Math.round(offerNum).toLocaleString()}</strong></div>` : ''}
-      </div>
-      <div class="range-bar-wrap">
-        <div class="range-bar-fill" style="left:0;right:0;"></div>
-        ${offerNum ? `<div class="range-marker" style="left:${markerPct}%;background:${d.signal_color==='green'?'#00d4aa':d.signal_color==='yellow'?'#f59e0b':'#ef4444'};"></div>` : ''}
-      </div>
-      <div class="range-labels"><span>$${lr.low.toLocaleString()} (fair floor)</span><span>$${lr.high.toLocaleString()} (fair ceiling)</span></div>
-      ${deltaHtml ? `<div style="margin-top:10px;">${deltaHtml}</div>` : ''}
-      <div class="range-disclaimer">${lr.source_note} ${lr.regional_note}</div>
-    </div>`;
-  }
-
-  // ─ Top Reasons ─
-  if (d.top_reasons && d.top_reasons.length > 0) {
-    html += `<div class="reasons-card">
-      <div class="reasons-title">🔍 Why we flagged this deal</div>`;
-    d.top_reasons.forEach(r => {
-      html += `<div class="reason-item"><span class="reason-bullet">→</span><span>${r}</span></div>`;
-    });
-    html += `</div>`;
-  }
-
-  // ─ What to Say ─
-  if (d.what_to_say) {
-    html += `<div class="say-card">
-      <div class="say-label">💬 What to say next</div>
-      <div class="say-text">${d.what_to_say}</div>
-    </div>`;
-  }
-
-  // ─ Deal Pass Upsell ─
-  html += `<div class="deal-pass-card">
-    <div class="deal-pass-header">
-      <div class="deal-pass-title">🛡️ Get your full deal defense</div>
-      <div class="deal-pass-price">$19 one time</div>
-    </div>
-    <ul class="deal-pass-list">
-      <li>Full out-the-door price breakdown (taxes, fees, everything)</li>
-      <li>Junk fee &amp; add-on review — line by line</li>
-      <li>Payment trap explainer (how they hide the real cost)</li>
-      <li>Estimated suggested opening number for your specific vehicle</li>
-      <li>Estimated caution zone above — when to stop negotiating and leave</li>
-      <li>Personalized negotiation script you can use at the dealership</li>
-      <li>Printable deal summary to bring with you</li>
-    </ul>
-    <button class="btn-deal-pass" onclick="clickDealPass()">Unlock Deal Pass — $19</button>
-    <div class="deal-pass-note">(Payment coming soon — enter your email to be notified when it's live)</div>
-  </div>`;
-
-  // ─ Collapsible: Recalls & Safety ─
-  const recallOpen = d.recall_count > 0;
-  const safetyIcons = { GREEN: '✅', YELLOW: '⚠️', RED: '🔴' };
-  html += buildCollapsible(
-    `${safetyIcons[d.safety_signal] || '📋'} Recall &amp; Safety History`,
-    `<span style="font-size:0.8rem;color:#888;font-weight:normal;margin-left:6px">${d.recall_count} recall(s) · ${d.complaints.total} complaints</span>`,
-    renderRecalls(d),
-    recallOpen,
-    'recalls-section'
-  );
-
-  // ─ Collapsible: 5-Year TCO ─
-  html += buildCollapsible(
-    '💰 5-Year Cost of Ownership',
-    '',
-    renderTCO(d),
-    false,
-    'tco-section'
-  );
-
-  // ─ Collapsible: Fuel Economy ─
-  html += buildCollapsible(
-    '⛽ Fuel Economy',
-    '',
-    renderFuelEconomy(d),
-    false,
-    'fuel-section'
-  );
-
-  // ─ Collapsible: Negotiation Details ─
-  html += buildCollapsible(
-    '🧠 Negotiation Details',
-    '',
-    renderNegotiation(d),
-    false,
-    'nego-section'
-  );
-
-  contentEl.innerHTML = html;
-}
-
-function buildCollapsible(title, badge, body, defaultOpen, id) {
-  return `<div class="collapsible">
-    <button class="collapsible-header${defaultOpen ? ' open' : ''}" onclick="toggleSection('${id}')">
-      <span>${title}${badge}</span>
-      <span class="collapsible-arrow">›</span>
-    </button>
-    <div class="collapsible-body${defaultOpen ? ' open' : ''}" id="${id}">
-      ${body}
-    </div>
-  </div>`;
-}
-
-function toggleSection(id) {
-  const body = document.getElementById(id);
-  const header = body.previousElementSibling;
-  body.classList.toggle('open');
-  header.classList.toggle('open');
-}
-
-function renderRecalls(d) {
-  let html = '';
-  if (d.recalls.length === 0) {
-    html += `<div class="no-recalls">✅ No open recalls found for this vehicle</div>`;
   } else {
-    d.recalls.forEach(r => {
-      html += `<div class="recall-item">
-        <h4>🔴 ${r.component}</h4>
-        <p>${r.summary}</p>
-        ${r.remedy ? `<p style="margin-top:5px;color:#444"><strong>Remedy:</strong> ${r.remedy}</p>` : ''}
-      </div>`;
-    });
-    html += `<p class="recall-tip">💡 Open recalls are a negotiating tool — ask the dealer to resolve them before signing, or request a price reduction.</p>`;
+    deltaEl.textContent = '';
   }
 
-  if (d.complaints && d.complaints.total > 0) {
-    html += `<div style="margin-top:14px"><div class="section-title">Top Complaint Areas (${d.complaints.total} total complaints)</div>`;
-    Object.entries(d.complaints.by_component).forEach(([comp, count]) => {
-      html += `<div class="nego-row"><span class="nego-label">${comp}</span><span class="nego-value">${count} complaint${count !== 1 ? 's' : ''}</span></div>`;
-    });
-    html += `</div>`;
+  // Bar
+  const totalRange = lr.high - lr.low;
+  const fillPct = 100; // range fill always full width
+  document.getElementById('rangeBarFill').style.width = '100%';
+
+  if (offer) {
+    const markerEl = document.getElementById('rangeBarMarker');
+    const clampedOffer = Math.max(lr.low, Math.min(lr.high, offer));
+    const markerPct = ((clampedOffer - lr.low) / (lr.high - lr.low)) * 100;
+    markerEl.style.left = Math.max(2, Math.min(98, markerPct)) + '%';
+    const color = d.signal_color || 'green';
+    markerEl.className = 'range-bar-marker marker-' + color;
   }
 
-  return html;
+  document.getElementById('rangeBarLabels').innerHTML =
+    `<span>$${fmt(lr.low)}</span><span>$${fmt(lr.high)}</span>`;
+
+  document.getElementById('rangeDisclaimer').textContent = lr.source_note;
 }
 
-function renderTCO(d) {
-  if (!d.true_cost) {
-    return `<p style="color:#888;font-size:0.88rem;padding:8px 0">Enter MSRP in "Add more details" to see a 5-year cost estimate.</p>`;
+function renderReasons(d) {
+  const list = document.getElementById('reasonsList');
+  list.innerHTML = (d.top_reasons || []).map(r =>
+    `<div class="reason-item"><span class="reason-bullet">→</span>${r}</div>`
+  ).join('');
+}
+
+function renderWhatToSay(d) {
+  document.getElementById('whatToSayText').textContent = d.what_to_say || '';
+}
+
+function renderOTD(d) {
+  const offer = d.dealer_offer || 0;
+  const dest = d.destination_charge || 0;
+  const fees = d.dealer_fees || 0;
+  const estTax = Math.round(offer * 0.08);
+  const estReg = 350;
+  const total = Math.round(offer + dest + fees + estTax + estReg);
+
+  const rows = [
+    ['Vehicle price (dealer offer)', offer],
+    dest ? ['Destination charge', dest] : null,
+    fees ? ['Dealer / doc fee', fees] : null,
+    ['Est. taxes (~8%)*', estTax],
+    ['Est. registration & title*', estReg],
+  ].filter(Boolean);
+
+  const table = document.getElementById('otdTable');
+  table.innerHTML = rows.map(([label, val]) =>
+    `<tr><td>${label}</td><td>$${fmt(val)}</td></tr>`
+  ).join('') +
+    `<tr class="otd-total"><td><strong>Estimated Out-the-Door Total</strong></td><td><strong>$${fmt(total)}</strong></td></tr>`;
+}
+
+function renderFees(d) {
+  const jf = d.junk_fees;
+  if (!jf) return;
+  const body = document.getElementById('body-fees');
+
+  const verdictClass = { green: 'green', yellow: 'yellow', red: 'red' }[jf.verdict_color] || 'yellow';
+
+  let html = `<div class="fee-verdict ${verdictClass}">${jf.fee_verdict}</div>`;
+
+  const flagIcon = { ok: '✓', caution: '~', high: '✗', unknown: '?' };
+  const flagClass = { ok: 'fee-flag-ok', caution: 'fee-flag-caution', high: 'fee-flag-high', unknown: 'fee-flag-unknown' };
+
+  html += `<div class="fee-note-row">
+    <span class="${flagClass[jf.doc_fee_flag]}"><strong>${flagIcon[jf.doc_fee_flag]}</strong></span>
+    <span>${jf.doc_fee_note}</span>
+  </div>`;
+
+  html += `<div class="fee-note-row">
+    <span class="${flagClass[jf.dest_flag]}"><strong>${flagIcon[jf.dest_flag]}</strong></span>
+    <span>${jf.dest_note}</span>
+  </div>`;
+
+  if (jf.flagged_from_input && jf.flagged_from_input.length > 0) {
+    html += `<div style="margin-top:12px; color:#ef4444; font-weight:700; font-size:0.85rem;">
+      ⚠️ Add-ons flagged from your entry: ${jf.flagged_from_input.join(', ')}
+    </div>`;
   }
-  const tc = d.true_cost;
-  return `<div class="cost-grid">
-    <div class="cost-item"><div class="ci-label">Estimated Depreciation</div><div class="ci-value">$${tc.depreciation_5yr.toLocaleString()}</div></div>
-    <div class="cost-item"><div class="ci-label">Estimated Fuel (${tc.annual_miles.toLocaleString()} mi/yr)</div><div class="ci-value">$${tc.fuel_5yr.toLocaleString()}</div></div>
-    <div class="cost-item"><div class="ci-label">Estimated Insurance</div><div class="ci-value">$${tc.insurance_5yr.toLocaleString()}</div></div>
-    <div class="cost-item"><div class="ci-label">Estimated Maintenance</div><div class="ci-value">$${tc.maintenance_5yr.toLocaleString()}</div></div>
-    <div class="cost-item"><div class="ci-label">Estimated Financing Cost</div><div class="ci-value">$${tc.financing_cost.toLocaleString()}</div></div>
-    <div class="cost-item"><div class="ci-label">Estimated Taxes &amp; Fees</div><div class="ci-value">$${tc.taxes_fees.toLocaleString()}</div></div>
-    <div class="cost-item total-item"><div class="ci-label">ESTIMATED 5-YEAR TOTAL COST</div><div class="ci-value">$${tc.total_5yr.toLocaleString()}</div></div>
-  </div>
-  <div class="cost-note">That's roughly <strong>$${tc.cost_per_month.toLocaleString()}/month</strong> all-in — not just the payment.<br><span style="font-size:0.75rem">Based on available market data. Actual costs vary by location, credit score, and driving habits.</span></div>`;
+
+  html += `<div class="junk-addon-list">
+    <div style="font-size:0.8rem; color:#8fa3b8; margin-bottom:10px; margin-top:8px;">Common dealer add-ons to watch for:</div>`;
+
+  (jf.junk_addons_to_watch || []).forEach(addon => {
+    const vClass = addon.verdict === 'Skip it' ? 'verdict-skip' :
+                   addon.verdict === 'Wait' ? 'verdict-wait' : 'verdict-elsewhere';
+    html += `<div class="junk-addon">
+      <div class="junk-addon-header">
+        <div class="junk-addon-name">${addon.name}</div>
+        <div class="junk-addon-verdict ${vClass}">${addon.verdict}</div>
+      </div>
+      <div class="junk-addon-cost">${addon.cost}</div>
+      <div class="junk-addon-note">${addon.note}</div>
+    </div>`;
+  });
+
+  html += `</div>`;
+  body.innerHTML = html;
 }
 
-function renderFuelEconomy(d) {
-  if (!d.fuel_economy) {
-    return `<p style="color:#888;font-size:0.88rem;padding:8px 0">Fuel economy data not available for this vehicle.</p>`;
+function renderPaymentTrap(d) {
+  const pt = d.payment_trap;
+  const section = document.getElementById('section-payment');
+
+  if (!pt) {
+    section.classList.add('hidden');
+    return;
   }
-  const fe = d.fuel_economy;
-  return `<div class="mpg-grid">
-    <div class="mpg-item"><div class="mi-label">City</div><div class="mi-value">${fe.city_mpg} MPG</div></div>
-    <div class="mpg-item"><div class="mi-label">Highway</div><div class="mi-value">${fe.highway_mpg} MPG</div></div>
-    <div class="mpg-item"><div class="mi-label">Combined</div><div class="mi-value">${fe.combined_mpg} MPG</div></div>
-    <div class="mpg-item"><div class="mi-label">Est. Annual Fuel</div><div class="mi-value">$${fe.annual_fuel_cost}</div></div>
-  </div>
-  ${fe.engine ? `<div class="mpg-detail">${fe.engine}L · ${fe.cylinders}-cylinder · ${fe.transmission}</div>` : ''}
-  <div style="margin-top:8px"><span style="font-size:0.75rem;color:#aaa">Source: fueleconomy.gov. Based on available market data; actual mileage varies.</span></div>`;
+  section.classList.remove('hidden');
+
+  const body = document.getElementById('body-payment');
+  const overAmt = pt.overpayment_vs_cash;
+  const overPct = pt.purchase_price ? Math.round((overAmt / pt.purchase_price) * 100) : 0;
+
+  let html = `
+    <div class="payment-stat">
+      <span class="payment-stat-label">Monthly payment</span>
+      <span class="payment-stat-value">$${fmt(pt.monthly_payment)}</span>
+    </div>
+    <div class="payment-stat">
+      <span class="payment-stat-label">Loan term</span>
+      <span class="payment-stat-value">${pt.loan_term_months} months</span>
+    </div>
+    <div class="payment-stat">
+      <span class="payment-stat-label">Total implied cost</span>
+      <span class="payment-stat-value ${overAmt > 3000 ? 'danger' : ''}">$${fmt(pt.total_implied_cost)}</span>
+    </div>
+    <div class="payment-stat">
+      <span class="payment-stat-label">vs. purchase price</span>
+      <span class="payment-stat-value ${overAmt > 0 ? 'danger' : ''}">+$${fmt(overAmt)} (${overPct}% over)</span>
+    </div>
+  `;
+
+  html += `<div class="payment-trap-warnings">`;
+  (pt.payment_trap_warnings || []).forEach(w => {
+    const isTip = w.startsWith('💡');
+    html += `<div class="trap-warning ${isTip ? 'tip' : ''}">${w}</div>`;
+  });
+  html += `</div>`;
+
+  body.innerHTML = html;
 }
 
-function renderNegotiation(d) {
-  if (!d.negotiation) {
-    return `<p style="color:#888;font-size:0.88rem;padding:8px 0">Enter MSRP in "Add more details" to see estimated negotiation numbers.</p>`;
+function renderNegotiationScript(d) {
+  const ns = d.negotiation_script;
+  const body = document.getElementById('body-script');
+
+  if (!ns) {
+    body.innerHTML = '<div style="color:#8fa3b8; font-size:0.88rem;">Enter a dealer offer to generate your negotiation script.</div>';
+    return;
   }
-  const n = d.negotiation;
-  let html = '';
 
-  html += `<div class="nego-row"><span class="nego-label">Estimated Invoice Price</span><span class="nego-value accent">$${n.estimated_invoice.toLocaleString()}</span></div>`;
-  html += `<div class="nego-row"><span class="nego-label">Estimated Suggested Opening Number</span><span class="nego-value accent">$${n.estimated_suggested_opening_number.toLocaleString()}</span></div>`;
-  html += `<div class="nego-row"><span class="nego-label">Estimated Caution Zone Above</span><span class="nego-value warn">$${n.estimated_caution_zone_above.toLocaleString()}</span></div>`;
-  html += `<div class="nego-row"><span class="nego-label">Estimated Potential Savings vs. MSRP</span><span class="nego-value">$${n.estimated_potential_savings.toLocaleString()}</span></div>`;
-  if (n.dealer_offer) {
-    html += `<div class="nego-row"><span class="nego-label">Dealer's Offer</span><span class="nego-value">$${n.dealer_offer.toLocaleString()}</span></div>`;
-  }
-
-  html += `<div class="playbook">
-    <h4>⚠️ What they'll try — the dealer playbook</h4>
-    <div class="tactic"><span class="tactic-name">The Monthly Payment Trick</span><span class="tactic-desc">They'll say "$499/month." Always negotiate the total price first, never the payment.</span></div>
-    <div class="tactic"><span class="tactic-name">The Manager Trip</span><span class="tactic-desc">"Let me check with my manager" is a pressure tactic. Your number doesn't change.</span></div>
-    <div class="tactic"><span class="tactic-name">The F&I Gauntlet</span><span class="tactic-desc">Extended warranty, gap insurance, paint protection — all negotiable, most unnecessary. Say no to everything in the F&I office, then revisit individually if you want.</span></div>
-    <div class="tactic"><span class="tactic-name">The Urgency Close</span><span class="tactic-desc">"This deal is only good today." It isn't. Leave. The car will be there tomorrow.</span></div>
-    <div class="tactic"><span class="tactic-name">The Trade-In Trap</span><span class="tactic-desc">Never discuss your trade-in until the new car price is agreed in writing.</span></div>
-  </div>
-  <div style="margin-top:10px;font-size:0.75rem;color:#aaa">All figures are estimated based on available market data. Actual invoice prices vary by region, trim, and current incentives.</div>`;
-
-  return html;
-}
-
-// ── Deal Pass modal ──────────────────────────────────────────────
-function clickDealPass() {
-  track('deal_pass_clicked');
-  document.getElementById('deal-pass-modal').classList.add('open');
-}
-
-function closeModal() {
-  document.getElementById('deal-pass-modal').classList.remove('open');
-}
-
-function submitModalEmail() {
-  const email = document.getElementById('modal-email').value.trim();
-  if (!email) { alert('Please enter your email address.'); return; }
-  track('deal_pass_email_submitted', { email_domain: email.split('@')[1] || 'unknown' });
-  document.querySelector('.modal-box').innerHTML = `
-    <h2>✅ You're on the list!</h2>
-    <p>We'll email <strong>${email}</strong> the moment Deal Pass is live. You'll get the founding price.</p>
-    <button class="btn-modal-close" onclick="closeModal()">Close</button>
+  body.innerHTML = `
+    <div class="script-step">
+      <div class="script-step-label">Step 1 — Opening line (when you walk in)</div>
+      <div class="script-step-text">${ns.opening_line}</div>
+    </div>
+    <div class="script-step">
+      <div class="script-step-label">Step 2 — Counter line (when they push back)</div>
+      <div class="script-step-text">${ns.counter_line}</div>
+    </div>
+    <div class="script-step">
+      <div class="script-step-label">Step 3 — Walk-away line (if they won't move)</div>
+      <div class="script-step-text">${ns.walk_away_line}</div>
+    </div>
+    <div class="script-step">
+      <div class="script-step-label">Email dealers for competing quotes</div>
+      <div class="email-template-wrap">
+        <textarea class="email-template" id="emailTemplate" readonly>${ns.email_template}</textarea>
+        <button class="copy-btn" id="copyEmailBtn" onclick="copyEmail()">Copy</button>
+      </div>
+    </div>
+    <div class="script-pro-tip">💡 ${ns.pro_tip}</div>
   `;
 }
 
-// Close modal on overlay click
-document.getElementById('deal-pass-modal').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
-});
+function renderVehicleDetails(d) {
+  renderFuelEconomy(d.fuel_economy);
+  renderRecalls(d.recalls, d.recall_count);
+  renderTrueCost(d.true_cost);
+}
+
+function renderFuelEconomy(fe) {
+  const body = document.getElementById('body-fuel');
+  if (!fe) {
+    body.innerHTML = '<div style="color:#8fa3b8;font-size:0.85rem;">Fuel economy data not available for this vehicle.</div>';
+    return;
+  }
+  body.innerHTML = `
+    <div class="mpg-row">
+      <div class="mpg-stat">
+        <div class="mpg-value">${fe.city_mpg}</div>
+        <div class="mpg-label">City MPG</div>
+      </div>
+      <div class="mpg-stat">
+        <div class="mpg-value">${fe.highway_mpg}</div>
+        <div class="mpg-label">Hwy MPG</div>
+      </div>
+      <div class="mpg-stat">
+        <div class="mpg-value">${fe.combined_mpg}</div>
+        <div class="mpg-label">Combined</div>
+      </div>
+    </div>
+    <div style="font-size:0.82rem;color:#8fa3b8;line-height:1.6">
+      Fuel type: ${fe.fuel_type}${fe.engine ? ' · ' + fe.engine + 'L' : ''}${fe.cylinders ? ' · ' + fe.cylinders + ' cyl' : ''}${fe.transmission ? '<br>' + fe.transmission : ''}
+      ${fe.annual_fuel_cost && fe.annual_fuel_cost !== 'N/A' ? '<br>Estimated annual fuel cost: <strong style="color:#e8edf5">$' + fmt(fe.annual_fuel_cost) + '</strong>' : ''}
+    </div>
+  `;
+}
+
+function renderRecalls(recalls, count) {
+  const body = document.getElementById('body-recalls');
+  const chevron = document.getElementById('chevron-recalls');
+
+  if (!recalls || recalls.length === 0) {
+    body.innerHTML = `<div class="no-recalls">✓ No open recalls found for this vehicle.</div>`;
+    // Default closed if no recalls
+    body.classList.add('hidden');
+    chevron.classList.remove('open');
+    return;
+  }
+
+  // Open by default if recalls found
+  body.classList.remove('hidden');
+  chevron.classList.add('open');
+
+  body.innerHTML = `<div style="color:#ef4444;font-weight:700;font-size:0.88rem;margin-bottom:10px;">
+    ⚠️ ${count} recall${count !== 1 ? 's' : ''} found — check with your dealer about remedy status.
+  </div>` + recalls.slice(0, 5).map(r => `
+    <div class="recall-item">
+      <div class="recall-component">${r.component}</div>
+      <div class="recall-summary">${r.summary}</div>
+    </div>
+  `).join('');
+}
+
+function renderTrueCost(tc) {
+  const body = document.getElementById('body-cost');
+  if (!tc) {
+    body.innerHTML = '<div style="color:#8fa3b8;font-size:0.85rem;">Enter MSRP for a 5-year ownership cost estimate.</div>';
+    return;
+  }
+  body.innerHTML = `
+    <table class="cost-table">
+      <tr><td>Depreciation</td><td>$${fmt(tc.depreciation_5yr)}</td></tr>
+      <tr><td>Fuel (5 yr, ${fmt(tc.annual_miles)} mi/yr)</td><td>$${fmt(tc.fuel_5yr)}</td></tr>
+      <tr><td>Insurance (5 yr)</td><td>$${fmt(tc.insurance_5yr)}</td></tr>
+      <tr><td>Maintenance (5 yr)</td><td>$${fmt(tc.maintenance_5yr)}</td></tr>
+      <tr><td>Financing cost (60mo @ 6.5%)</td><td>$${fmt(tc.financing_cost)}</td></tr>
+      <tr><td>Taxes & fees (est.)</td><td>$${fmt(tc.taxes_fees)}</td></tr>
+      <tr class="cost-total"><td><strong>Total 5-Year Cost</strong></td><td><strong>$${fmt(tc.total_5yr)}</strong></td></tr>
+    </table>
+    <div class="cost-note">
+      ~$${fmt(tc.cost_per_month)}/month all-in · Based on MSRP of $${fmt(tc.msrp)} · Estimates only, individual results vary.
+    </div>
+  `;
+}
+
+// ── Section Toggles ────────────────────────────────────────────────────────
+
+function toggleSection(id) {
+  const body = document.getElementById('body-' + id);
+  const chevron = document.getElementById('chevron-' + id);
+  const isHidden = body.classList.contains('hidden');
+  body.classList.toggle('hidden', !isHidden);
+  chevron.classList.toggle('open', isHidden);
+}
+
+// ── Tip Jar ────────────────────────────────────────────────────────────────
+
+function sendTip() {
+  const data = state.reportData || {};
+  fetch('/tip-jar', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      make: data.vehicle?.make || state.brand,
+      model: data.vehicle?.model || state.model,
+      signal: data.signal || '',
+    }),
+  }).catch(() => {});
+
+  document.getElementById('tipActions').style.display = 'none';
+  document.getElementById('tipThankYou').style.display = 'block';
+  track('tip_clicked');
+}
+
+function skipTip() {
+  document.getElementById('tipJar').style.display = 'none';
+  track('tip_skipped');
+}
+
+function resetTipJar() {
+  document.getElementById('tipActions').style.display = '';
+  document.getElementById('tipThankYou').style.display = 'none';
+  document.getElementById('tipJar').style.display = '';
+}
+
+// ── Copy Email ─────────────────────────────────────────────────────────────
+
+function copyEmail() {
+  const el = document.getElementById('emailTemplate');
+  if (!el) return;
+  navigator.clipboard.writeText(el.value).then(() => {
+    const btn = document.getElementById('copyEmailBtn');
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Copy';
+      btn.classList.remove('copied');
+    }, 2000);
+  }).catch(() => {
+    el.select();
+    document.execCommand('copy');
+  });
+}
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+
+function fmt(n) {
+  if (n == null || n === 'N/A') return 'N/A';
+  return Math.round(parseFloat(n)).toLocaleString('en-US');
+}
+
+function escapeAttr(s) {
+  return s.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+}
+
 </script>
 </body>
 </html>
