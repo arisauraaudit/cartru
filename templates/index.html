@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cartru — Don't Sign a Bad New-Car Deal</title>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
   background: #0f1724;
   color: #e8edf5;
   min-height: 100vh;
@@ -19,30 +19,32 @@ a { color: #00d4aa; text-decoration: none; }
 a:hover { text-decoration: underline; }
 
 /* ── Layout ── */
-.page { max-width: 720px; margin: 0 auto; padding: 0 20px 80px; }
+.page { max-width: 780px; margin: 0 auto; padding: 0 20px 100px; }
 
 /* ── Header ── */
-.header {
-  padding: 40px 0 32px;
+.site-header {
+  padding: 48px 0 36px;
   text-align: center;
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out, padding 0.4s ease-out;
 }
-.header h1 {
-  font-size: 2.2rem;
+.site-header.compact {
+  padding: 24px 0 20px;
+  opacity: 0.7;
+}
+.site-header h1 {
+  font-size: 2.25rem;
   font-weight: 800;
   letter-spacing: -0.5px;
   line-height: 1.2;
   color: #fff;
 }
-.header h1 em {
-  font-style: normal;
-  color: #00d4aa;
-}
-.header p {
+.site-header h1 em { font-style: normal; color: #00d4aa; }
+.site-header p {
   margin-top: 12px;
   font-size: 1.05rem;
   color: #8fa3b8;
   line-height: 1.6;
-  max-width: 500px;
+  max-width: 480px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -52,270 +54,486 @@ a:hover { text-decoration: underline; }
   background: rgba(0,212,170,0.1);
   border: 1px solid rgba(0,212,170,0.35);
   color: #00d4aa;
-  padding: 6px 16px;
+  padding: 6px 18px;
   border-radius: 99px;
   font-size: 0.78rem;
   font-weight: 600;
   letter-spacing: 0.3px;
 }
 
-/* ── Step containers ── */
-.step { display: none; }
-.step.active { display: block; }
-
-.step-back {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: #8fa3b8;
-  font-size: 0.88rem;
-  font-weight: 500;
-  cursor: pointer;
-  background: none;
-  border: none;
-  padding: 0;
-  margin-bottom: 20px;
-  transition: color 0.2s;
+/* ── Reveal panels ── */
+.reveal-panel {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: max-height 0.5s ease-out, opacity 0.35s ease-out, transform 0.35s ease-out;
+  pointer-events: none;
 }
-.step-back:hover { color: #00d4aa; }
+.reveal-panel.open {
+  max-height: 8000px;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
 
-.step-heading {
+/* ── Section chrome ── */
+.section-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #8fa3b8;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 14px;
+}
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+.panel-heading {
   font-size: 1.1rem;
   font-weight: 700;
   color: #fff;
-  margin-bottom: 6px;
 }
-.step-sub {
-  font-size: 0.88rem;
+.change-btn {
+  background: none;
+  border: none;
   color: #8fa3b8;
-  margin-bottom: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.2s;
+  text-decoration: none;
 }
+.change-btn:hover { color: #00d4aa; }
 
-/* ── Brand Grid ── */
+/* ── Brand grid ── */
+.brand-section { margin-bottom: 8px; }
+
 .brand-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
-@media (min-width: 500px) {
-  .brand-grid { grid-template-columns: repeat(4, 1fr); }
-}
-@media (min-width: 640px) {
-  .brand-grid { grid-template-columns: repeat(5, 1fr); }
-}
+@media (min-width: 420px) { .brand-grid { grid-template-columns: repeat(4, 1fr); } }
+@media (min-width: 560px) { .brand-grid { grid-template-columns: repeat(5, 1fr); } }
 
-.brand-btn {
+.brand-card {
   background: #1a2535;
   border: 2px solid #243044;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 14px 8px 12px;
   cursor: pointer;
   text-align: center;
-  transition: border-color 0.2s, background 0.2s, transform 0.15s;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 9px;
+  min-height: 96px;
+  transition: border-color 0.25s ease-out, background 0.25s ease-out, transform 0.25s ease-out,
+              opacity 0.3s ease-out, filter 0.3s ease-out;
+  position: relative;
+  overflow: hidden;
 }
-.brand-btn:hover {
+.brand-card:hover {
   border-color: #00d4aa;
   background: #1e2e42;
-  transform: translateY(-1px);
+  transform: scale(1.03);
 }
-.brand-btn.selected {
-  border-color: #00d4aa;
-  background: rgba(0,212,170,0.08);
+.brand-card.brand-selected {
+  border-color: #00d4aa !important;
+  background: rgba(0,212,170,0.08) !important;
+  transform: scale(1) !important;
+  opacity: 1 !important;
+  filter: none !important;
 }
-.brand-initial {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
+.brand-card.dimmed {
+  opacity: 0.28;
+  filter: grayscale(60%);
+  transform: scale(0.94);
+  pointer-events: none;
+}
+.brand-logo {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
+}
+/* Text logo badge for brands without Simple Icons */
+.brand-text-logo {
+  width: 38px;
+  height: 38px;
+  border-radius: 7px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 800;
-  font-size: 1rem;
+  font-weight: 900;
+  font-size: 0.72rem;
   color: #fff;
+  letter-spacing: 0.5px;
   flex-shrink: 0;
 }
-.brand-name {
-  font-size: 0.76rem;
-  font-weight: 600;
+.brand-name-label {
+  font-size: 0.72rem;
+  font-weight: 700;
   color: #c5d3e0;
   line-height: 1.2;
+  letter-spacing: 0.2px;
 }
-.brand-btn.selected .brand-name { color: #00d4aa; }
+.brand-card.brand-selected .brand-name-label { color: #00d4aa; }
 
+/* Other brand input */
 .brand-other {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   margin-top: 4px;
+  flex-wrap: wrap;
 }
 .brand-other label {
-  display: block;
   font-size: 0.8rem;
   color: #8fa3b8;
-  margin-bottom: 6px;
+  white-space: nowrap;
 }
 .brand-other input {
-  width: 100%;
-  max-width: 260px;
-  padding: 9px 13px;
+  padding: 9px 14px;
   background: #1a2535;
   border: 2px solid #243044;
   border-radius: 8px;
   color: #e8edf5;
   font-size: 0.9rem;
+  width: 220px;
   transition: border-color 0.2s;
 }
-.brand-other input:focus {
-  outline: none;
-  border-color: #00d4aa;
-}
+.brand-other input:focus { outline: none; border-color: #00d4aa; }
 .brand-other input::placeholder { color: #4a5f75; }
 
-/* ── Year Toggle ── */
+/* ── Model section ── */
+.model-section {
+  margin-top: 4px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding-top: 28px;
+}
+
+/* Year toggle */
 .year-toggle {
   display: flex;
   gap: 8px;
   margin-bottom: 20px;
 }
 .year-btn {
-  padding: 8px 20px;
+  padding: 8px 22px;
   background: #1a2535;
   border: 2px solid #243044;
-  border-radius: 8px;
+  border-radius: 99px;
   color: #8fa3b8;
   font-size: 0.9rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
 }
 .year-btn:hover { border-color: #00d4aa; color: #00d4aa; }
-.year-btn.selected {
+.year-btn.active {
   border-color: #00d4aa;
-  background: rgba(0,212,170,0.1);
+  background: rgba(0,212,170,0.12);
   color: #00d4aa;
 }
 
-/* ── Model Grid ── */
+/* Model grid */
 .model-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 9px;
+  margin-bottom: 8px;
 }
-@media (min-width: 500px) {
-  .model-grid { grid-template-columns: repeat(3, 1fr); }
-}
+@media (min-width: 480px) { .model-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 660px) { .model-grid { grid-template-columns: repeat(4, 1fr); } }
 
-.model-btn {
+.model-card {
   background: #1a2535;
   border: 2px solid #243044;
   border-radius: 10px;
-  padding: 14px 12px;
+  padding: 13px 12px 11px;
   cursor: pointer;
   text-align: left;
-  transition: border-color 0.2s, background 0.2s, transform 0.15s;
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: #c5d3e0;
-  line-height: 1.3;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  transition: border-color 0.25s ease-out, background 0.25s ease-out, transform 0.25s ease-out,
+              opacity 0.3s ease-out, filter 0.3s ease-out;
 }
-.model-btn:hover {
+.model-card:hover {
   border-color: #00d4aa;
   background: #1e2e42;
   transform: translateY(-1px);
 }
-.model-btn.selected {
-  border-color: #00d4aa;
-  background: rgba(0,212,170,0.08);
-  color: #00d4aa;
+.model-card.model-selected {
+  border-color: #00d4aa !important;
+  background: rgba(0,212,170,0.08) !important;
+  transform: none !important;
+  opacity: 1 !important;
+  filter: none !important;
 }
-
-.models-loading {
+.model-card.dimmed {
+  opacity: 0.28;
+  filter: grayscale(50%);
+  transform: scale(0.96);
+  pointer-events: none;
+}
+.model-name { font-size: 0.88rem; font-weight: 700; color: #e8edf5; line-height: 1.25; }
+.model-card.model-selected .model-name { color: #00d4aa; }
+.model-type-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #4a5f75;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+}
+.loading-msg {
   color: #8fa3b8;
   font-size: 0.9rem;
-  padding: 20px 0;
   text-align: center;
+  padding: 24px 0;
+  grid-column: 1/-1;
+}
+.error-msg {
+  color: #ef4444;
+  font-size: 0.88rem;
+  text-align: center;
+  padding: 20px 0;
+  grid-column: 1/-1;
 }
 
-/* ── Deal Form ── */
-.deal-form { }
-
-.big-input-group {
-  margin-bottom: 20px;
+/* ── Deal section ── */
+.deal-section {
+  margin-top: 4px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding-top: 28px;
 }
-.big-input-group label {
-  display: block;
-  font-size: 0.8rem;
+
+.vehicle-crumb {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.vehicle-crumb-label {
+  font-size: 1rem;
   font-weight: 700;
+  color: #00d4aa;
+}
+.vehicle-crumb-year {
+  font-size: 0.85rem;
   color: #8fa3b8;
+  font-weight: 600;
+}
+
+/* Dealer offer input */
+.offer-wrap {
+  margin-bottom: 18px;
+}
+.offer-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.9px;
+  color: #8fa3b8;
   margin-bottom: 8px;
 }
-.big-input {
-  width: 100%;
-  padding: 16px 18px;
+.offer-input-row {
+  display: flex;
+  align-items: center;
   background: #1a2535;
   border: 2px solid #243044;
-  border-radius: 10px;
-  color: #fff;
-  font-size: 1.4rem;
-  font-weight: 700;
+  border-radius: 12px;
+  overflow: hidden;
   transition: border-color 0.2s;
 }
-.big-input:focus {
-  outline: none;
-  border-color: #00d4aa;
+.offer-input-row:focus-within { border-color: #00d4aa; }
+.offer-dollar {
+  padding: 0 4px 0 20px;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #4a5f75;
+  line-height: 1;
+  user-select: none;
 }
-.big-input::placeholder { color: #4a5f75; font-weight: 400; font-size: 1.1rem; }
+.offer-input {
+  flex: 1;
+  padding: 18px 20px 18px 6px;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 1.6rem;
+  font-weight: 700;
+  outline: none;
+  min-width: 0;
+}
+.offer-input::placeholder { color: #3a4f65; font-weight: 400; font-size: 1.35rem; }
 
-.zip-group {
-  margin-bottom: 16px;
+/* Live signal preview */
+.live-signal-preview {
+  margin-top: 10px;
   display: flex;
   align-items: center;
   gap: 10px;
+  min-height: 28px;
+  transition: opacity 0.3s;
+}
+.live-signal-badge {
+  padding: 4px 14px;
+  border-radius: 99px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+.live-signal-badge.green { background: rgba(0,212,170,0.15); color: #00d4aa; border: 1px solid rgba(0,212,170,0.3); }
+.live-signal-badge.yellow { background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); }
+.live-signal-badge.red { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+.live-signal-vs {
+  font-size: 0.82rem;
+  color: #8fa3b8;
+}
+
+/* MSRP suggestion */
+.msrp-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
   flex-wrap: wrap;
 }
-.zip-group input {
+.msrp-suggest-label {
+  font-size: 0.82rem;
+  color: #8fa3b8;
+}
+.msrp-suggest-value {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #c5d3e0;
+}
+.msrp-edit-btn {
+  background: none;
+  border: none;
+  color: #4a5f75;
+  cursor: pointer;
+  font-size: 0.88rem;
+  padding: 0 4px;
+  transition: color 0.2s;
+  line-height: 1;
+}
+.msrp-edit-btn:hover { color: #00d4aa; }
+.msrp-inline-input {
+  padding: 4px 10px;
+  background: #1a2535;
+  border: 1px solid #00d4aa;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 0.85rem;
+  width: 120px;
+  outline: none;
+  display: none;
+}
+.typical-range-note {
+  font-size: 0.78rem;
+  color: #4a5f75;
+  margin-bottom: 16px;
+}
+
+/* ZIP section */
+.zip-section { margin-bottom: 16px; }
+.zip-hint-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.84rem;
+  color: #8fa3b8;
+  cursor: pointer;
+  transition: color 0.2s;
+  user-select: none;
+}
+.zip-hint-row:hover { color: #c5d3e0; }
+.zip-expand-icon {
+  font-size: 0.72rem;
+  color: #00d4aa;
+  font-weight: 700;
+  transition: transform 0.2s;
+}
+.zip-hint-row.expanded .zip-expand-icon { transform: rotate(90deg); }
+.zip-input-wrap {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.3s ease-out, opacity 0.25s ease-out;
+}
+.zip-input-wrap.open {
+  max-height: 60px;
+  opacity: 1;
+}
+.zip-input-wrap input {
   width: 140px;
-  padding: 10px 13px;
+  padding: 9px 14px;
   background: #1a2535;
   border: 2px solid #243044;
   border-radius: 8px;
   color: #fff;
   font-size: 0.95rem;
   transition: border-color 0.2s;
+  outline: none;
 }
-.zip-group input:focus { outline: none; border-color: #00d4aa; }
-.zip-group input::placeholder { color: #4a5f75; }
-.zip-hint {
-  font-size: 0.82rem;
-  color: #8fa3b8;
-}
+.zip-input-wrap input:focus { border-color: #00d4aa; }
+.zip-input-wrap input::placeholder { color: #4a5f75; }
+.zip-confirm-msg { font-size: 0.8rem; color: #00d4aa; font-weight: 600; }
 
-.more-details-toggle {
+/* More details toggle */
+.more-toggle {
   display: flex;
   align-items: center;
   gap: 8px;
-  cursor: pointer;
+  background: none;
+  border: none;
   color: #00d4aa;
   font-size: 0.88rem;
   font-weight: 600;
-  background: none;
-  border: none;
+  cursor: pointer;
   padding: 0;
-  margin-bottom: 16px;
-  user-select: none;
+  margin-bottom: 14px;
   transition: opacity 0.2s;
+  user-select: none;
 }
-.more-details-toggle:hover { opacity: 0.8; }
-.toggle-arrow { transition: transform 0.25s; display: inline-block; }
-.toggle-arrow.open { transform: rotate(90deg); }
+.more-toggle:hover { opacity: 0.8; }
+.more-arrow {
+  display: inline-block;
+  transition: transform 0.25s ease-out;
+  font-size: 0.7rem;
+}
+.more-arrow.open { transform: rotate(90deg); }
 
-.more-details-panel { display: none; }
-.more-details-panel.open { display: block; }
+.more-panel {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.4s ease-out, opacity 0.3s ease-out;
+}
+.more-panel.open {
+  max-height: 600px;
+  opacity: 1;
+}
 
 .form-row {
   display: grid;
@@ -327,11 +545,11 @@ a:hover { text-decoration: underline; }
 
 .form-group label {
   display: block;
-  font-size: 0.75rem;
+  font-size: 0.74rem;
   font-weight: 700;
   color: #8fa3b8;
   text-transform: uppercase;
-  letter-spacing: 0.6px;
+  letter-spacing: 0.7px;
   margin-bottom: 6px;
 }
 .form-group input,
@@ -343,451 +561,224 @@ a:hover { text-decoration: underline; }
   border-radius: 8px;
   color: #e8edf5;
   font-size: 0.92rem;
+  outline: none;
   transition: border-color 0.2s;
 }
 .form-group input:focus,
-.form-group select:focus {
-  outline: none;
-  border-color: #00d4aa;
-}
+.form-group select:focus { border-color: #00d4aa; }
 .form-group input::placeholder { color: #4a5f75; }
-.form-group select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238fa3b8' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+.form-group select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238fa3b8' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
 .form-group select option { background: #1a2535; }
 
+/* CTA button */
 .btn-check {
   width: 100%;
-  padding: 16px;
+  padding: 18px;
   background: #00d4aa;
   color: #0f1724;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 1.1rem;
   font-weight: 800;
   cursor: pointer;
-  margin-top: 8px;
-  transition: background 0.2s, transform 0.1s;
+  margin-top: 20px;
+  margin-bottom: 10px;
   letter-spacing: 0.3px;
+  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(0,212,170,0.25);
 }
-.btn-check:hover { background: #00bfa0; }
+.btn-check:hover {
+  background: #00c09a;
+  box-shadow: 0 6px 28px rgba(0,212,170,0.35);
+}
 .btn-check:active { transform: scale(0.98); }
-.btn-check:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
 .form-disclaimer {
-  font-size: 0.75rem;
+  font-size: 0.74rem;
   color: #4a5f75;
   text-align: center;
-  margin-top: 10px;
+  margin-bottom: 8px;
   line-height: 1.5;
 }
 
-/* ── Loading spinner ── */
-.spinner {
-  text-align: center;
-  padding: 40px 0;
-  color: #8fa3b8;
-  font-size: 0.95rem;
+/* ── Result section ── */
+.result-section {
+  margin-top: 4px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding-top: 28px;
 }
-.spinner::before {
-  content: '';
-  display: block;
-  width: 36px;
-  height: 36px;
-  border: 3px solid #243044;
-  border-top-color: #00d4aa;
-  border-radius: 50%;
-  margin: 0 auto 16px;
-  animation: spin 0.8s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── Result Page ── */
-#result { display: none; }
-
-.result-nav {
+.result-top-nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 20px;
   flex-wrap: wrap;
   gap: 10px;
-  margin-bottom: 24px;
 }
-.result-nav-left {
+.result-top-nav-left {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
 }
 .result-vehicle-label {
   font-size: 0.88rem;
   color: #8fa3b8;
 }
-.result-vehicle-label strong {
-  color: #e8edf5;
-  font-weight: 700;
+.result-vehicle-label strong { color: #e8edf5; font-weight: 700; }
+.edit-offer-btn {
+  background: #1a2535;
+  border: 1px solid #243044;
+  border-radius: 8px;
+  padding: 7px 16px;
+  color: #8fa3b8;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
 }
+.edit-offer-btn:hover { border-color: #00d4aa; color: #00d4aa; }
 
-/* ── Signal Badge ── */
+/* Loading spinner */
+.spinner {
+  text-align: center;
+  padding: 48px 0;
+  color: #8fa3b8;
+  font-size: 0.9rem;
+}
+.spinner::before {
+  content: '';
+  display: block;
+  width: 38px;
+  height: 38px;
+  border: 3px solid #243044;
+  border-top-color: #00d4aa;
+  border-radius: 50%;
+  margin: 0 auto 18px;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Signal badge ── */
 .signal-block {
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 24px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   display: flex;
   align-items: flex-start;
   gap: 18px;
 }
-.signal-block.green { background: rgba(0,212,170,0.08); border: 2px solid rgba(0,212,170,0.5); }
-.signal-block.yellow { background: rgba(245,158,11,0.08); border: 2px solid rgba(245,158,11,0.5); }
-.signal-block.red { background: rgba(239,68,68,0.08); border: 2px solid rgba(239,68,68,0.5); }
-
-.signal-icon { font-size: 2.2rem; flex-shrink: 0; line-height: 1; }
+.signal-block.green { background: rgba(0,212,170,0.08); border: 2px solid rgba(0,212,170,0.45); }
+.signal-block.yellow { background: rgba(245,158,11,0.08); border: 2px solid rgba(245,158,11,0.45); }
+.signal-block.red { background: rgba(239,68,68,0.08); border: 2px solid rgba(239,68,68,0.45); }
+.signal-icon { font-size: 2.4rem; flex-shrink: 0; line-height: 1; }
 .signal-body { flex: 1; min-width: 0; }
-.signal-name {
-  font-size: 1.6rem;
-  font-weight: 900;
-  letter-spacing: -0.5px;
-  line-height: 1.1;
-  margin-bottom: 6px;
-}
+.signal-name { font-size: 1.7rem; font-weight: 900; letter-spacing: -0.5px; line-height: 1.1; margin-bottom: 7px; }
 .green .signal-name { color: #00d4aa; }
 .yellow .signal-name { color: #f59e0b; }
 .red .signal-name { color: #ef4444; }
-.signal-explanation {
-  font-size: 0.85rem;
-  color: #8fa3b8;
-  line-height: 1.6;
-}
+.signal-explanation { font-size: 0.85rem; color: #8fa3b8; line-height: 1.6; }
 
-/* ── Market Range ── */
-.range-block {
-  background: #1a2535;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 16px;
-}
-.range-block-title {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #8fa3b8;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  margin-bottom: 12px;
-}
-.range-numbers-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-.range-numbers {
-  font-size: 1.15rem;
-  font-weight: 800;
-  color: #fff;
-}
-.range-numbers .range-accent { color: #00d4aa; }
-.offer-delta-pill {
-  font-size: 0.82rem;
-  font-weight: 700;
-  padding: 4px 12px;
-  border-radius: 99px;
-}
+/* ── Market range ── */
+.range-block { background: #1a2535; border-radius: 12px; padding: 20px; margin-bottom: 14px; }
+.range-block-title { font-size: 0.75rem; font-weight: 700; color: #8fa3b8; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 12px; }
+.range-numbers-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.range-numbers { font-size: 1.15rem; font-weight: 800; color: #fff; }
+.range-accent { color: #00d4aa; }
+.offer-delta-pill { font-size: 0.82rem; font-weight: 700; padding: 4px 12px; border-radius: 99px; }
 .offer-delta-pill.above { background: rgba(239,68,68,0.15); color: #ef4444; }
 .offer-delta-pill.below { background: rgba(0,212,170,0.15); color: #00d4aa; }
 .offer-delta-pill.within { background: rgba(245,158,11,0.15); color: #f59e0b; }
-.range-bar-wrap {
-  position: relative;
-  height: 6px;
-  background: #243044;
-  border-radius: 99px;
-  margin: 12px 0 8px;
-}
-.range-bar-fill {
-  position: absolute;
-  height: 100%;
-  border-radius: 99px;
-  background: #00d4aa;
-}
-.range-bar-marker {
-  position: absolute;
-  top: -5px;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  border: 3px solid #0f1724;
-  transform: translateX(-50%);
-}
+.range-bar-wrap { position: relative; height: 6px; background: #243044; border-radius: 99px; margin: 10px 0 8px; }
+.range-bar-fill { position: absolute; height: 100%; border-radius: 99px; background: #00d4aa; width: 100%; }
+.range-bar-marker { position: absolute; top: -5px; width: 16px; height: 16px; border-radius: 50%; border: 3px solid #0f1724; transform: translateX(-50%); }
 .marker-green { background: #00d4aa; }
 .marker-yellow { background: #f59e0b; }
 .marker-red { background: #ef4444; }
-.range-bar-labels {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.72rem;
-  color: #4a5f75;
-}
-.range-disclaimer {
-  font-size: 0.73rem;
-  color: #4a5f75;
-  margin-top: 8px;
-  line-height: 1.5;
-}
+.range-bar-labels { display: flex; justify-content: space-between; font-size: 0.72rem; color: #4a5f75; }
+.range-disclaimer { font-size: 0.72rem; color: #4a5f75; margin-top: 8px; line-height: 1.5; }
 
-/* ── Top Reasons ── */
-.reasons-block {
-  background: #1a2535;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 16px;
-}
-.block-title {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #8fa3b8;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  margin-bottom: 14px;
-}
-.reason-item {
-  display: flex;
-  gap: 10px;
-  align-items: flex-start;
-  margin-bottom: 10px;
-  font-size: 0.9rem;
-  color: #c5d3e0;
-  line-height: 1.5;
-}
+/* ── Reasons ── */
+.reasons-block { background: #1a2535; border-radius: 12px; padding: 20px; margin-bottom: 14px; }
+.block-title { font-size: 0.75rem; font-weight: 700; color: #8fa3b8; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 14px; }
+.reason-item { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; font-size: 0.9rem; color: #c5d3e0; line-height: 1.55; }
 .reason-item:last-child { margin-bottom: 0; }
 .reason-bullet { color: #00d4aa; font-weight: 800; flex-shrink: 0; margin-top: 1px; }
 
-/* ── What to Say ── */
-.say-block {
-  background: rgba(0,212,170,0.07);
-  border: 1px solid rgba(0,212,170,0.3);
-  border-radius: 12px;
-  padding: 18px 20px;
-  margin-bottom: 20px;
-}
-.say-label {
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: rgba(0,212,170,0.7);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 8px;
-}
-.say-text {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #00d4aa;
-  line-height: 1.6;
-}
+/* ── What to say ── */
+.say-block { background: rgba(0,212,170,0.07); border: 1px solid rgba(0,212,170,0.3); border-radius: 12px; padding: 18px 20px; margin-bottom: 20px; }
+.say-label { font-size: 0.72rem; font-weight: 700; color: rgba(0,212,170,0.7); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.say-text { font-size: 0.98rem; font-weight: 700; color: #00d4aa; line-height: 1.6; }
 
-/* ── Collapsible Sections ── */
-.section {
-  background: #1a2535;
-  border-radius: 12px;
-  margin-bottom: 12px;
-  overflow: hidden;
-}
-.section-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 20px;
-  cursor: pointer;
-  user-select: none;
-  transition: background 0.2s;
-}
+/* ── Collapsible sections ── */
+.section { background: #1a2535; border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
+.section-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; cursor: pointer; user-select: none; transition: background 0.2s; }
 .section-header:hover { background: #1e2e42; }
-.section-title {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: #e8edf5;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+.section-title { font-size: 0.95rem; font-weight: 700; color: #e8edf5; display: flex; align-items: center; gap: 8px; }
 .section-icon { font-size: 1rem; }
-.section-chevron {
-  color: #4a5f75;
-  transition: transform 0.25s;
-  font-size: 0.8rem;
-}
+.section-chevron { color: #4a5f75; transition: transform 0.25s; font-size: 0.78rem; }
 .section-chevron.open { transform: rotate(180deg); }
-.section-body {
-  padding: 0 20px 20px;
-  font-size: 0.88rem;
-  color: #c5d3e0;
-  line-height: 1.6;
-}
+.section-body { padding: 0 20px 20px; font-size: 0.88rem; color: #c5d3e0; line-height: 1.6; }
 .section-body.hidden { display: none; }
 
-/* OTD Table */
-.otd-table { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
+/* OTD table */
+.otd-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
 .otd-table td { padding: 8px 0; border-bottom: 1px solid #243044; }
 .otd-table td:last-child { text-align: right; font-weight: 600; color: #e8edf5; }
 .otd-table tr:last-child td { border-bottom: none; font-weight: 800; font-size: 1rem; color: #fff; }
 .otd-table .otd-total td { border-top: 2px solid #243044; padding-top: 12px; }
 .otd-note { font-size: 0.75rem; color: #4a5f75; }
 
-/* Fee verdict badge */
-.fee-verdict {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 14px;
-  border-radius: 99px;
-  font-size: 0.82rem;
-  font-weight: 700;
-  margin-bottom: 14px;
-}
+/* Fee review */
+.fee-verdict { display: inline-flex; align-items: center; gap: 6px; padding: 5px 14px; border-radius: 99px; font-size: 0.82rem; font-weight: 700; margin-bottom: 14px; }
 .fee-verdict.green { background: rgba(0,212,170,0.15); color: #00d4aa; }
 .fee-verdict.yellow { background: rgba(245,158,11,0.15); color: #f59e0b; }
 .fee-verdict.red { background: rgba(239,68,68,0.15); color: #ef4444; }
-
-.fee-note-row {
-  display: flex;
-  gap: 8px;
-  align-items: flex-start;
-  margin-bottom: 8px;
-  font-size: 0.85rem;
-}
+.fee-note-row { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 8px; font-size: 0.85rem; }
 .fee-flag-ok { color: #00d4aa; }
 .fee-flag-caution { color: #f59e0b; }
 .fee-flag-high { color: #ef4444; }
 .fee-flag-unknown { color: #8fa3b8; }
-
 .junk-addon-list { margin-top: 12px; }
-.junk-addon {
-  border: 1px solid #243044;
-  border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 8px;
-}
-.junk-addon-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 4px;
-}
+.junk-addon { border: 1px solid #243044; border-radius: 8px; padding: 12px; margin-bottom: 8px; }
+.junk-addon-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
 .junk-addon-name { font-weight: 700; color: #e8edf5; font-size: 0.88rem; }
-.junk-addon-verdict {
-  font-size: 0.75rem;
-  font-weight: 700;
-  padding: 2px 10px;
-  border-radius: 99px;
-}
+.junk-addon-verdict { font-size: 0.75rem; font-weight: 700; padding: 2px 10px; border-radius: 99px; }
 .verdict-skip { background: rgba(239,68,68,0.15); color: #ef4444; }
 .verdict-wait { background: rgba(245,158,11,0.15); color: #f59e0b; }
 .verdict-elsewhere { background: rgba(0,212,170,0.15); color: #00d4aa; }
-.junk-addon-note { font-size: 0.8rem; color: #8fa3b8; }
 .junk-addon-cost { font-size: 0.78rem; color: #4a5f75; margin-bottom: 2px; }
+.junk-addon-note { font-size: 0.8rem; color: #8fa3b8; }
 
 /* Payment trap */
-.payment-stat {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 0;
-  border-bottom: 1px solid #243044;
-  font-size: 0.88rem;
-}
+.payment-stat { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #243044; font-size: 0.88rem; }
 .payment-stat:last-of-type { border-bottom: none; }
 .payment-stat-label { color: #8fa3b8; }
 .payment-stat-value { font-weight: 700; color: #e8edf5; }
 .payment-stat-value.danger { color: #ef4444; }
 .payment-trap-warnings { margin-top: 14px; }
-.trap-warning {
-  padding: 10px 12px;
-  background: rgba(239,68,68,0.07);
-  border-left: 3px solid #ef4444;
-  border-radius: 0 6px 6px 0;
-  font-size: 0.83rem;
-  color: #c5d3e0;
-  margin-bottom: 8px;
-  line-height: 1.5;
-}
-.trap-warning.tip {
-  background: rgba(0,212,170,0.07);
-  border-left-color: #00d4aa;
-}
+.trap-warning { padding: 10px 12px; background: rgba(239,68,68,0.07); border-left: 3px solid #ef4444; border-radius: 0 6px 6px 0; font-size: 0.83rem; color: #c5d3e0; margin-bottom: 8px; line-height: 1.5; }
+.trap-warning.tip { background: rgba(0,212,170,0.07); border-left-color: #00d4aa; }
 
-/* Negotiation Script */
-.script-step {
-  margin-bottom: 16px;
-}
-.script-step-label {
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: #8fa3b8;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  margin-bottom: 6px;
-}
-.script-step-text {
-  background: #0f1724;
-  border-radius: 8px;
-  padding: 12px 14px;
-  font-size: 0.88rem;
-  color: #c5d3e0;
-  line-height: 1.6;
-  font-style: italic;
-}
+/* Negotiation script */
+.script-step { margin-bottom: 16px; }
+.script-step-label { font-size: 0.72rem; font-weight: 700; color: #8fa3b8; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+.script-step-text { background: #0f1724; border-radius: 8px; padding: 12px 14px; font-size: 0.88rem; color: #c5d3e0; line-height: 1.6; font-style: italic; }
 .email-template-wrap { position: relative; margin-top: 8px; }
-.email-template {
-  width: 100%;
-  min-height: 160px;
-  background: #0f1724;
-  border: 1px solid #243044;
-  border-radius: 8px;
-  padding: 12px 14px;
-  font-size: 0.82rem;
-  color: #8fa3b8;
-  font-family: inherit;
-  line-height: 1.6;
-  resize: vertical;
-  cursor: text;
-}
-.copy-btn {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background: #243044;
-  border: none;
-  border-radius: 6px;
-  padding: 5px 12px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #00d4aa;
-  cursor: pointer;
-  transition: background 0.2s;
-}
+.email-template { width: 100%; min-height: 160px; background: #0f1724; border: 1px solid #243044; border-radius: 8px; padding: 12px 14px; font-size: 0.82rem; color: #8fa3b8; font-family: inherit; line-height: 1.6; resize: vertical; cursor: text; }
+.copy-btn { position: absolute; top: 8px; right: 8px; background: #243044; border: none; border-radius: 6px; padding: 5px 12px; font-size: 0.75rem; font-weight: 600; color: #00d4aa; cursor: pointer; transition: background 0.2s; }
 .copy-btn:hover { background: #2e3f58; }
 .copy-btn.copied { color: #8fa3b8; }
-.script-pro-tip {
-  font-size: 0.8rem;
-  color: #8fa3b8;
-  background: rgba(0,212,170,0.06);
-  border-radius: 6px;
-  padding: 8px 12px;
-  margin-top: 10px;
-}
+.script-pro-tip { font-size: 0.8rem; color: #8fa3b8; background: rgba(0,212,170,0.06); border-radius: 6px; padding: 8px 12px; margin-top: 10px; }
 
-/* Fuel Economy */
-.mpg-row {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 12px;
-  flex-wrap: wrap;
-}
-.mpg-stat {
-  flex: 1;
-  min-width: 80px;
-  background: #0f1724;
-  border-radius: 8px;
-  padding: 12px;
-  text-align: center;
-}
+/* Fuel economy */
+.mpg-row { display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+.mpg-stat { flex: 1; min-width: 80px; background: #0f1724; border-radius: 8px; padding: 12px; text-align: center; }
 .mpg-value { font-size: 1.6rem; font-weight: 800; color: #00d4aa; }
 .mpg-label { font-size: 0.72rem; color: #8fa3b8; margin-top: 2px; }
 
@@ -799,216 +790,181 @@ a:hover { text-decoration: underline; }
 .cost-note { font-size: 0.75rem; color: #4a5f75; margin-top: 8px; }
 
 /* Recalls */
-.recall-item {
-  border: 1px solid #243044;
-  border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 8px;
-}
+.recall-item { border: 1px solid #243044; border-radius: 8px; padding: 12px; margin-bottom: 8px; }
 .recall-component { font-weight: 700; color: #ef4444; margin-bottom: 4px; font-size: 0.88rem; }
 .recall-summary { font-size: 0.82rem; color: #8fa3b8; line-height: 1.5; }
-.no-recalls {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #00d4aa;
-  font-weight: 600;
-  font-size: 0.88rem;
-}
+.no-recalls { display: flex; align-items: center; gap: 8px; color: #00d4aa; font-weight: 600; font-size: 0.88rem; }
 
-/* ── Tip Jar ── */
-.tip-jar {
-  background: #1a2535;
-  border-radius: 12px;
-  padding: 24px;
-  margin-top: 24px;
-  text-align: center;
-}
-.tip-jar-title {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #e8edf5;
-  margin-bottom: 8px;
-}
-.tip-jar-text {
-  font-size: 0.87rem;
-  color: #8fa3b8;
-  line-height: 1.6;
-  margin-bottom: 16px;
-  max-width: 380px;
-  margin-left: auto;
-  margin-right: auto;
-}
-.tip-jar-actions {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-.btn-tip {
-  padding: 11px 24px;
-  background: #00d4aa;
-  color: #0f1724;
-  border: none;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background 0.2s;
-}
+/* ── Tip jar ── */
+.tip-jar { background: #1a2535; border-radius: 14px; padding: 28px; margin-top: 24px; text-align: center; }
+.tip-jar-title { font-size: 1rem; font-weight: 700; color: #e8edf5; margin-bottom: 8px; }
+.tip-jar-text { font-size: 0.87rem; color: #8fa3b8; line-height: 1.6; margin-bottom: 18px; max-width: 380px; margin-left: auto; margin-right: auto; }
+.tip-jar-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.btn-tip { padding: 12px 28px; background: #00d4aa; color: #0f1724; border: none; border-radius: 9px; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: background 0.2s; }
 .btn-tip:hover { background: #00bfa0; }
-.btn-skip {
-  padding: 11px 20px;
-  background: transparent;
-  color: #8fa3b8;
-  border: 1px solid #243044;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: border-color 0.2s, color 0.2s;
-}
+.btn-skip { padding: 12px 20px; background: transparent; color: #8fa3b8; border: 1px solid #243044; border-radius: 9px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: border-color 0.2s, color 0.2s; }
 .btn-skip:hover { border-color: #8fa3b8; color: #c5d3e0; }
-.tip-thank-you {
-  color: #00d4aa;
-  font-weight: 700;
-  font-size: 0.95rem;
-  display: none;
-}
+.tip-thank-you { color: #00d4aa; font-weight: 700; font-size: 0.95rem; display: none; }
 
 /* ── Utility ── */
 .hidden { display: none !important; }
-.mt8 { margin-top: 8px; }
-.mt12 { margin-top: 12px; }
-.mt16 { margin-top: 16px; }
-
 </style>
 </head>
 <body>
 <div class="page">
 
-  <!-- Header (always visible) -->
-  <div class="header">
-    <h1>Don't sign a<br><em>bad new-car deal.</em></h1>
-    <p>Find out if your dealer's offer is fair — free, independent, on your side.</p>
+  <!-- ── Always-visible header ── -->
+  <header class="site-header" id="siteHeader">
+    <h1>Don't sign a <em>bad new-car deal.</em></h1>
+    <p>Check if your dealer's offer is fair — free, on your side.</p>
     <div class="trust-badge">100% buyer-funded · No dealer leads · No ads</div>
-  </div>
+  </header>
 
-  <!-- ────── STEP 1: Brand Selection ────── -->
-  <div id="step1" class="step active">
-    <div class="step-heading">Choose your brand</div>
-    <div class="step-sub">Select the manufacturer you're shopping.</div>
-
+  <!-- ══════════════════════════════════════════ -->
+  <!-- STEP 1: Brand selection                    -->
+  <!-- ══════════════════════════════════════════ -->
+  <section class="brand-section" id="brandSection">
+    <div class="section-label" id="brandSectionLabel">Choose your brand</div>
     <div class="brand-grid" id="brandGrid">
-      <!-- Rendered by JS -->
+      <!-- filled by JS -->
     </div>
-
     <div class="brand-other">
-      <label>Don't see your brand? Type it in:</label>
+      <label>Other brand:</label>
       <input type="text" id="brandOtherInput" placeholder="e.g. Acura, Buick, Volvo…" autocomplete="off">
     </div>
-  </div>
+  </section>
 
-  <!-- ────── STEP 2: Model + Year ────── -->
-  <div id="step2" class="step">
-    <button class="step-back" onclick="goToStep(1)">← Back to brands</button>
-    <div class="step-heading" id="step2Heading">Choose your model</div>
-    <div class="step-sub">Select the year first, then pick the model.</div>
+  <!-- ══════════════════════════════════════════ -->
+  <!-- STEP 2: Model + Year (reveal panel)        -->
+  <!-- ══════════════════════════════════════════ -->
+  <section class="reveal-panel model-section" id="modelSection">
+    <div class="panel-header">
+      <button class="change-btn" onclick="changeBrand()">← Change brand</button>
+      <div class="panel-heading" id="modelSectionHeading">Select your model</div>
+    </div>
+    <div class="year-toggle" id="yearToggle"></div>
+    <div class="model-grid" id="modelGrid">
+      <div class="loading-msg">Loading models…</div>
+    </div>
+  </section>
 
-    <div class="year-toggle" id="yearToggle">
-      <!-- Rendered by JS -->
+  <!-- ══════════════════════════════════════════ -->
+  <!-- STEP 3: Deal details (reveal panel)        -->
+  <!-- ══════════════════════════════════════════ -->
+  <section class="reveal-panel deal-section" id="dealSection">
+    <!-- Vehicle crumb -->
+    <div class="vehicle-crumb" id="vehicleCrumb">
+      <button class="change-btn" onclick="changeModel()">← Change model</button>
+      <div>
+        <span class="vehicle-crumb-label" id="crumbModel"></span>
+        <span class="vehicle-crumb-year" id="crumbYear"></span>
+      </div>
     </div>
 
-    <div id="modelGrid" class="model-grid">
-      <div class="models-loading">Loading models…</div>
-    </div>
-  </div>
-
-  <!-- ────── STEP 3: Deal Details ────── -->
-  <div id="step3" class="step">
-    <button class="step-back" onclick="goToStep(2)">← Back to model</button>
-    <div class="step-heading" id="step3Heading">Enter the deal details</div>
-    <div class="step-sub">Just the dealer's offer is required. Everything else sharpens the analysis.</div>
-
-    <div class="deal-form">
-      <div class="big-input-group">
-        <label>Dealer's offer <span style="color:#ef4444">*</span></label>
-        <input type="number" class="big-input" id="dealerOffer" placeholder="$35,000" min="1000" max="200000">
+    <!-- Dealer offer -->
+    <div class="offer-wrap">
+      <label class="offer-label">Dealer's offer <span style="color:#ef4444">*</span></label>
+      <div class="offer-input-row">
+        <span class="offer-dollar">$</span>
+        <input type="number" id="dealerOffer" class="offer-input" placeholder="35,000" min="1000" max="200000" autocomplete="off">
       </div>
-
-      <div class="zip-group">
-        <input type="text" id="zipCode" placeholder="ZIP code" maxlength="5" pattern="[0-9]{5}">
-        <span class="zip-hint" id="zipHint">📍 Add ZIP for local pricing</span>
-      </div>
-
-      <button class="more-details-toggle" id="moreDetailsToggle" onclick="toggleMoreDetails()">
-        <span class="toggle-arrow" id="toggleArrow">▶</span>
-        Add more details +
-      </button>
-
-      <div class="more-details-panel" id="moreDetailsPanel">
-        <div class="form-row">
-          <div class="form-group">
-            <label>MSRP (sticker price)</label>
-            <input type="number" id="msrp" placeholder="e.g. 38,000">
-          </div>
-          <div class="form-group">
-            <label>Destination charge</label>
-            <input type="number" id="destinationCharge" placeholder="~$1,000–$1,500">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Dealer / doc fee</label>
-            <input type="number" id="dealerFees" placeholder="e.g. 299">
-          </div>
-          <div class="form-group">
-            <label>Add-ons (describe)</label>
-            <input type="text" id="addOns" placeholder="e.g. paint protection, tint">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Monthly payment offered</label>
-            <input type="number" id="monthlyPayment" placeholder="e.g. 549">
-          </div>
-          <div class="form-group">
-            <label>Loan term</label>
-            <select id="loanTerm">
-              <option value="">Not sure</option>
-              <option value="36">36 months</option>
-              <option value="48">48 months</option>
-              <option value="60" selected>60 months</option>
-              <option value="72">72 months</option>
-              <option value="84">84 months</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <button class="btn-check" id="checkDealBtn" onclick="checkDeal()">Check this deal →</button>
-      <div class="form-disclaimer">
-        Estimates based on market data. Not a guarantee. Always verify with your dealer's full itemized quote.
+      <!-- Live signal preview -->
+      <div class="live-signal-preview" id="liveSignalPreview">
+        <div class="live-signal-badge" id="liveSignalBadge"></div>
+        <div class="live-signal-vs" id="liveSignalVs"></div>
       </div>
     </div>
-  </div>
 
-  <!-- ────── STEP 4 / Result ────── -->
-  <div id="result">
-    <div class="result-nav">
-      <div class="result-nav-left">
-        <button class="step-back" onclick="startOver()">← Start over</button>
+    <!-- MSRP suggestion -->
+    <div class="msrp-row" id="msrpRow">
+      <span class="msrp-suggest-label">Suggested MSRP:</span>
+      <span class="msrp-suggest-value" id="msrpDisplay">~$32,000</span>
+      <button class="msrp-edit-btn" onclick="toggleMsrpEdit()" title="Edit MSRP">✎</button>
+      <input type="number" id="msrpInlineInput" class="msrp-inline-input" placeholder="e.g. 32000">
+    </div>
+    <div class="typical-range-note" id="typicalRangeNote">Typical range: <span id="typicalRangeSpan"></span></div>
+
+    <!-- ZIP -->
+    <div class="zip-section">
+      <div class="zip-hint-row" id="zipHintRow" onclick="toggleZip()">
+        <span>📍 National estimate · Add ZIP for local pricing</span>
+        <span class="zip-expand-icon">▶</span>
+      </div>
+      <div class="zip-input-wrap" id="zipInputWrap">
+        <input type="text" id="zipCode" placeholder="ZIP code" maxlength="5" pattern="[0-9]{5}" autocomplete="postal-code">
+        <span class="zip-confirm-msg" id="zipConfirmMsg"></span>
+      </div>
+    </div>
+
+    <!-- More details -->
+    <button class="more-toggle" id="moreToggle" onclick="toggleMore()">
+      <span class="more-arrow" id="moreArrow">▶</span>
+      Add more details
+    </button>
+    <div class="more-panel" id="morePanel">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Destination charge</label>
+          <input type="number" id="destinationCharge" placeholder="~$1,000–$1,500">
+        </div>
+        <div class="form-group">
+          <label>Dealer / doc fee</label>
+          <input type="number" id="dealerFees" placeholder="e.g. 299">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Add-ons (describe)</label>
+          <input type="text" id="addOns" placeholder="e.g. paint protection, tint">
+        </div>
+        <div class="form-group">
+          <label>Monthly payment offered</label>
+          <input type="number" id="monthlyPayment" placeholder="e.g. 549">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Loan term</label>
+          <select id="loanTerm">
+            <option value="">Not sure</option>
+            <option value="36">36 months</option>
+            <option value="48">48 months</option>
+            <option value="60" selected>60 months</option>
+            <option value="72">72 months</option>
+            <option value="84">84 months</option>
+          </select>
+        </div>
+        <div class="form-group"><!-- spacer --></div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <button class="btn-check" id="checkDealBtn" onclick="checkDeal()">Check this deal →</button>
+    <div class="form-disclaimer">
+      Estimates based on market data. Not a guarantee. Always verify with your dealer's full itemized quote.
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- STEP 4: Result (reveal panel)              -->
+  <!-- ══════════════════════════════════════════ -->
+  <section class="reveal-panel result-section" id="resultSection">
+
+    <div class="result-top-nav">
+      <div class="result-top-nav-left">
+        <button class="change-btn" onclick="startOver()">← Start over</button>
         <div class="result-vehicle-label" id="resultVehicleLabel"></div>
       </div>
+      <button class="edit-offer-btn" onclick="editOffer()">✎ Edit offer</button>
     </div>
 
-    <!-- Loading state -->
-    <div id="resultLoading" class="spinner">Analyzing your deal…</div>
+    <!-- Loading -->
+    <div class="spinner" id="resultLoading">Analyzing your deal…</div>
 
-    <!-- Actual result content -->
+    <!-- Result content -->
     <div id="resultContent" class="hidden">
 
-      <!-- Signal -->
+      <!-- Signal badge -->
       <div id="signalBlock" class="signal-block green">
         <div class="signal-icon" id="signalIcon">🟢</div>
         <div class="signal-body">
@@ -1017,14 +973,14 @@ a:hover { text-decoration: underline; }
         </div>
       </div>
 
-      <!-- Market Range -->
+      <!-- Market range bar -->
       <div class="range-block">
-        <div class="range-block-title" id="rangeTitle">Similar vehicles — estimated range</div>
+        <div class="range-block-title" id="rangeTitle">Market range</div>
         <div class="range-numbers-row">
           <div class="range-numbers" id="rangeNumbers"></div>
           <div class="offer-delta-pill" id="offerDelta"></div>
         </div>
-        <div class="range-bar-wrap" id="rangeBarWrap">
+        <div class="range-bar-wrap">
           <div class="range-bar-fill" id="rangeBarFill"></div>
           <div class="range-bar-marker" id="rangeBarMarker"></div>
         </div>
@@ -1032,19 +988,19 @@ a:hover { text-decoration: underline; }
         <div class="range-disclaimer" id="rangeDisclaimer"></div>
       </div>
 
-      <!-- Top Reasons -->
+      <!-- Top reasons -->
       <div class="reasons-block">
         <div class="block-title">Why this signal</div>
         <div id="reasonsList"></div>
       </div>
 
-      <!-- What to Say -->
+      <!-- What to say -->
       <div class="say-block">
         <div class="say-label">💬 What to say next</div>
         <div class="say-text" id="whatToSayText"></div>
       </div>
 
-      <!-- Section 1: OTD Breakdown -->
+      <!-- OTD breakdown -->
       <div class="section">
         <div class="section-header" onclick="toggleSection('otd')">
           <div class="section-title"><span class="section-icon">📋</span> Full Out-the-Door Breakdown</div>
@@ -1052,20 +1008,20 @@ a:hover { text-decoration: underline; }
         </div>
         <div class="section-body" id="body-otd">
           <table class="otd-table" id="otdTable"></table>
-          <div class="otd-note">* Taxes and registration vary by state — this is an estimate only.</div>
+          <div class="otd-note">* Taxes and registration vary by state — estimate only.</div>
         </div>
       </div>
 
-      <!-- Section 2: Fee & Add-On Review -->
+      <!-- Fee & add-on review -->
       <div class="section">
         <div class="section-header" onclick="toggleSection('fees')">
-          <div class="section-title"><span class="section-icon">🔍</span> Fee & Add-On Review</div>
+          <div class="section-title"><span class="section-icon">🔍</span> Fee &amp; Add-On Review</div>
           <div class="section-chevron open" id="chevron-fees">▼</div>
         </div>
         <div class="section-body" id="body-fees"></div>
       </div>
 
-      <!-- Section 3: Payment Trap (conditional) -->
+      <!-- Payment trap (shown conditionally) -->
       <div class="section hidden" id="section-payment">
         <div class="section-header" onclick="toggleSection('payment')">
           <div class="section-title"><span class="section-icon">⚠️</span> Payment Trap Check</div>
@@ -1074,7 +1030,7 @@ a:hover { text-decoration: underline; }
         <div class="section-body" id="body-payment"></div>
       </div>
 
-      <!-- Section 4: Negotiation Script -->
+      <!-- Negotiation script -->
       <div class="section">
         <div class="section-header" onclick="toggleSection('script')">
           <div class="section-title"><span class="section-icon">🗣️</span> Negotiation Script</div>
@@ -1083,7 +1039,7 @@ a:hover { text-decoration: underline; }
         <div class="section-body" id="body-script"></div>
       </div>
 
-      <!-- Section 5: Vehicle Details -->
+      <!-- Vehicle details (nested) -->
       <div class="section">
         <div class="section-header" onclick="toggleSection('vehicle')">
           <div class="section-title"><span class="section-icon">🚗</span> Vehicle Details</div>
@@ -1091,8 +1047,8 @@ a:hover { text-decoration: underline; }
         </div>
         <div class="section-body" id="body-vehicle">
 
-          <!-- Fuel Economy (inner collapsible) -->
-          <div class="section" style="background:#0f1724; margin-bottom:8px;">
+          <!-- Fuel economy -->
+          <div class="section" style="background:#0f1724;margin-bottom:8px;">
             <div class="section-header" onclick="toggleSection('fuel')" style="padding:12px 16px;">
               <div class="section-title" style="font-size:0.88rem;">⛽ Fuel Economy</div>
               <div class="section-chevron" id="chevron-fuel">▼</div>
@@ -1100,8 +1056,8 @@ a:hover { text-decoration: underline; }
             <div class="section-body hidden" id="body-fuel" style="padding:0 16px 16px;"></div>
           </div>
 
-          <!-- Recalls (inner collapsible) -->
-          <div class="section" style="background:#0f1724; margin-bottom:8px;">
+          <!-- NHTSA Recalls -->
+          <div class="section" style="background:#0f1724;margin-bottom:8px;">
             <div class="section-header" onclick="toggleSection('recalls')" style="padding:12px 16px;">
               <div class="section-title" style="font-size:0.88rem;">🔔 NHTSA Recalls</div>
               <div class="section-chevron" id="chevron-recalls">▼</div>
@@ -1109,7 +1065,7 @@ a:hover { text-decoration: underline; }
             <div class="section-body hidden" id="body-recalls" style="padding:0 16px 16px;"></div>
           </div>
 
-          <!-- 5-Year Cost (inner collapsible) -->
+          <!-- 5-Year cost -->
           <div class="section" style="background:#0f1724;">
             <div class="section-header" onclick="toggleSection('cost')" style="padding:12px 16px;">
               <div class="section-title" style="font-size:0.88rem;">💰 5-Year Cost of Ownership</div>
@@ -1121,12 +1077,11 @@ a:hover { text-decoration: underline; }
         </div>
       </div>
 
-      <!-- Tip Jar -->
+      <!-- Tip jar -->
       <div class="tip-jar" id="tipJar">
         <div class="tip-jar-title">☕ If Cartru helped you save money…</div>
         <div class="tip-jar-text">
-          You can leave a tip to keep it free and independent.<br>
-          No dealers. No ads. Just you.
+          You can leave a tip to keep it free and independent.<br>No dealers. No ads. Just you.
         </div>
         <div class="tip-jar-actions" id="tipActions">
           <button class="btn-tip" onclick="sendTip()">☕ Leave a tip</button>
@@ -1138,244 +1093,484 @@ a:hover { text-decoration: underline; }
       </div>
 
     </div><!-- /resultContent -->
-  </div><!-- /result -->
+  </section>
 
 </div><!-- /page -->
 
 <script>
-// ── Constants ──────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════
+// Constants
+// ══════════════════════════════════════════════════════════
 
 const BRANDS = [
-  { name: "Toyota",     color: "#eb0a1e" },
-  { name: "Honda",      color: "#e40521" },
-  { name: "Ford",       color: "#003087" },
-  { name: "Chevrolet",  color: "#d4a017" },
-  { name: "RAM",        color: "#c41230" },
-  { name: "Hyundai",    color: "#002c5f" },
-  { name: "Kia",        color: "#05141f" },
-  { name: "Nissan",     color: "#c3002f" },
-  { name: "Subaru",     color: "#00438a" },
-  { name: "Mazda",      color: "#1e3869" },
-  { name: "Volkswagen", color: "#00176f" },
-  { name: "Jeep",       color: "#384d48" },
-  { name: "GMC",        color: "#c8102e" },
-  { name: "Tesla",      color: "#cc0000" },
-  { name: "Dodge",      color: "#c8102e" },
+  { name: 'Toyota',     slug: 'toyota',      color: '#eb0a1e' },
+  { name: 'Honda',      slug: 'honda',       color: '#e40521' },
+  { name: 'Ford',       slug: 'ford',        color: '#003087' },
+  { name: 'Chevrolet',  slug: 'chevrolet',   color: '#d4a017' },
+  { name: 'RAM',        slug: 'ram',         color: '#c41230' },
+  { name: 'Hyundai',    slug: 'hyundai',     color: '#002c5f' },
+  { name: 'Kia',        slug: 'kia',         color: '#05141f' },
+  { name: 'Nissan',     slug: 'nissan',      color: '#c3002f' },
+  { name: 'Subaru',     slug: 'subaru',      color: '#00438a' },
+  { name: 'Mazda',      slug: 'mazda',       color: '#1e3869' },
+  { name: 'Volkswagen', slug: 'volkswagen',  color: '#00176f' },
+  { name: 'Jeep',       slug: 'jeep',        color: '#384d48' },
+  { name: 'GMC',        slug: null,          color: '#c8102e' },
+  { name: 'Tesla',      slug: 'tesla',       color: '#cc0000' },
+  { name: 'Dodge',      slug: null,          color: '#c8102e' },
 ];
 
+const CDN = 'https://cdn.simpleicons.org';
 const CURRENT_YEAR = new Date().getFullYear();
+const YEARS = [CURRENT_YEAR - 2, CURRENT_YEAR - 1, CURRENT_YEAR];
 
-// ── State ──────────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════
+// State
+// ══════════════════════════════════════════════════════════
 
-let state = {
-  brand: null,
-  model: null,
-  year: CURRENT_YEAR - 1,
+const state = {
+  brand:      null,
+  model:      null,
+  year:       CURRENT_YEAR - 1,
+  msrpEstimate:   32000,
+  rangeEstimate:  { low: 30720, high: 32960 },
   reportData: null,
 };
 
-// ── Analytics ─────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════
+// Analytics (preserved)
+// ══════════════════════════════════════════════════════════
 
 function track(event, data = {}) {
   console.log('[Cartru]', event, data);
 }
 
-// ── Step Navigation ────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════
+// MSRP segment estimator
+// ══════════════════════════════════════════════════════════
 
-function goToStep(n) {
-  document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
-  document.getElementById('step' + n).classList.add('active');
-  document.getElementById('result').style.display = 'none';
-  if (n === 1) {
-    document.querySelector('.header').style.display = '';
-  } else {
-    document.querySelector('.header').style.display = 'none';
+function estimateMsrp(brandName, modelName) {
+  const b = (brandName || '').toLowerCase();
+  const m = (modelName || '').toLowerCase();
+
+  // Tesla always ~$42k
+  if (b === 'tesla') return 42000;
+
+  // Full-size trucks
+  if (/f-?150|silverado|ram 1500|tundra|titan|sierra 1500/.test(m)) return 45000;
+
+  // Large SUVs
+  if (/tahoe|expedition|suburban|sequoia|navigator|armada|yukon|escalade/.test(m)) return 55000;
+
+  // Midsize SUVs/CUVs
+  if (/rav4|cr-?v|tucson|rogue|forester|escape|equinox|tiguan|compass|santa fe|cx-?5|outback|venza|murano|edge|explorer|pilot|passport|pathfinder|traverse|blazer|telluride|palisade|sorento|cx-?9|atlas/.test(m)) return 30000;
+
+  // Midsize sedans
+  if (/camry|accord|altima|sonata|passat|fusion/.test(m)) return 28000;
+
+  // Compact cars
+  if (/corolla|civic|elantra|forte|sentra|jetta|impreza|focus|cruze|spark|fit|yaris|accent|rio|mirage|versa|mazda3|golf/.test(m)) return 23000;
+
+  // Compact SUVs (smaller ones)
+  if (/hrv|venue|trax|encore|renegade|bronco sport|taos|seltos|kona|trailblazer/.test(m)) return 26000;
+
+  // Midsize trucks
+  if (/tacoma|ranger|colorado|frontier|gladiator|ridgeline|maverick|canyon/.test(m)) return 35000;
+
+  // Muscle/sports
+  if (/mustang|camaro|challenger|charger|corvette|supra|86|brz|miata|mx-?5/.test(m)) return 38000;
+
+  return 32000; // default
+}
+
+function msrpToRange(msrp) {
+  return { low: Math.round(msrp * 0.96), high: Math.round(msrp * 1.03) };
+}
+
+// ══════════════════════════════════════════════════════════
+// Body type inference
+// ══════════════════════════════════════════════════════════
+
+function inferBodyType(modelName) {
+  const m = modelName.toLowerCase();
+  if (/f-?150|silverado|ram 1500|tundra|tacoma|ranger|colorado|frontier|titan|ridgeline|maverick|canyon|sierra/.test(m)) return 'Truck';
+  if (/sienna|odyssey|carnival|pacifica|voyager/.test(m)) return 'Minivan';
+  if (/mustang|camaro|challenger|charger|corvette|supra|86|brz|miata|mx-?5/.test(m)) return 'Coupe';
+  if (/transit|sprinter|econoline|express|savana|promaster/.test(m)) return 'Van';
+  if (/rav4|cr-?v|tucson|rogue|forester|escape|equinox|explorer|pilot|passport|blazer|edge|tiguan|atlas|pathfinder|murano|armada|tahoe|suburban|yukon|sequoia|expedition|navigator|4runner|highlander|palisade|telluride|sorento|santa fe|cx-?5|cx-?9|outback|ascent|compass|cherokee|wrangler|bronco|venue|hrv|kona|seltos|trax|trailblazer|taos|venza|traverse|escalade|navigator|durango|grand cherokee|ioniq 5|ioniq5|ev6|bz4x|rav/.test(m)) return 'SUV';
+  return 'Sedan';
+}
+
+// ══════════════════════════════════════════════════════════
+// Brand grid
+// ══════════════════════════════════════════════════════════
+
+function buildBrandLogoHTML(brand) {
+  if (brand.slug) {
+    return `<img class="brand-logo" src="${CDN}/${brand.slug}/FFFFFF" alt="${brand.name}" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+            <div class="brand-text-logo" style="background:${brand.color};display:none">${brand.name.substring(0,3).toUpperCase()}</div>`;
   }
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Text badge for GMC / Dodge
+  if (brand.name === 'GMC') {
+    return `<div class="brand-text-logo" style="background:${brand.color};font-size:0.9rem;letter-spacing:1px">GMC</div>`;
+  }
+  if (brand.name === 'Dodge') {
+    // Simple Dodge ram head SVG approximation
+    return `<div class="brand-text-logo" style="background:${brand.color}">
+      <svg width="26" height="22" viewBox="0 0 26 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M13 2 L4 8 L2 14 L6 13 L7 18 L13 14 L19 18 L20 13 L24 14 L22 8 Z" fill="white"/>
+        <path d="M8 8 L4 8 L6 13 L8 11 Z" fill="rgba(255,255,255,0.5)"/>
+        <path d="M18 8 L22 8 L20 13 L18 11 Z" fill="rgba(255,255,255,0.5)"/>
+        <circle cx="9" cy="9" r="1.5" fill="#c41230"/>
+        <circle cx="17" cy="9" r="1.5" fill="#c41230"/>
+      </svg>
+    </div>`;
+  }
+  return `<div class="brand-text-logo" style="background:${brand.color}">${brand.name.substring(0,3).toUpperCase()}</div>`;
 }
-
-function showResult() {
-  document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
-  document.querySelector('.header').style.display = 'none';
-  document.getElementById('result').style.display = 'block';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function startOver() {
-  state = { brand: null, model: null, year: CURRENT_YEAR - 1, reportData: null };
-  // Clear form
-  document.getElementById('dealerOffer').value = '';
-  document.getElementById('zipCode').value = '';
-  document.getElementById('msrp').value = '';
-  document.getElementById('destinationCharge').value = '';
-  document.getElementById('dealerFees').value = '';
-  document.getElementById('addOns').value = '';
-  document.getElementById('monthlyPayment').value = '';
-  document.getElementById('loanTerm').value = '60';
-  // Deselect brands
-  document.querySelectorAll('.brand-btn').forEach(b => b.classList.remove('selected'));
-  document.getElementById('brandOtherInput').value = '';
-  goToStep(1);
-  track('start_over');
-}
-
-// ── Step 1: Brand Grid ─────────────────────────────────────────────────────
 
 function renderBrandGrid() {
   const grid = document.getElementById('brandGrid');
   grid.innerHTML = BRANDS.map(b => `
-    <button class="brand-btn" data-brand="${b.name}" onclick="selectBrand('${b.name}')">
-      <div class="brand-initial" style="background:${b.color}">${b.name[0]}</div>
-      <div class="brand-name">${b.name}</div>
+    <button class="brand-card" data-brand="${b.name}" onclick="selectBrand('${b.name}')">
+      ${buildBrandLogoHTML(b)}
+      <div class="brand-name-label">${b.name}</div>
     </button>
   `).join('');
 }
 
 function selectBrand(name) {
+  if (state.brand === name && document.getElementById('modelSection').classList.contains('open')) return;
+
   state.brand = name;
-  document.querySelectorAll('.brand-btn').forEach(b => {
-    b.classList.toggle('selected', b.dataset.brand === name);
+  state.model = null;
+
+  // Dim all cards, highlight selected
+  document.querySelectorAll('.brand-card').forEach(card => {
+    if (card.dataset.brand === name) {
+      card.classList.add('brand-selected');
+      card.classList.remove('dimmed');
+    } else {
+      card.classList.remove('brand-selected');
+      card.classList.add('dimmed');
+    }
   });
+
+  // Update header
+  document.getElementById('siteHeader').classList.add('compact');
+  document.getElementById('brandSectionLabel').textContent = 'Brand selected';
+
+  // Update model section heading
+  document.getElementById('modelSectionHeading').textContent = `Select your ${name} model`;
+
+  // Reset model grid + hide deal/result sections
+  collapseSection('dealSection');
+  collapseSection('resultSection');
+  resetModelGrid();
+
+  // Open model section
+  openSection('modelSection');
+
+  // Load models
+  loadModels();
+
+  // Smooth scroll to model section
+  setTimeout(() => scrollToEl('modelSection'), 80);
+
   track('brand_selected', { brand: name });
-  loadModelsForBrand();
-  goToStep(2);
 }
 
-// Manual brand entry
-document.addEventListener('DOMContentLoaded', () => {
-  renderBrandGrid();
-  renderYearToggle();
-
-  document.getElementById('brandOtherInput').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter' && this.value.trim()) {
-      selectBrand(this.value.trim());
-    }
+function changeBrand() {
+  // Undim all brands, collapse model + deal + result
+  document.querySelectorAll('.brand-card').forEach(c => {
+    c.classList.remove('brand-selected', 'dimmed');
   });
-  document.getElementById('brandOtherInput').addEventListener('blur', function() {
-    if (this.value.trim()) {
-      selectBrand(this.value.trim());
-    }
-  });
+  document.getElementById('siteHeader').classList.remove('compact');
+  document.getElementById('brandSectionLabel').textContent = 'Choose your brand';
+  collapseSection('modelSection');
+  collapseSection('dealSection');
+  collapseSection('resultSection');
+  state.brand = null;
+  state.model = null;
+  scrollToTop();
+  track('change_brand');
+}
 
-  document.getElementById('zipCode').addEventListener('input', function() {
-    if (this.value.length === 5) {
-      document.getElementById('zipHint').textContent = '📍 Using your local area for pricing';
-      track('zip_entered', { zip: this.value });
-    } else {
-      document.getElementById('zipHint').textContent = '📍 Add ZIP for local pricing';
-    }
-  });
-});
-
-// ── Step 2: Year + Models ─────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════
+// Year toggle
+// ══════════════════════════════════════════════════════════
 
 function renderYearToggle() {
   const toggle = document.getElementById('yearToggle');
-  const years = [CURRENT_YEAR - 2, CURRENT_YEAR - 1, CURRENT_YEAR];
-  toggle.innerHTML = years.map(y => `
-    <button class="year-btn ${y === state.year ? 'selected' : ''}" data-year="${y}" onclick="selectYear(${y})">${y}</button>
+  toggle.innerHTML = YEARS.map(y => `
+    <button class="year-btn ${y === state.year ? 'active' : ''}" data-year="${y}" onclick="selectYear(${y})">${y}</button>
   `).join('');
 }
 
 function selectYear(year) {
   state.year = year;
   document.querySelectorAll('.year-btn').forEach(b => {
-    b.classList.toggle('selected', parseInt(b.dataset.year) === year);
+    b.classList.toggle('active', parseInt(b.dataset.year) === year);
   });
-  loadModelsForBrand();
+  if (state.brand) loadModels();
 }
 
-function loadModelsForBrand() {
+// ══════════════════════════════════════════════════════════
+// Model loading
+// ══════════════════════════════════════════════════════════
+
+function resetModelGrid() {
+  const grid = document.getElementById('modelGrid');
+  grid.innerHTML = '<div class="loading-msg">Loading models…</div>';
+  // Undim all model cards
+  document.querySelectorAll('.model-card').forEach(c => c.classList.remove('model-selected', 'dimmed'));
+}
+
+function loadModels() {
   if (!state.brand) return;
   const grid = document.getElementById('modelGrid');
-  grid.innerHTML = '<div class="models-loading">Loading models…</div>';
-  document.getElementById('step2Heading').textContent = `Choose your ${state.brand} model`;
+  grid.innerHTML = '<div class="loading-msg">Loading models…</div>';
 
   fetch(`/models-for-brand?make=${encodeURIComponent(state.brand)}&year=${state.year}`)
     .then(r => r.json())
     .then(data => {
-      const models = data.models || [];
+      const models = (data.models || []).sort();
       if (!models.length) {
-        grid.innerHTML = '<div class="models-loading">No models found for this year. Try a different year.</div>';
+        grid.innerHTML = '<div class="loading-msg">No models found — try a different year.</div>';
         return;
       }
-      grid.innerHTML = models.map(m => `
-        <button class="model-btn" data-model="${m}" onclick="selectModel('${escapeAttr(m)}')">${m}</button>
-      `).join('');
+      grid.innerHTML = models.map(m => {
+        const bodyType = inferBodyType(m);
+        return `<button class="model-card" data-model="${escAttr(m)}" onclick="selectModel('${escAttr(m)}')" >
+          <div class="model-name">${m}</div>
+          <div class="model-type-badge">${bodyType}</div>
+        </button>`;
+      }).join('');
+      track('models_loaded', { brand: state.brand, year: state.year, count: models.length });
     })
     .catch(() => {
-      grid.innerHTML = '<div class="models-loading" style="color:#ef4444">Failed to load models. Check your connection.</div>';
+      grid.innerHTML = '<div class="error-msg">Failed to load models. Check your connection.</div>';
     });
 }
 
+// ══════════════════════════════════════════════════════════
+// Model selection
+// ══════════════════════════════════════════════════════════
+
 function selectModel(model) {
   state.model = model;
-  document.querySelectorAll('.model-btn').forEach(b => {
-    b.classList.toggle('selected', b.dataset.model === model);
+
+  // Dim all model cards, highlight selected
+  document.querySelectorAll('.model-card').forEach(card => {
+    if (card.dataset.model === model) {
+      card.classList.add('model-selected');
+      card.classList.remove('dimmed');
+    } else {
+      card.classList.remove('model-selected');
+      card.classList.add('dimmed');
+    }
   });
+
+  // Estimate MSRP
+  state.msrpEstimate = estimateMsrp(state.brand, model);
+  state.rangeEstimate = msrpToRange(state.msrpEstimate);
+
+  // Populate deal section
+  populateDealSection();
+
+  // Collapse result if open
+  collapseSection('resultSection');
+
+  // Open deal section
+  openSection('dealSection');
+
+  // Scroll to it
+  setTimeout(() => scrollToEl('dealSection'), 80);
+
   track('model_selected', { brand: state.brand, model, year: state.year });
-  document.getElementById('step3Heading').textContent = `${state.year} ${state.brand} ${model}`;
-  goToStep(3);
 }
 
-// ── Step 3: More Details Toggle ────────────────────────────────────────────
-
-function toggleMoreDetails() {
-  const panel = document.getElementById('moreDetailsPanel');
-  const arrow = document.getElementById('toggleArrow');
-  const isOpen = panel.classList.contains('open');
-  panel.classList.toggle('open', !isOpen);
-  arrow.classList.toggle('open', !isOpen);
-  document.getElementById('moreDetailsToggle').textContent = '';
-  document.getElementById('moreDetailsToggle').innerHTML =
-    `<span class="toggle-arrow ${!isOpen ? 'open' : ''}" id="toggleArrow">${!isOpen ? '▶' : '▶'}</span>
-    ${!isOpen ? 'Hide extra details −' : 'Add more details +'}`;
+function changeModel() {
+  // Undim model cards
+  document.querySelectorAll('.model-card').forEach(c => c.classList.remove('model-selected', 'dimmed'));
+  collapseSection('dealSection');
+  collapseSection('resultSection');
+  state.model = null;
+  scrollToEl('modelSection');
+  track('change_model');
 }
 
-// Dealer offer change → debounced re-check
-let debounceTimer = null;
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('dealerOffer').addEventListener('input', () => {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => {
-      const val = document.getElementById('dealerOffer').value;
-      if (val && parseFloat(val) > 1000 && document.getElementById('result').style.display === 'block') {
-        checkDeal();
-      }
-    }, 800);
-  });
-});
+// ══════════════════════════════════════════════════════════
+// Deal section population
+// ══════════════════════════════════════════════════════════
 
-// ── Step 4: Check Deal ────────────────────────────────────────────────────
+function populateDealSection() {
+  // Vehicle crumb
+  document.getElementById('crumbModel').textContent = `${state.brand} ${state.model}`;
+  document.getElementById('crumbYear').textContent = state.year;
+
+  // MSRP suggestion
+  document.getElementById('msrpDisplay').textContent = `~$${fmt(state.msrpEstimate)}`;
+  document.getElementById('msrpInlineInput').value = state.msrpEstimate;
+
+  // Typical range note
+  const r = state.rangeEstimate;
+  document.getElementById('typicalRangeSpan').textContent = `$${fmt(r.low)} – $${fmt(r.high)}`;
+
+  // Clear offer input + live preview
+  document.getElementById('dealerOffer').value = '';
+  hideLiveSignal();
+
+  // Reset ZIP
+  document.getElementById('zipCode').value = '';
+  document.getElementById('zipConfirmMsg').textContent = '';
+}
+
+// ══════════════════════════════════════════════════════════
+// MSRP inline edit
+// ══════════════════════════════════════════════════════════
+
+function toggleMsrpEdit() {
+  const input = document.getElementById('msrpInlineInput');
+  const display = document.getElementById('msrpDisplay');
+  const isVisible = input.style.display === 'inline-block';
+
+  if (!isVisible) {
+    input.style.display = 'inline-block';
+    input.focus();
+    display.style.display = 'none';
+  } else {
+    const val = parseFloat(input.value);
+    if (val > 5000) {
+      state.msrpEstimate = val;
+      state.rangeEstimate = msrpToRange(val);
+      display.textContent = `~$${fmt(val)}`;
+      document.getElementById('typicalRangeSpan').textContent = `$${fmt(state.rangeEstimate.low)} – $${fmt(state.rangeEstimate.high)}`;
+      // Re-run live signal if offer is entered
+      updateLiveSignal();
+    }
+    input.style.display = 'none';
+    display.style.display = 'inline';
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// ZIP toggle
+// ══════════════════════════════════════════════════════════
+
+let zipOpen = false;
+function toggleZip() {
+  zipOpen = !zipOpen;
+  const row = document.getElementById('zipHintRow');
+  const wrap = document.getElementById('zipInputWrap');
+  row.classList.toggle('expanded', zipOpen);
+  wrap.classList.toggle('open', zipOpen);
+  if (zipOpen) document.getElementById('zipCode').focus();
+}
+
+// ══════════════════════════════════════════════════════════
+// More details toggle
+// ══════════════════════════════════════════════════════════
+
+let moreOpen = false;
+function toggleMore() {
+  moreOpen = !moreOpen;
+  const panel = document.getElementById('morePanel');
+  const arrow = document.getElementById('moreArrow');
+  panel.classList.toggle('open', moreOpen);
+  arrow.classList.toggle('open', moreOpen);
+  document.getElementById('moreToggle').lastChild.textContent =
+    moreOpen ? ' Hide details' : ' Add more details';
+}
+
+// ══════════════════════════════════════════════════════════
+// Live signal preview
+// ══════════════════════════════════════════════════════════
+
+function hideLiveSignal() {
+  document.getElementById('liveSignalPreview').style.opacity = '0';
+  document.getElementById('liveSignalPreview').style.pointerEvents = 'none';
+}
+
+function updateLiveSignal() {
+  const rawOffer = parseFloat(document.getElementById('dealerOffer').value);
+  const preview = document.getElementById('liveSignalPreview');
+
+  if (!rawOffer || rawOffer < 1000) {
+    hideLiveSignal();
+    return;
+  }
+
+  const r = state.rangeEstimate;
+  let label, colorClass, vsText;
+
+  if (rawOffer <= r.low) {
+    label = '🟢 LOOKS FAIR';
+    colorClass = 'green';
+    const diff = Math.round(r.low - rawOffer);
+    vsText = diff > 0 ? `$${fmt(diff)} below typical range` : 'At the low end of range';
+  } else if (rawOffer <= r.high) {
+    label = '🟡 PUSH BACK';
+    colorClass = 'yellow';
+    vsText = 'Within range — negotiate';
+  } else {
+    label = '🔴 HIGH RISK';
+    colorClass = 'red';
+    const diff = Math.round(rawOffer - r.high);
+    vsText = `$${fmt(diff)} above typical range`;
+  }
+
+  const badge = document.getElementById('liveSignalBadge');
+  badge.textContent = label;
+  badge.className = `live-signal-badge ${colorClass}`;
+  document.getElementById('liveSignalVs').textContent = vsText;
+
+  preview.style.opacity = '1';
+  preview.style.pointerEvents = 'auto';
+}
+
+// ══════════════════════════════════════════════════════════
+// Check deal
+// ══════════════════════════════════════════════════════════
 
 function checkDeal() {
   const offer = document.getElementById('dealerOffer').value;
   if (!offer || parseFloat(offer) < 1000) {
     document.getElementById('dealerOffer').focus();
+    document.getElementById('dealerOffer').style.borderColor = '#ef4444';
+    setTimeout(() => { document.getElementById('dealerOffer').style.borderColor = ''; }, 2000);
     return;
   }
 
+  const msrpVal = document.getElementById('msrpInlineInput').value || state.msrpEstimate;
+
   const payload = {
-    year: state.year,
-    make: state.brand,
-    model: state.model,
-    dealer_offer: offer,
-    zip_code: document.getElementById('zipCode').value.trim(),
-    msrp: document.getElementById('msrp').value || null,
+    year:               state.year,
+    make:               state.brand,
+    model:              state.model,
+    dealer_offer:       offer,
+    zip_code:           document.getElementById('zipCode').value.trim(),
+    msrp:               msrpVal || null,
     destination_charge: document.getElementById('destinationCharge').value || 0,
-    dealer_fees: document.getElementById('dealerFees').value || 0,
-    add_ons: document.getElementById('addOns').value || '',
-    monthly_payment: document.getElementById('monthlyPayment').value || null,
-    loan_term: document.getElementById('loanTerm').value || 60,
+    dealer_fees:        document.getElementById('dealerFees').value || 0,
+    add_ons:            document.getElementById('addOns').value || '',
+    monthly_payment:    document.getElementById('monthlyPayment').value || null,
+    loan_term:          document.getElementById('loanTerm').value || 60,
   };
 
   track('deal_checked', { make: state.brand, model: state.model, year: state.year });
-  showResult();
 
+  // Update result nav label
+  document.getElementById('resultVehicleLabel').innerHTML =
+    `<strong>${state.year} ${state.brand} ${state.model}</strong> · $${fmt(parseFloat(offer))}`;
+
+  // Show spinner, hide content
   document.getElementById('resultLoading').style.display = 'block';
   document.getElementById('resultContent').classList.add('hidden');
-  document.getElementById('resultVehicleLabel').innerHTML =
-    `<strong>${state.year} ${state.brand} ${state.model}</strong>`;
+
+  // Open result section
+  openSection('resultSection');
+  setTimeout(() => scrollToEl('resultSection'), 80);
 
   fetch('/report', {
     method: 'POST',
@@ -1390,13 +1585,96 @@ function checkDeal() {
       document.getElementById('resultContent').classList.remove('hidden');
       track('signal_shown', { signal: data.signal });
     })
-    .catch(err => {
+    .catch(() => {
       document.getElementById('resultLoading').innerHTML =
-        '<div style="color:#ef4444;text-align:center;padding:40px 0">Failed to analyze deal. Please try again.</div>';
+        '<div style="color:#ef4444;text-align:center;padding:40px 0;">Failed to analyze deal. Please try again.</div>';
     });
 }
 
-// ── Render Result ─────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════
+// Edit offer
+// ══════════════════════════════════════════════════════════
+
+function editOffer() {
+  scrollToEl('dealSection');
+  setTimeout(() => document.getElementById('dealerOffer').focus(), 300);
+  track('edit_offer');
+}
+
+// ══════════════════════════════════════════════════════════
+// Start over
+// ══════════════════════════════════════════════════════════
+
+function startOver() {
+  // Reset state
+  state.brand = null;
+  state.model = null;
+  state.year = CURRENT_YEAR - 1;
+  state.msrpEstimate = 32000;
+  state.reportData = null;
+
+  // Reset UI
+  document.querySelectorAll('.brand-card').forEach(c => c.classList.remove('brand-selected', 'dimmed'));
+  document.getElementById('brandOtherInput').value = '';
+  document.getElementById('siteHeader').classList.remove('compact');
+  document.getElementById('brandSectionLabel').textContent = 'Choose your brand';
+
+  // Reset year toggle
+  renderYearToggle();
+
+  // Clear form fields
+  ['dealerOffer','zipCode','destinationCharge','dealerFees','addOns','monthlyPayment'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('loanTerm').value = '60';
+
+  // Reset ZIP/more toggles
+  zipOpen = false;
+  moreOpen = false;
+  document.getElementById('zipHintRow').classList.remove('expanded');
+  document.getElementById('zipInputWrap').classList.remove('open');
+  document.getElementById('morePanel').classList.remove('open');
+  document.getElementById('moreArrow').classList.remove('open');
+
+  // Collapse panels
+  collapseSection('modelSection');
+  collapseSection('dealSection');
+  collapseSection('resultSection');
+
+  // Reset model grid
+  document.getElementById('modelGrid').innerHTML = '<div class="loading-msg">Loading models…</div>';
+
+  hideLiveSignal();
+  scrollToTop();
+  track('start_over');
+}
+
+// ══════════════════════════════════════════════════════════
+// Section helpers
+// ══════════════════════════════════════════════════════════
+
+function openSection(id) {
+  document.getElementById(id).classList.add('open');
+}
+function collapseSection(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+function scrollToEl(id) {
+  const el = document.getElementById(id);
+  if (el) {
+    const top = el.getBoundingClientRect().top + window.pageYOffset - 16;
+    window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+  }
+}
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ══════════════════════════════════════════════════════════
+// Result rendering
+// ══════════════════════════════════════════════════════════
 
 function renderResult(d) {
   renderSignal(d);
@@ -1412,72 +1690,65 @@ function renderResult(d) {
 }
 
 function renderSignal(d) {
-  const block = document.getElementById('signalBlock');
-  const icon = document.getElementById('signalIcon');
-  const name = document.getElementById('signalName');
-  const explanation = document.getElementById('signalExplanation');
-
-  const signal = d.signal || 'N/A';
-  const color = d.signal_color || 'green';
+  const block  = document.getElementById('signalBlock');
+  const icon   = document.getElementById('signalIcon');
+  const name   = document.getElementById('signalName');
+  const expl   = document.getElementById('signalExplanation');
+  const color  = d.signal_color || 'green';
   block.className = 'signal-block ' + color;
-
   const icons = { green: '🟢', yellow: '🟡', red: '🔴' };
   icon.textContent = icons[color] || '⚪';
-  name.textContent = signal;
-  explanation.textContent = d.signal_explanation || '';
+  name.textContent = d.signal || 'N/A';
+  expl.textContent = d.signal_explanation || '';
 }
 
 function renderRange(d) {
-  const lr = d.local_range;
+  const lr    = d.local_range || {};
   const offer = d.dealer_offer;
-  const area = lr.area_label || 'National';
+  const area  = lr.area_label || 'National';
 
   document.getElementById('rangeTitle').textContent =
-    `Similar ${d.vehicle.year} ${d.vehicle.make} ${d.vehicle.model} — estimated range (${area})`;
+    `${d.vehicle.year} ${d.vehicle.make} ${d.vehicle.model} — estimated range (${area})`;
 
   document.getElementById('rangeNumbers').innerHTML =
     `<span class="range-accent">$${fmt(lr.low)}</span> – <span class="range-accent">$${fmt(lr.high)}</span>`;
 
   const deltaEl = document.getElementById('offerDelta');
   if (offer) {
-    const delta = offer - lr.base_msrp_estimate;
+    const base = lr.base_msrp_estimate || lr.low;
+    const delta = offer - base;
     if (offer < lr.low) {
       deltaEl.className = 'offer-delta-pill below';
-      deltaEl.textContent = `$${fmt(Math.abs(delta))} below range`;
+      deltaEl.textContent = `$${fmt(Math.abs(offer - lr.low))} below range`;
     } else if (offer > lr.high) {
       deltaEl.className = 'offer-delta-pill above';
-      deltaEl.textContent = `$${fmt(delta)} above range`;
+      deltaEl.textContent = `$${fmt(offer - lr.high)} above range`;
     } else {
       deltaEl.className = 'offer-delta-pill within';
-      deltaEl.textContent = `Within range`;
+      deltaEl.textContent = 'Within range';
     }
   } else {
     deltaEl.textContent = '';
   }
 
   // Bar
-  const totalRange = lr.high - lr.low;
-  const fillPct = 100; // range fill always full width
   document.getElementById('rangeBarFill').style.width = '100%';
-
-  if (offer) {
-    const markerEl = document.getElementById('rangeBarMarker');
-    const clampedOffer = Math.max(lr.low, Math.min(lr.high, offer));
-    const markerPct = ((clampedOffer - lr.low) / (lr.high - lr.low)) * 100;
-    markerEl.style.left = Math.max(2, Math.min(98, markerPct)) + '%';
-    const color = d.signal_color || 'green';
-    markerEl.className = 'range-bar-marker marker-' + color;
+  if (offer && lr.low !== undefined && lr.high !== undefined) {
+    const span = lr.high - lr.low || 1;
+    const pct = ((Math.max(lr.low, Math.min(lr.high, offer)) - lr.low) / span) * 100;
+    const marker = document.getElementById('rangeBarMarker');
+    marker.style.left = Math.max(2, Math.min(98, pct)) + '%';
+    marker.className = 'range-bar-marker marker-' + (d.signal_color || 'green');
   }
 
   document.getElementById('rangeBarLabels').innerHTML =
     `<span>$${fmt(lr.low)}</span><span>$${fmt(lr.high)}</span>`;
 
-  document.getElementById('rangeDisclaimer').textContent = lr.source_note;
+  document.getElementById('rangeDisclaimer').textContent = lr.source_note || '';
 }
 
 function renderReasons(d) {
-  const list = document.getElementById('reasonsList');
-  list.innerHTML = (d.top_reasons || []).map(r =>
+  document.getElementById('reasonsList').innerHTML = (d.top_reasons || []).map(r =>
     `<div class="reason-item"><span class="reason-bullet">→</span>${r}</div>`
   ).join('');
 }
@@ -1487,19 +1758,19 @@ function renderWhatToSay(d) {
 }
 
 function renderOTD(d) {
-  const offer = d.dealer_offer || 0;
-  const dest = d.destination_charge || 0;
-  const fees = d.dealer_fees || 0;
-  const estTax = Math.round(offer * 0.08);
-  const estReg = 350;
-  const total = Math.round(offer + dest + fees + estTax + estReg);
+  const offer  = d.dealer_offer || 0;
+  const dest   = d.destination_charge || 0;
+  const fees   = d.dealer_fees || 0;
+  const tax    = Math.round(offer * 0.08);
+  const reg    = 350;
+  const total  = Math.round(offer + dest + fees + tax + reg);
 
   const rows = [
     ['Vehicle price (dealer offer)', offer],
     dest ? ['Destination charge', dest] : null,
     fees ? ['Dealer / doc fee', fees] : null,
-    ['Est. taxes (~8%)*', estTax],
-    ['Est. registration & title*', estReg],
+    ['Est. taxes (~8%)*', tax],
+    ['Est. registration & title*', reg],
   ].filter(Boolean);
 
   const table = document.getElementById('otdTable');
@@ -1514,11 +1785,10 @@ function renderFees(d) {
   if (!jf) return;
   const body = document.getElementById('body-fees');
 
-  const verdictClass = { green: 'green', yellow: 'yellow', red: 'red' }[jf.verdict_color] || 'yellow';
-
+  const verdictClass = jf.verdict_color || 'yellow';
   let html = `<div class="fee-verdict ${verdictClass}">${jf.fee_verdict}</div>`;
 
-  const flagIcon = { ok: '✓', caution: '~', high: '✗', unknown: '?' };
+  const flagIcon  = { ok: '✓', caution: '~', high: '✗', unknown: '?' };
   const flagClass = { ok: 'fee-flag-ok', caution: 'fee-flag-caution', high: 'fee-flag-high', unknown: 'fee-flag-unknown' };
 
   html += `<div class="fee-note-row">
@@ -1532,17 +1802,17 @@ function renderFees(d) {
   </div>`;
 
   if (jf.flagged_from_input && jf.flagged_from_input.length > 0) {
-    html += `<div style="margin-top:12px; color:#ef4444; font-weight:700; font-size:0.85rem;">
+    html += `<div style="margin-top:12px;color:#ef4444;font-weight:700;font-size:0.85rem;">
       ⚠️ Add-ons flagged from your entry: ${jf.flagged_from_input.join(', ')}
     </div>`;
   }
 
   html += `<div class="junk-addon-list">
-    <div style="font-size:0.8rem; color:#8fa3b8; margin-bottom:10px; margin-top:8px;">Common dealer add-ons to watch for:</div>`;
+    <div style="font-size:0.8rem;color:#8fa3b8;margin-bottom:10px;margin-top:8px;">Common dealer add-ons to watch for:</div>`;
 
   (jf.junk_addons_to_watch || []).forEach(addon => {
     const vClass = addon.verdict === 'Skip it' ? 'verdict-skip' :
-                   addon.verdict === 'Wait' ? 'verdict-wait' : 'verdict-elsewhere';
+                   addon.verdict === 'Wait'    ? 'verdict-wait' : 'verdict-elsewhere';
     html += `<div class="junk-addon">
       <div class="junk-addon-header">
         <div class="junk-addon-name">${addon.name}</div>
@@ -1553,12 +1823,12 @@ function renderFees(d) {
     </div>`;
   });
 
-  html += `</div>`;
+  html += '</div>';
   body.innerHTML = html;
 }
 
 function renderPaymentTrap(d) {
-  const pt = d.payment_trap;
+  const pt      = d.payment_trap;
   const section = document.getElementById('section-payment');
 
   if (!pt) {
@@ -1567,7 +1837,7 @@ function renderPaymentTrap(d) {
   }
   section.classList.remove('hidden');
 
-  const body = document.getElementById('body-payment');
+  const body    = document.getElementById('body-payment');
   const overAmt = pt.overpayment_vs_cash;
   const overPct = pt.purchase_price ? Math.round((overAmt / pt.purchase_price) * 100) : 0;
 
@@ -1588,24 +1858,23 @@ function renderPaymentTrap(d) {
       <span class="payment-stat-label">vs. purchase price</span>
       <span class="payment-stat-value ${overAmt > 0 ? 'danger' : ''}">+$${fmt(overAmt)} (${overPct}% over)</span>
     </div>
-  `;
+    <div class="payment-trap-warnings">`;
 
-  html += `<div class="payment-trap-warnings">`;
   (pt.payment_trap_warnings || []).forEach(w => {
     const isTip = w.startsWith('💡');
     html += `<div class="trap-warning ${isTip ? 'tip' : ''}">${w}</div>`;
   });
-  html += `</div>`;
 
+  html += '</div>';
   body.innerHTML = html;
 }
 
 function renderNegotiationScript(d) {
-  const ns = d.negotiation_script;
+  const ns   = d.negotiation_script;
   const body = document.getElementById('body-script');
 
   if (!ns) {
-    body.innerHTML = '<div style="color:#8fa3b8; font-size:0.88rem;">Enter a dealer offer to generate your negotiation script.</div>';
+    body.innerHTML = '<div style="color:#8fa3b8;font-size:0.88rem;">Enter a dealer offer to generate your negotiation script.</div>';
     return;
   }
 
@@ -1660,26 +1929,24 @@ function renderFuelEconomy(fe) {
         <div class="mpg-label">Combined</div>
       </div>
     </div>
-    <div style="font-size:0.82rem;color:#8fa3b8;line-height:1.6">
+    <div style="font-size:0.82rem;color:#8fa3b8;line-height:1.6;">
       Fuel type: ${fe.fuel_type}${fe.engine ? ' · ' + fe.engine + 'L' : ''}${fe.cylinders ? ' · ' + fe.cylinders + ' cyl' : ''}${fe.transmission ? '<br>' + fe.transmission : ''}
-      ${fe.annual_fuel_cost && fe.annual_fuel_cost !== 'N/A' ? '<br>Estimated annual fuel cost: <strong style="color:#e8edf5">$' + fmt(fe.annual_fuel_cost) + '</strong>' : ''}
+      ${fe.annual_fuel_cost && fe.annual_fuel_cost !== 'N/A' ? '<br>Est. annual fuel cost: <strong style="color:#e8edf5">$' + fmt(fe.annual_fuel_cost) + '</strong>' : ''}
     </div>
   `;
 }
 
 function renderRecalls(recalls, count) {
-  const body = document.getElementById('body-recalls');
+  const body    = document.getElementById('body-recalls');
   const chevron = document.getElementById('chevron-recalls');
 
   if (!recalls || recalls.length === 0) {
     body.innerHTML = `<div class="no-recalls">✓ No open recalls found for this vehicle.</div>`;
-    // Default closed if no recalls
     body.classList.add('hidden');
     chevron.classList.remove('open');
     return;
   }
 
-  // Open by default if recalls found
   body.classList.remove('hidden');
   chevron.classList.add('open');
 
@@ -1710,22 +1977,26 @@ function renderTrueCost(tc) {
       <tr class="cost-total"><td><strong>Total 5-Year Cost</strong></td><td><strong>$${fmt(tc.total_5yr)}</strong></td></tr>
     </table>
     <div class="cost-note">
-      ~$${fmt(tc.cost_per_month)}/month all-in · Based on MSRP of $${fmt(tc.msrp)} · Estimates only, individual results vary.
+      ~$${fmt(tc.cost_per_month)}/month all-in · Based on MSRP of $${fmt(tc.msrp)} · Estimates only.
     </div>
   `;
 }
 
-// ── Section Toggles ────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════
+// Collapsible section toggle
+// ══════════════════════════════════════════════════════════
 
 function toggleSection(id) {
-  const body = document.getElementById('body-' + id);
+  const body    = document.getElementById('body-' + id);
   const chevron = document.getElementById('chevron-' + id);
-  const isHidden = body.classList.contains('hidden');
-  body.classList.toggle('hidden', !isHidden);
-  chevron.classList.toggle('open', isHidden);
+  const hidden  = body.classList.contains('hidden');
+  body.classList.toggle('hidden', !hidden);
+  chevron.classList.toggle('open', hidden);
 }
 
-// ── Tip Jar ────────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════
+// Tip jar
+// ══════════════════════════════════════════════════════════
 
 function sendTip() {
   const data = state.reportData || {};
@@ -1733,12 +2004,11 @@ function sendTip() {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      make: data.vehicle?.make || state.brand,
-      model: data.vehicle?.model || state.model,
+      make:   data.vehicle?.make  || state.brand,
+      model:  data.vehicle?.model || state.model,
       signal: data.signal || '',
     }),
   }).catch(() => {});
-
   document.getElementById('tipActions').style.display = 'none';
   document.getElementById('tipThankYou').style.display = 'block';
   track('tip_clicked');
@@ -1755,7 +2025,9 @@ function resetTipJar() {
   document.getElementById('tipJar').style.display = '';
 }
 
-// ── Copy Email ─────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════
+// Copy email template
+// ══════════════════════════════════════════════════════════
 
 function copyEmail() {
   const el = document.getElementById('emailTemplate');
@@ -1764,27 +2036,64 @@ function copyEmail() {
     const btn = document.getElementById('copyEmailBtn');
     btn.textContent = 'Copied!';
     btn.classList.add('copied');
-    setTimeout(() => {
-      btn.textContent = 'Copy';
-      btn.classList.remove('copied');
-    }, 2000);
-  }).catch(() => {
-    el.select();
-    document.execCommand('copy');
-  });
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  }).catch(() => { el.select(); document.execCommand('copy'); });
 }
 
-// ── Helpers ────────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════
+// Helpers
+// ══════════════════════════════════════════════════════════
 
 function fmt(n) {
   if (n == null || n === 'N/A') return 'N/A';
   return Math.round(parseFloat(n)).toLocaleString('en-US');
 }
 
-function escapeAttr(s) {
-  return s.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+function escAttr(s) {
+  return (s || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
 }
 
+// ══════════════════════════════════════════════════════════
+// Init
+// ══════════════════════════════════════════════════════════
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderBrandGrid();
+  renderYearToggle();
+
+  // "Other brand" input
+  const brandOther = document.getElementById('brandOtherInput');
+  brandOther.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && this.value.trim()) selectBrand(this.value.trim());
+  });
+  brandOther.addEventListener('blur', function() {
+    if (this.value.trim()) selectBrand(this.value.trim());
+  });
+
+  // Dealer offer → live signal on input
+  let debounceTimer;
+  document.getElementById('dealerOffer').addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(updateLiveSignal, 180);
+  });
+
+  // MSRP inline input — save on Enter
+  document.getElementById('msrpInlineInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') toggleMsrpEdit();
+  });
+
+  // ZIP input
+  document.getElementById('zipCode').addEventListener('input', function() {
+    if (this.value.length === 5) {
+      document.getElementById('zipConfirmMsg').textContent = '📍 Local pricing applied';
+      track('zip_entered', { zip: this.value });
+    } else {
+      document.getElementById('zipConfirmMsg').textContent = '';
+    }
+  });
+
+  track('page_loaded');
+});
 </script>
 </body>
 </html>
