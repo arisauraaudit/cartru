@@ -977,9 +977,23 @@ a:hover { text-decoration: underline; }
         </div>
       </div>
 
+      <!-- Lease teaser -->
+      <div style="background:#1a2535;border-radius:14px;padding:28px;margin-bottom:16px;text-align:center;" id="leaseTeaser">
+        <div style="font-size:1rem;font-weight:700;color:#eef2f7;margin-bottom:8px;">🚘 Considering a lease instead?</div>
+        <div style="font-size:0.9375rem;color:#b8cce0;line-height:1.65;margin-bottom:20px;max-width:380px;margin-left:auto;margin-right:auto;">
+          Lower monthly payment, nothing owned at the end, and mileage limits that add up fast.<br>
+          Lease calculator coming soon — leave your email and we'll notify you.
+        </div>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;" id="leaseActions">
+          <input type="email" id="leaseEmail" placeholder="your@email.com" style="background:#0f1724;border:1.5px solid #2a3a50;border-radius:8px;padding:10px 16px;color:#eef2f7;font-size:0.9375rem;font-family:inherit;width:220px;" onkeydown="if(event.key==='Enter')submitLeaseEmail()">
+          <button onclick="submitLeaseEmail()" style="background:#00d4aa;color:#0f1724;border:none;border-radius:8px;padding:10px 20px;font-size:0.9375rem;font-weight:700;cursor:pointer;font-family:inherit;">Notify me</button>
+        </div>
+        <div id="leaseThanks" style="display:none;color:#00d4aa;font-size:0.9375rem;font-weight:600;margin-top:10px;">✓ Got it — we'll let you know when lease comparison launches.</div>
+      </div>
+
       <!-- Tip jar -->
       <div class="tip-jar" id="tipJar">
-        <div class="tip-jar-title">☕ If Cartru helped you save money…</div>
+        <div class="tip-jar-title">☕ If WheelTheDeal helped you save money…</div>
         <div class="tip-jar-text">
           You can leave a tip to keep it free and independent.<br>No dealers. No ads. Just you.
         </div>
@@ -2089,6 +2103,15 @@ function toggleSection(id) {
 // ══════════════════════════════════════════════════════════
 // Tip jar
 // ══════════════════════════════════════════════════════════
+
+function submitLeaseEmail() {
+  const email = document.getElementById('leaseEmail').value.trim();
+  if (!email || !email.includes('@')) return;
+  document.getElementById('leaseActions').style.display = 'none';
+  document.getElementById('leaseThanks').style.display = 'block';
+  track('lease_email_submitted', { email });
+  // Wire to real email collection (Mailchimp, ConvertKit, etc.) later
+}
 
 function sendTip() {
   const data = state.reportData || {};
