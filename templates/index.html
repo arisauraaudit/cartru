@@ -13,9 +13,9 @@
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   background: #0f1724;
-  color: #f0f4f8;
+  color: #eef2f7;
   font-size: 16px;
-  line-height: 1.65;
+  line-height: 1.7;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -29,13 +29,8 @@ a:hover { text-decoration: underline; }
 
 /* ── Header ── */
 .site-header {
-  padding: 48px 0 36px;
+  padding: 52px 0 40px;
   text-align: center;
-  transition: opacity 0.4s ease-out, transform 0.4s ease-out, padding 0.4s ease-out;
-}
-.site-header.compact {
-  padding: 24px 0 20px;
-  opacity: 0.7;
 }
 .site-header h1 {
   font-size: 2.25rem;
@@ -46,33 +41,33 @@ a:hover { text-decoration: underline; }
 }
 .site-header h1 em { font-style: normal; color: #00d4aa; }
 .site-header p {
-  margin-top: 12px;
+  margin-top: 14px;
   font-size: 1.05rem;
-  color: #a8bdd0;
-  line-height: 1.6;
+  color: #b8cce0;
+  line-height: 1.65;
   max-width: 480px;
   margin-left: auto;
   margin-right: auto;
 }
 .trust-badge {
   display: inline-block;
-  margin-top: 16px;
+  margin-top: 18px;
   background: rgba(0,212,170,0.1);
   border: 1px solid rgba(0,212,170,0.35);
   color: #00d4aa;
-  padding: 6px 18px;
+  padding: 7px 20px;
   border-radius: 99px;
-  font-size: 0.84rem;
+  font-size: 0.875rem;
   font-weight: 600;
-  letter-spacing: 0.3px;
+  letter-spacing: 0;
 }
 
-/* ── Reveal panels ── */
+/* ── Reveal panels (for deal + result only) ── */
 .reveal-panel {
   overflow: hidden;
   max-height: 0;
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(16px);
   transition: max-height 0.5s ease-out, opacity 0.35s ease-out, transform 0.35s ease-out;
   pointer-events: none;
 }
@@ -83,171 +78,175 @@ a:hover { text-decoration: underline; }
   pointer-events: all;
 }
 
-/* ── Section chrome ── */
-.section-label {
-  font-size: 0.84rem;
-  font-weight: 700;
-  color: #a8bdd0;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 14px;
+/* ── Selection section ── */
+.selection-section {
+  background: #1a2535;
+  border: 1.5px solid #2a3a50;
+  border-radius: 16px;
+  padding: 28px 28px 24px;
+  margin-bottom: 24px;
 }
-.panel-header {
+
+.year-toggle {
   display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 18px;
+  gap: 8px;
+  margin-bottom: 24px;
   flex-wrap: wrap;
 }
-.panel-heading {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #fff;
-}
-.change-btn {
-  background: none;
-  border: none;
-  color: #a8bdd0;
-  font-size: 0.90rem;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  transition: color 0.2s;
-}
-.change-btn:hover { color: #00d4aa; }
-
-/* ── Brand grid ── */
-.brand-section { margin-bottom: 8px; }
-.brand-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin-bottom: 16px;
-}
-@media (min-width: 420px) { .brand-grid { grid-template-columns: repeat(4, 1fr); } }
-@media (min-width: 560px) { .brand-grid { grid-template-columns: repeat(5, 1fr); } }
-
-.brand-card {
-  background: #1a2535;
-  border: 2px solid #243044;
-  border-radius: 12px;
-  padding: 14px 8px 12px;
-  cursor: pointer;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 9px;
-  min-height: 96px;
-  transition: border-color 0.25s, background 0.25s, transform 0.25s, opacity 0.3s, filter 0.3s;
-  position: relative;
-  overflow: hidden;
-}
-.brand-card:hover { border-color: #00d4aa; background: #1e2e42; transform: scale(1.03); }
-.brand-card.brand-selected { border-color: #00d4aa !important; background: rgba(0,212,170,0.08) !important; transform: scale(1) !important; opacity: 1 !important; filter: none !important; }
-.brand-card.dimmed { opacity: 0.28; filter: grayscale(60%); transform: scale(0.94); pointer-events: none; }
-.brand-logo { width: 38px; height: 38px; object-fit: contain; display: block; flex-shrink: 0; }
-.brand-text-logo {
-  width: 38px; height: 38px; border-radius: 7px;
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 900; font-size: 0.79rem; color: #fff; letter-spacing: 0.5px; flex-shrink: 0;
-}
-.brand-name-label { font-size: 0.79rem; font-weight: 700; color: #c5d3e0; line-height: 1.2; letter-spacing: 0.2px; }
-.brand-card.brand-selected .brand-name-label { color: #00d4aa; }
-.brand-other { display: flex; align-items: center; gap: 10px; margin-top: 4px; flex-wrap: wrap; }
-.brand-other label { font-size: 0.8rem; color: #a8bdd0; white-space: nowrap; }
-.brand-other input {
-  padding: 9px 14px; background: #1a2535; border: 2px solid #243044; border-radius: 8px;
-  color: #e8edf5; font-size: 0.9rem; width: 220px; transition: border-color 0.2s; outline: none;
-}
-.brand-other input:focus { border-color: #00d4aa; }
-.brand-other input::placeholder { color: #7a95af; }
-
-/* ── Model section ── */
-.model-section { margin-top: 4px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 28px; }
-.year-toggle { display: flex; gap: 8px; margin-bottom: 20px; }
 .year-btn {
-  padding: 8px 22px; background: #1a2535; border: 2px solid #243044; border-radius: 99px;
-  color: #a8bdd0; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: all 0.2s;
+  padding: 9px 24px;
+  background: #0f1724;
+  border: 1.5px solid #2a3a50;
+  border-radius: 99px;
+  color: #b8cce0;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
 }
 .year-btn:hover { border-color: #00d4aa; color: #00d4aa; }
 .year-btn.active { border-color: #00d4aa; background: rgba(0,212,170,0.12); color: #00d4aa; }
-.model-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 9px;
+
+.brand-model-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+}
+@media (max-width: 560px) { .brand-model-row { flex-direction: column; } }
+
+.select-group {
+  flex: 1;
+  min-width: 0;
+  margin-bottom: 0;
+}
+
+.select-group label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #b8cce0;
   margin-bottom: 8px;
+  letter-spacing: 0;
 }
-@media (min-width: 480px) { .model-grid { grid-template-columns: repeat(3, 1fr); } }
-@media (min-width: 660px) { .model-grid { grid-template-columns: repeat(4, 1fr); } }
-.model-card {
-  background: #1a2535; border: 2px solid #243044; border-radius: 10px;
-  padding: 13px 12px 11px; cursor: pointer; text-align: left; display: flex; flex-direction: column; gap: 5px;
-  transition: border-color 0.25s, background 0.25s, transform 0.25s, opacity 0.3s, filter 0.3s;
+
+.brand-model-select {
+  width: 100%;
+  padding: 12px 40px 12px 16px;
+  background: #0f1724;
+  border: 1.5px solid #2a3a50;
+  border-radius: 8px;
+  color: #f0f4f8;
+  font-size: 1rem;
+  font-family: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238499b0' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
 }
-.model-card:hover { border-color: #00d4aa; background: #1e2e42; transform: translateY(-1px); }
-.model-card.model-selected { border-color: #00d4aa !important; background: rgba(0,212,170,0.08) !important; transform: none !important; opacity: 1 !important; filter: none !important; }
-.model-card.dimmed { opacity: 0.28; filter: grayscale(50%); transform: scale(0.96); pointer-events: none; }
-.model-name { font-size: 0.93rem; font-weight: 700; color: #e8edf5; line-height: 1.25; }
-.model-card.model-selected .model-name { color: #00d4aa; }
-.model-type-badge { font-size: 0.65rem; font-weight: 700; color: #7a95af; text-transform: uppercase; letter-spacing: 0.7px; }
-.loading-msg { color: #a8bdd0; font-size: 0.9rem; text-align: center; padding: 24px 0; grid-column: 1/-1; }
-.error-msg { color: #ef4444; font-size: 0.93rem; text-align: center; padding: 20px 0; grid-column: 1/-1; }
+.brand-model-select:focus { border-color: #00d4aa; box-shadow: 0 0 0 3px rgba(0,212,170,0.12); }
+.brand-model-select:disabled { opacity: 0.45; cursor: not-allowed; }
+.brand-model-select option { background: #1a2535; color: #f0f4f8; }
+
+.model-loading-msg {
+  font-size: 0.875rem;
+  color: #8499b0;
+  margin-top: 8px;
+  min-height: 20px;
+}
+
+/* ── Section chrome ── */
+.section-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #b8cce0;
+  letter-spacing: 0;
+  margin-bottom: 14px;
+}
 
 /* ── Deal section ── */
 .deal-section { margin-top: 4px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 28px; }
 .vehicle-crumb { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+.vehicle-crumb-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0,212,170,0.08);
+  border: 1px solid rgba(0,212,170,0.25);
+  border-radius: 8px;
+  padding: 8px 16px;
+}
 .vehicle-crumb-label { font-size: 1rem; font-weight: 700; color: #00d4aa; }
-.vehicle-crumb-year { font-size: 0.90rem; color: #a8bdd0; font-weight: 600; }
+.vehicle-crumb-year { font-size: 0.9375rem; color: #b8cce0; font-weight: 600; }
 
 /* Dealer price input (large) */
-.offer-wrap { margin-bottom: 16px; }
-.offer-label { display: block; font-size: 0.93rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.9px; color: #a8bdd0; margin-bottom: 6px; }
-.offer-sublabel { font-size: 0.76rem; color: #7a95af; margin-bottom: 8px; font-style: italic; }
-.offer-estimated-note { font-size: 0.76rem; color: #7a95af; margin-top: 5px; }
+.offer-wrap { margin-bottom: 24px; }
+.offer-label { display: block; font-size: 0.875rem; font-weight: 600; color: #b8cce0; margin-bottom: 8px; letter-spacing: 0; }
+.offer-sublabel { font-size: 0.875rem; color: #8499b0; margin-bottom: 10px; }
 .offer-input-row {
-  display: flex; align-items: center; background: #1a2535; border: 2px solid #243044;
-  border-radius: 12px; overflow: hidden; transition: border-color 0.2s;
+  display: flex; align-items: center; background: #1a2535; border: 1.5px solid #2a3a50;
+  border-radius: 12px; overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s;
 }
-.offer-input-row:focus-within { border-color: #00d4aa; }
-.offer-dollar { padding: 0 4px 0 20px; font-size: 1.6rem; font-weight: 700; color: #7a95af; line-height: 1; user-select: none; }
+.offer-input-row:focus-within { border-color: #00d4aa; box-shadow: 0 0 0 3px rgba(0,212,170,0.12); }
+.offer-dollar { padding: 0 4px 0 20px; font-size: 1.6rem; font-weight: 700; color: #8499b0; line-height: 1; user-select: none; }
 .offer-input {
   flex: 1; padding: 18px 20px 18px 6px; background: transparent; border: none;
-  color: #fff; font-size: 1.6rem; font-weight: 700; outline: none; min-width: 0;
+  color: #eef2f7; font-size: 1.6rem; font-weight: 700; outline: none; min-width: 0;
 }
 .offer-input::placeholder { color: #3a4f65; font-weight: 400; font-size: 1.35rem; }
 
 /* Live signal preview */
 .live-signal-preview {
-  margin-top: 10px; display: flex; align-items: center; gap: 10px; min-height: 28px; transition: opacity 0.3s;
+  margin-top: 12px; display: flex; align-items: center; gap: 10px; min-height: 30px; transition: opacity 0.3s;
 }
-.live-signal-badge { padding: 4px 14px; border-radius: 99px; font-size: 0.8rem; font-weight: 800; letter-spacing: 0.5px; }
+.live-signal-badge { padding: 5px 14px; border-radius: 99px; font-size: 0.875rem; font-weight: 800; letter-spacing: 0; }
 .live-signal-badge.green { background: rgba(0,212,170,0.15); color: #00d4aa; border: 1px solid rgba(0,212,170,0.3); }
 .live-signal-badge.yellow { background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); }
 .live-signal-badge.red { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
-.live-signal-vs { font-size: 0.93rem; color: #a8bdd0; }
+.live-signal-vs { font-size: 0.9375rem; color: #b8cce0; }
 
-/* APR field */
-.apr-term-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+/* MSRP row */
+.msrp-row { display: flex; align-items: center; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+.msrp-suggest-label { font-size: 0.9375rem; color: #b8cce0; }
+.msrp-suggest-value { font-size: 0.9375rem; font-weight: 700; color: #eef2f7; }
+.msrp-edit-btn { background: none; border: none; color: #8499b0; cursor: pointer; font-size: 0.9375rem; padding: 0 4px; transition: color 0.2s; line-height: 1; }
+.msrp-edit-btn:hover { color: #00d4aa; }
+.msrp-inline-input { padding: 5px 10px; background: #1a2535; border: 1.5px solid #00d4aa; border-radius: 6px; color: #eef2f7; font-size: 1rem; width: 120px; outline: none; display: none; }
+
+/* APR + Loan term */
+.apr-term-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
 @media (max-width: 480px) { .apr-term-row { grid-template-columns: 1fr; } }
-.apr-group label, .term-group label { display: block; font-size: 0.81rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: #a8bdd0; margin-bottom: 6px; }
+
+.apr-group label,
+.term-group label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #b8cce0;
+  margin-bottom: 8px;
+  letter-spacing: 0;
+}
 .apr-input-wrap { position: relative; }
 .apr-input {
-  width: 100%; padding: 11px 36px 11px 14px; background: #1a2535; border: 2px solid #243044;
-  border-radius: 8px; color: #e8edf5; font-size: 1rem; font-weight: 700; outline: none; transition: border-color 0.2s;
+  width: 100%; padding: 12px 36px 12px 16px; background: #1a2535; border: 1.5px solid #2a3a50;
+  border-radius: 8px; color: #eef2f7; font-size: 1rem; font-weight: 700; outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s; font-family: inherit;
 }
-.apr-input:focus { border-color: #00d4aa; }
-.apr-pct-sign { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #7a95af; font-weight: 700; pointer-events: none; }
-.field-helper { font-size: 0.73rem; color: #7a95af; margin-top: 5px; line-height: 1.4; }
+.apr-input:focus { border-color: #00d4aa; box-shadow: 0 0 0 3px rgba(0,212,170,0.12); }
+.apr-pct-sign { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #8499b0; font-weight: 700; pointer-events: none; }
+.field-helper { font-size: 0.875rem; color: #8499b0; margin-top: 6px; line-height: 1.5; }
 
 /* Pill toggle for loan term */
 .term-pills { display: flex; gap: 6px; flex-wrap: wrap; }
 .term-pill {
-  padding: 9px 16px; background: #1a2535; border: 2px solid #243044; border-radius: 99px;
-  color: #a8bdd0; font-size: 0.90rem; font-weight: 700; cursor: pointer; transition: all 0.18s; white-space: nowrap;
+  padding: 10px 16px; background: #1a2535; border: 1.5px solid #2a3a50; border-radius: 99px;
+  color: #b8cce0; font-size: 0.9375rem; font-weight: 700; cursor: pointer; transition: all 0.18s;
+  white-space: nowrap; font-family: inherit;
 }
 .term-pill:hover { border-color: #00d4aa; color: #00d4aa; }
 .term-pill.selected { border-color: #00d4aa; background: rgba(0,212,170,0.12); color: #00d4aa; }
@@ -257,106 +256,109 @@ a:hover { text-decoration: underline; }
   background: rgba(0,212,170,0.06);
   border: 1px solid rgba(0,212,170,0.2);
   border-radius: 12px;
-  padding: 16px 20px;
-  margin-bottom: 16px;
+  padding: 18px 22px;
+  margin-bottom: 24px;
   display: none;
 }
 .glance-panel.visible { display: block; }
-.glance-title { font-size: 0.79rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.9px; color: rgba(0,212,170,0.7); margin-bottom: 12px; }
-.glance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 24px; }
+.glance-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: rgba(0,212,170,0.8);
+  margin-bottom: 14px;
+  letter-spacing: 0;
+}
+.glance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px; }
 @media (min-width: 520px) { .glance-grid { grid-template-columns: 1fr 1fr 1fr 1fr; } }
-.glance-item { }
-.glance-label { font-size: 0.79rem; color: #7a95af; margin-bottom: 2px; }
-.glance-value { font-size: 0.95rem; font-weight: 800; color: #00d4aa; }
+.glance-label { font-size: 0.875rem; color: #8499b0; margin-bottom: 3px; }
+.glance-value { font-size: 1rem; font-weight: 800; color: #00d4aa; }
 
 /* ZIP section */
-.zip-section { margin-bottom: 16px; }
-.zip-hint-row { display: flex; align-items: center; gap: 8px; font-size: 0.84rem; color: #a8bdd0; cursor: pointer; transition: color 0.2s; user-select: none; }
-.zip-hint-row:hover { color: #c5d3e0; }
-.zip-expand-icon { font-size: 0.79rem; color: #00d4aa; font-weight: 700; transition: transform 0.2s; }
+.zip-section { margin-bottom: 24px; }
+.zip-hint-row {
+  display: flex; align-items: center; gap: 8px; font-size: 0.9375rem; color: #b8cce0;
+  cursor: pointer; transition: color 0.2s; user-select: none;
+}
+.zip-hint-row:hover { color: #eef2f7; }
+.zip-expand-icon { font-size: 0.875rem; color: #00d4aa; font-weight: 700; transition: transform 0.2s; }
 .zip-hint-row.expanded .zip-expand-icon { transform: rotate(90deg); }
-.zip-input-wrap { margin-top: 10px; display: flex; align-items: center; gap: 10px; overflow: hidden; max-height: 0; opacity: 0; transition: max-height 0.3s ease-out, opacity 0.25s ease-out; }
+.zip-input-wrap { margin-top: 12px; display: flex; align-items: center; gap: 10px; overflow: hidden; max-height: 0; opacity: 0; transition: max-height 0.3s ease-out, opacity 0.25s ease-out; }
 .zip-input-wrap.open { max-height: 60px; opacity: 1; }
 .zip-input-wrap input {
-  width: 140px; padding: 9px 14px; background: #1a2535; border: 2px solid #243044;
-  border-radius: 8px; color: #fff; font-size: 0.95rem; transition: border-color 0.2s; outline: none;
+  width: 150px; padding: 12px 16px; background: #1a2535; border: 1.5px solid #2a3a50;
+  border-radius: 8px; color: #eef2f7; font-size: 1rem; transition: border-color 0.2s; outline: none; font-family: inherit;
 }
 .zip-input-wrap input:focus { border-color: #00d4aa; }
-.zip-input-wrap input::placeholder { color: #7a95af; }
-.zip-confirm-msg { font-size: 0.8rem; color: #00d4aa; font-weight: 600; }
+.zip-input-wrap input::placeholder { color: #8499b0; }
+.zip-confirm-msg { font-size: 0.875rem; color: #00d4aa; font-weight: 600; }
 
 /* More details toggle */
 .more-toggle {
   display: flex; align-items: center; gap: 8px; background: none; border: none; color: #00d4aa;
-  font-size: 0.93rem; font-weight: 600; cursor: pointer; padding: 0; margin-bottom: 14px;
-  transition: opacity 0.2s; user-select: none;
+  font-size: 0.9375rem; font-weight: 600; cursor: pointer; padding: 0; margin-bottom: 16px;
+  transition: opacity 0.2s; user-select: none; font-family: inherit;
 }
 .more-toggle:hover { opacity: 0.8; }
-.more-arrow { display: inline-block; transition: transform 0.25s; font-size: 0.7rem; }
+.more-arrow { display: inline-block; transition: transform 0.25s; font-size: 0.875rem; }
 .more-arrow.open { transform: rotate(90deg); }
 .more-panel { overflow: hidden; max-height: 0; opacity: 0; transition: max-height 0.4s ease-out, opacity 0.3s ease-out; }
 .more-panel.open { max-height: 600px; opacity: 1; }
 
-/* Fuel/usage interactive fields */
-.fuel-fields { margin-bottom: 16px; }
-.fuel-fields-title { font-size: 0.81rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: #a8bdd0; margin-bottom: 10px; }
-.fuel-fields-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-@media (max-width: 480px) { .fuel-fields-row { grid-template-columns: 1fr; } }
-.fuel-group { }
-.fuel-group label { display: block; font-size: 0.79rem; font-weight: 700; color: #7a95af; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; }
-.fuel-input {
-  width: 100%; padding: 9px 12px; background: #1a2535; border: 2px solid #243044; border-radius: 8px;
-  color: #e8edf5; font-size: 0.92rem; font-weight: 600; outline: none; transition: border-color 0.2s;
-}
-.fuel-input:focus { border-color: #00d4aa; }
-.miles-month-label { font-size: 0.79rem; color: #7a95af; margin-top: 4px; }
-.miles-chips { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
-.miles-chip {
-  padding: 4px 10px; background: #1a2535; border: 1px solid #2d3f55; border-radius: 99px;
-  font-size: 0.73rem; font-weight: 600; color: #a8bdd0; cursor: pointer; transition: all 0.15s; white-space: nowrap;
-}
-.miles-chip:hover { border-color: #00d4aa; color: #00d4aa; }
-
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
 @media (max-width: 480px) { .form-row { grid-template-columns: 1fr; } }
-.form-group label { display: block; font-size: 0.81rem; font-weight: 700; color: #a8bdd0; text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 6px; }
-.form-group input {
-  width: 100%; padding: 10px 12px; background: #1a2535; border: 2px solid #243044;
-  border-radius: 8px; color: #e8edf5; font-size: 0.92rem; outline: none; transition: border-color 0.2s;
+.form-group { margin-bottom: 0; }
+.form-group label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #b8cce0;
+  margin-bottom: 8px;
+  letter-spacing: 0;
 }
-.form-group input:focus { border-color: #00d4aa; }
-.form-group input::placeholder { color: #7a95af; }
+.form-group input {
+  width: 100%; padding: 12px 16px; background: #1a2535; border: 1.5px solid #2a3a50;
+  border-radius: 8px; color: #eef2f7; font-size: 1rem; outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s; font-family: inherit;
+}
+.form-group input:focus { border-color: #00d4aa; box-shadow: 0 0 0 3px rgba(0,212,170,0.12); }
+.form-group input::placeholder { color: #8499b0; }
 
 /* CTA button */
 .btn-check {
   width: 100%; padding: 18px; background: #00d4aa; color: #0f1724; border: none; border-radius: 12px;
-  font-size: 1.1rem; font-weight: 800; cursor: pointer; margin-top: 20px; margin-bottom: 10px;
-  letter-spacing: 0.3px; transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
-  box-shadow: 0 4px 20px rgba(0,212,170,0.25);
+  font-size: 1.1rem; font-weight: 800; cursor: pointer; margin-top: 24px; margin-bottom: 12px;
+  letter-spacing: 0.2px; transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(0,212,170,0.25); font-family: inherit;
 }
 .btn-check:hover { background: #00c09a; box-shadow: 0 6px 28px rgba(0,212,170,0.35); }
 .btn-check:active { transform: scale(0.98); }
-.form-disclaimer { font-size: 0.81rem; color: #7a95af; text-align: center; margin-bottom: 8px; line-height: 1.5; }
+.form-disclaimer { font-size: 0.875rem; color: #8499b0; text-align: center; margin-bottom: 10px; line-height: 1.55; }
 
-/* MSRP row */
-.msrp-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
-.msrp-suggest-label { font-size: 0.93rem; color: #a8bdd0; }
-.msrp-suggest-value { font-size: 0.93rem; font-weight: 700; color: #c5d3e0; }
-.msrp-edit-btn { background: none; border: none; color: #7a95af; cursor: pointer; font-size: 0.93rem; padding: 0 4px; transition: color 0.2s; line-height: 1; }
-.msrp-edit-btn:hover { color: #00d4aa; }
-.msrp-inline-input { padding: 4px 10px; background: #1a2535; border: 1px solid #00d4aa; border-radius: 6px; color: #fff; font-size: 0.90rem; width: 120px; outline: none; display: none; }
+/* Loading + error in model select */
+.loading-msg { color: #b8cce0; font-size: 0.9375rem; text-align: center; padding: 24px 0; }
+.error-msg { color: #ef4444; font-size: 0.9375rem; text-align: center; padding: 20px 0; }
 
 /* ── Result section ── */
 .result-section { margin-top: 4px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 28px; }
-.result-top-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+.result-top-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
 .result-top-nav-left { display: flex; align-items: center; gap: 14px; }
-.result-vehicle-label { font-size: 0.93rem; color: #a8bdd0; }
-.result-vehicle-label strong { color: #e8edf5; font-weight: 700; }
-.edit-offer-btn { background: #1a2535; border: 1px solid #243044; border-radius: 8px; padding: 7px 16px; color: #a8bdd0; font-size: 0.84rem; font-weight: 600; cursor: pointer; transition: border-color 0.2s, color 0.2s; }
+.result-vehicle-label { font-size: 0.9375rem; color: #b8cce0; }
+.result-vehicle-label strong { color: #eef2f7; font-weight: 700; }
+.change-btn {
+  background: none; border: none; color: #b8cce0; font-size: 0.9375rem; font-weight: 600;
+  cursor: pointer; padding: 0; display: inline-flex; align-items: center; gap: 4px;
+  transition: color 0.2s; font-family: inherit;
+}
+.change-btn:hover { color: #00d4aa; }
+.edit-offer-btn {
+  background: #1a2535; border: 1.5px solid #2a3a50; border-radius: 8px; padding: 8px 18px;
+  color: #b8cce0; font-size: 0.875rem; font-weight: 600; cursor: pointer;
+  transition: border-color 0.2s, color 0.2s; font-family: inherit;
+}
 .edit-offer-btn:hover { border-color: #00d4aa; color: #00d4aa; }
 
 /* Loading spinner */
-.spinner { text-align: center; padding: 48px 0; color: #a8bdd0; font-size: 0.9rem; }
+.spinner { text-align: center; padding: 48px 0; color: #b8cce0; font-size: 0.9375rem; }
 .spinner::before {
   content: ''; display: block; width: 38px; height: 38px; border: 3px solid #243044;
   border-top-color: #00d4aa; border-radius: 50%; margin: 0 auto 18px; animation: spin 0.8s linear infinite;
@@ -364,113 +366,109 @@ a:hover { text-decoration: underline; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ── Signal badge ── */
-.signal-block { border-radius: 14px; padding: 24px; margin-bottom: 14px; display: flex; align-items: flex-start; gap: 18px; }
+.signal-block { border-radius: 14px; padding: 26px; margin-bottom: 16px; display: flex; align-items: flex-start; gap: 18px; }
 .signal-block.green { background: rgba(0,212,170,0.08); border: 2px solid rgba(0,212,170,0.45); }
 .signal-block.yellow { background: rgba(245,158,11,0.08); border: 2px solid rgba(245,158,11,0.45); }
 .signal-block.red { background: rgba(239,68,68,0.08); border: 2px solid rgba(239,68,68,0.45); }
 .signal-icon { font-size: 2.4rem; flex-shrink: 0; line-height: 1; }
 .signal-body { flex: 1; min-width: 0; }
-.signal-name { font-size: 1.7rem; font-weight: 900; letter-spacing: -0.5px; line-height: 1.1; margin-bottom: 7px; }
+.signal-name { font-size: 1.75rem; font-weight: 900; letter-spacing: -0.5px; line-height: 1.1; margin-bottom: 8px; }
 .green .signal-name { color: #00d4aa; }
 .yellow .signal-name { color: #f59e0b; }
 .red .signal-name { color: #ef4444; }
-.signal-explanation { font-size: 0.90rem; color: #a8bdd0; line-height: 1.6; }
+.signal-explanation { font-size: 1rem; color: #b8cce0; line-height: 1.65; }
 
 /* ── Market range ── */
-.range-block { background: #1a2535; border-radius: 12px; padding: 20px; margin-bottom: 14px; }
-.range-block-title { font-size: 0.93rem; font-weight: 700; color: #a8bdd0; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 12px; }
-.range-numbers-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
-.range-numbers { font-size: 1.15rem; font-weight: 800; color: #fff; }
+.range-block { background: #1a2535; border-radius: 12px; padding: 22px; margin-bottom: 16px; }
+.range-block-title { font-size: 1rem; font-weight: 700; color: #eef2f7; margin-bottom: 14px; }
+.range-numbers-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.range-numbers { font-size: 1.2rem; font-weight: 800; color: #eef2f7; }
 .range-accent { color: #00d4aa; }
-.offer-delta-pill { font-size: 0.93rem; font-weight: 700; padding: 4px 12px; border-radius: 99px; }
+.offer-delta-pill { font-size: 0.9375rem; font-weight: 700; padding: 5px 14px; border-radius: 99px; }
 .offer-delta-pill.above { background: rgba(239,68,68,0.15); color: #ef4444; }
 .offer-delta-pill.below { background: rgba(0,212,170,0.15); color: #00d4aa; }
 .offer-delta-pill.within { background: rgba(245,158,11,0.15); color: #f59e0b; }
-.range-bar-wrap { position: relative; height: 6px; background: #243044; border-radius: 99px; margin: 10px 0 8px; }
+.range-bar-wrap { position: relative; height: 6px; background: #243044; border-radius: 99px; margin: 10px 0 10px; }
 .range-bar-fill { position: absolute; height: 100%; border-radius: 99px; background: #00d4aa; width: 100%; }
 .range-bar-marker { position: absolute; top: -5px; width: 16px; height: 16px; border-radius: 50%; border: 3px solid #0f1724; transform: translateX(-50%); }
 .marker-green { background: #00d4aa; }
 .marker-yellow { background: #f59e0b; }
 .marker-red { background: #ef4444; }
-.range-bar-labels { display: flex; justify-content: space-between; font-size: 0.79rem; color: #7a95af; }
-.range-disclaimer { font-size: 0.79rem; color: #7a95af; margin-top: 8px; line-height: 1.5; }
+.range-bar-labels { display: flex; justify-content: space-between; font-size: 0.875rem; color: #8499b0; }
+.range-disclaimer { font-size: 0.875rem; color: #8499b0; margin-top: 10px; line-height: 1.55; }
 
 /* ── Reasons ── */
-.reasons-block { background: #1a2535; border-radius: 12px; padding: 20px; margin-bottom: 14px; }
-.block-title { font-size: 0.93rem; font-weight: 700; color: #a8bdd0; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 14px; }
-.reason-item { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; font-size: 0.9rem; color: #c5d3e0; line-height: 1.55; }
+.reasons-block { background: #1a2535; border-radius: 12px; padding: 22px; margin-bottom: 16px; }
+.block-title { font-size: 1rem; font-weight: 700; color: #eef2f7; margin-bottom: 16px; }
+.reason-item { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 12px; font-size: 1rem; color: #b8cce0; line-height: 1.65; }
 .reason-item:last-child { margin-bottom: 0; }
 .reason-bullet { color: #00d4aa; font-weight: 800; flex-shrink: 0; margin-top: 1px; }
 
 /* ── What to say ── */
-.say-block { background: rgba(0,212,170,0.07); border: 1px solid rgba(0,212,170,0.3); border-radius: 12px; padding: 18px 20px; margin-bottom: 20px; }
-.say-label { font-size: 0.79rem; font-weight: 700; color: rgba(0,212,170,0.7); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-.say-text { font-size: 0.98rem; font-weight: 700; color: #00d4aa; line-height: 1.6; }
+.say-block { background: rgba(0,212,170,0.07); border: 1px solid rgba(0,212,170,0.3); border-radius: 12px; padding: 20px 22px; margin-bottom: 24px; }
+.say-label { font-size: 0.875rem; font-weight: 700; color: rgba(0,212,170,0.75); letter-spacing: 0; margin-bottom: 10px; }
+.say-text { font-size: 1rem; font-weight: 700; color: #00d4aa; line-height: 1.65; }
 
 /* ── Collapsible sections ── */
-.section { background: #1a2535; border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
-.section-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; cursor: pointer; user-select: none; transition: background 0.2s; }
+.section { background: #1a2535; border-radius: 12px; margin-bottom: 12px; overflow: hidden; }
+.section-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; cursor: pointer; user-select: none; transition: background 0.2s; }
 .section-header:hover { background: #1e2e42; }
-.section-title { font-size: 0.95rem; font-weight: 700; color: #e8edf5; display: flex; align-items: center; gap: 8px; }
-.section-icon { font-size: 1rem; }
-.section-chevron { color: #7a95af; transition: transform 0.25s; font-size: 0.84rem; }
+.section-title { font-size: 1rem; font-weight: 700; color: #eef2f7; display: flex; align-items: center; gap: 10px; }
+.section-icon { font-size: 1.05rem; }
+.section-chevron { color: #8499b0; transition: transform 0.25s; font-size: 0.875rem; }
 .section-chevron.open { transform: rotate(180deg); }
-.section-body { padding: 0 20px 20px; font-size: 0.93rem; color: #c5d3e0; line-height: 1.6; }
+.section-body { padding: 0 22px 22px; font-size: 1rem; color: #b8cce0; line-height: 1.65; }
 .section-body.hidden { display: none; }
 
 /* OTD table */
-.otd-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
-.otd-table td { padding: 8px 0; border-bottom: 1px solid #243044; }
-.otd-table td:last-child { text-align: right; font-weight: 600; color: #e8edf5; }
-.otd-table tr:last-child td { border-bottom: none; font-weight: 800; font-size: 1rem; color: #fff; }
-.otd-table .otd-total td { border-top: 2px solid #243044; padding-top: 12px; }
-.otd-note { font-size: 0.93rem; color: #7a95af; }
+.otd-table { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
+.otd-table td { padding: 10px 0; border-bottom: 1px solid #243044; font-size: 1rem; }
+.otd-table td:last-child { text-align: right; font-weight: 600; color: #eef2f7; }
+.otd-table tr:last-child td { border-bottom: none; font-weight: 800; font-size: 1.05rem; color: #fff; }
+.otd-table .otd-total td { border-top: 2px solid #243044; padding-top: 14px; }
+.otd-note { font-size: 0.875rem; color: #8499b0; }
 
 /* Fee review */
-.fee-verdict { display: inline-flex; align-items: center; gap: 6px; padding: 5px 14px; border-radius: 99px; font-size: 0.93rem; font-weight: 700; margin-bottom: 14px; }
+.fee-verdict { display: inline-flex; align-items: center; gap: 6px; padding: 6px 16px; border-radius: 99px; font-size: 0.9375rem; font-weight: 700; margin-bottom: 16px; }
 .fee-verdict.green { background: rgba(0,212,170,0.15); color: #00d4aa; }
 .fee-verdict.yellow { background: rgba(245,158,11,0.15); color: #f59e0b; }
 .fee-verdict.red { background: rgba(239,68,68,0.15); color: #ef4444; }
-.fee-note-row { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 8px; font-size: 0.90rem; }
+.fee-note-row { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 10px; font-size: 1rem; }
 .fee-flag-ok { color: #00d4aa; }
 .fee-flag-caution { color: #f59e0b; }
 .fee-flag-high { color: #ef4444; }
-.fee-flag-unknown { color: #a8bdd0; }
-.junk-addon-list { margin-top: 12px; }
-.junk-addon { border: 1px solid #243044; border-radius: 8px; padding: 12px; margin-bottom: 8px; }
-.junk-addon-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
-.junk-addon-name { font-weight: 700; color: #e8edf5; font-size: 0.93rem; }
-.junk-addon-verdict { font-size: 0.93rem; font-weight: 700; padding: 2px 10px; border-radius: 99px; }
+.fee-flag-unknown { color: #b8cce0; }
+.junk-addon-list { margin-top: 14px; }
+.junk-addon { border: 1px solid #2a3a50; border-radius: 10px; padding: 14px; margin-bottom: 10px; }
+.junk-addon-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.junk-addon-name { font-weight: 700; color: #eef2f7; font-size: 1rem; }
+.junk-addon-verdict { font-size: 0.9375rem; font-weight: 700; padding: 3px 12px; border-radius: 99px; }
 .verdict-skip { background: rgba(239,68,68,0.15); color: #ef4444; }
 .verdict-wait { background: rgba(245,158,11,0.15); color: #f59e0b; }
 .verdict-elsewhere { background: rgba(0,212,170,0.15); color: #00d4aa; }
-.junk-addon-cost { font-size: 0.84rem; color: #7a95af; margin-bottom: 2px; }
-.junk-addon-note { font-size: 0.8rem; color: #a8bdd0; }
+.junk-addon-cost { font-size: 0.875rem; color: #8499b0; margin-bottom: 4px; }
+.junk-addon-note { font-size: 0.875rem; color: #b8cce0; }
 
 /* ── Term Trap Detector ── */
-.term-trap-block { background: #1a2535; border-radius: 14px; padding: 22px; margin-bottom: 14px; }
-.term-trap-title { font-size: 1rem; font-weight: 800; color: #fff; margin-bottom: 4px; }
-.term-trap-subtitle { font-size: 0.8rem; color: #a8bdd0; margin-bottom: 18px; }
-.term-table-scroll { overflow-x: auto; margin-bottom: 16px; }
-.term-table {
-  width: 100%; border-collapse: collapse; min-width: 380px;
-}
+.term-trap-block { background: #1a2535; border-radius: 14px; padding: 24px; margin-bottom: 16px; }
+.term-trap-title { font-size: 1.05rem; font-weight: 800; color: #eef2f7; margin-bottom: 6px; }
+.term-trap-subtitle { font-size: 0.875rem; color: #b8cce0; margin-bottom: 20px; line-height: 1.55; }
+.term-table-scroll { overflow-x: auto; margin-bottom: 18px; }
+.term-table { width: 100%; border-collapse: collapse; min-width: 380px; }
 .term-table th {
-  text-align: center; font-size: 0.93rem; font-weight: 700; color: #a8bdd0; padding: 8px 10px;
+  text-align: center; font-size: 0.9375rem; font-weight: 700; color: #b8cce0; padding: 10px 10px;
   border-bottom: 2px solid #243044; white-space: nowrap; cursor: pointer; transition: color 0.15s;
 }
 .term-table th.term-col { cursor: pointer; }
 .term-table th.term-col:hover { color: #00d4aa; }
 .term-table th.selected-col { color: #00d4aa; border-bottom: 2px solid #00d4aa; }
-.term-table td { text-align: center; padding: 9px 10px; font-size: 0.93rem; color: #c5d3e0; border-bottom: 1px solid #1d2c3f; }
-.term-table td:first-child { text-align: left; font-size: 0.8rem; color: #a8bdd0; white-space: nowrap; }
+.term-table td { text-align: center; padding: 10px 10px; font-size: 0.9375rem; color: #b8cce0; border-bottom: 1px solid #1d2c3f; }
+.term-table td:first-child { text-align: left; font-size: 0.875rem; color: #b8cce0; white-space: nowrap; }
 .term-table tr:last-child td { border-bottom: none; }
 .term-table td.selected-col { color: #00d4aa; font-weight: 700; }
-.term-table td.baseline-col { color: #a8bdd0; font-style: italic; }
+.term-table td.baseline-col { color: #b8cce0; font-style: italic; }
 .term-table td.extra-col-pos { color: #ef4444; font-weight: 700; }
 .term-table td.extra-col-neg { color: #00d4aa; font-weight: 700; }
-
-/* Highlight column with border trick — using wrapper */
 .term-table .selected-col-header {
   background: rgba(0,212,170,0.07);
   border-left: 2px solid rgba(0,212,170,0.3);
@@ -479,80 +477,82 @@ a:hover { text-decoration: underline; }
 .term-table tr:first-child .selected-col-header { border-top: 2px solid rgba(0,212,170,0.3); }
 .term-table tr:last-child .selected-col-header { border-bottom: 2px solid rgba(0,212,170,0.3); }
 
-.term-trap-summary { font-size: 0.93rem; color: #c5d3e0; line-height: 1.6; margin-bottom: 16px; padding: 12px 14px; background: rgba(239,68,68,0.06); border-left: 3px solid rgba(239,68,68,0.4); border-radius: 0 6px 6px 0; }
+.term-trap-summary { font-size: 1rem; color: #b8cce0; line-height: 1.65; margin-bottom: 18px; padding: 14px 16px; background: rgba(239,68,68,0.06); border-left: 3px solid rgba(239,68,68,0.4); border-radius: 0 6px 6px 0; }
 .term-trap-summary.safe { background: rgba(0,212,170,0.06); border-left-color: rgba(0,212,170,0.4); }
 
 /* Interest bar chart */
-.interest-bars { margin-top: 14px; }
-.interest-bars-title { font-size: 0.79rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: #7a95af; margin-bottom: 10px; }
-.interest-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-.interest-bar-label { font-size: 0.84rem; color: #a8bdd0; width: 46px; text-align: right; flex-shrink: 0; }
+.interest-bars { margin-top: 16px; }
+.interest-bars-title { font-size: 0.875rem; font-weight: 700; color: #8499b0; margin-bottom: 12px; letter-spacing: 0; }
+.interest-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.interest-bar-label { font-size: 0.875rem; color: #b8cce0; width: 46px; text-align: right; flex-shrink: 0; }
 .interest-bar-track { flex: 1; height: 16px; background: #243044; border-radius: 4px; overflow: hidden; }
 .interest-bar-fill { height: 100%; border-radius: 4px; background: #00d4aa; transition: width 0.4s ease-out; }
 .interest-bar-fill.selected { background: #00d4aa; }
 .interest-bar-fill.not-selected { background: #2d4a6a; }
 .interest-bar-fill.worst { background: #ef4444; }
-.interest-bar-amount { font-size: 0.84rem; color: #a8bdd0; width: 70px; flex-shrink: 0; }
+.interest-bar-amount { font-size: 0.875rem; color: #b8cce0; width: 72px; flex-shrink: 0; }
 
-/* ── Ownership cost section (dynamic) ── */
-.ownership-section { background: #1a2535; border-radius: 14px; padding: 22px; margin-bottom: 14px; }
-.ownership-title { font-size: 1rem; font-weight: 800; color: #fff; margin-bottom: 4px; }
-.ownership-context { font-size: 0.84rem; color: #7a95af; margin-bottom: 18px; }
+/* ── Ownership cost section ── */
+.ownership-section { background: #1a2535; border-radius: 14px; padding: 24px; margin-bottom: 16px; }
+.ownership-title { font-size: 1.05rem; font-weight: 800; color: #eef2f7; margin-bottom: 6px; }
+.ownership-context { font-size: 0.875rem; color: #8499b0; margin-bottom: 20px; line-height: 1.55; }
 
-.monthly-breakdown { background: #0f1724; border-radius: 10px; padding: 16px; margin-bottom: 16px; }
-.monthly-breakdown-title { font-size: 0.79rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: #7a95af; margin-bottom: 12px; }
-.monthly-line { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; font-size: 0.93rem; color: #a8bdd0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.monthly-breakdown { background: #0f1724; border-radius: 10px; padding: 18px; margin-bottom: 18px; }
+.monthly-breakdown-title { font-size: 0.875rem; font-weight: 700; color: #8499b0; margin-bottom: 14px; letter-spacing: 0; }
+.monthly-line { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; font-size: 1rem; color: #b8cce0; border-bottom: 1px solid rgba(255,255,255,0.04); }
 .monthly-line:last-of-type { border-bottom: none; }
-.monthly-line .ml-label { }
-.monthly-line .ml-value { font-weight: 600; color: #c5d3e0; }
-.monthly-divider { border: none; border-top: 1px solid #243044; margin: 8px 0; }
-.monthly-total-line { display: flex; justify-content: space-between; align-items: center; padding-top: 8px; font-weight: 800; font-size: 0.95rem; color: #fff; }
-.monthly-total-line .ml-value { color: #00d4aa; font-size: 1.05rem; }
+.monthly-line .ml-value { font-weight: 600; color: #eef2f7; }
+.monthly-divider { border: none; border-top: 1px solid #243044; margin: 10px 0; }
+.monthly-total-line { display: flex; justify-content: space-between; align-items: center; padding-top: 10px; font-weight: 800; font-size: 1rem; color: #eef2f7; }
+.monthly-total-line .ml-value { color: #00d4aa; font-size: 1.1rem; }
 
-.ownership-annuals { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-.ownership-stat { background: #0f1724; border-radius: 8px; padding: 12px; }
-.ownership-stat-value { font-size: 1.1rem; font-weight: 800; color: #00d4aa; }
-.ownership-stat-label { font-size: 0.79rem; color: #7a95af; margin-top: 2px; }
+.ownership-annuals { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+.ownership-stat { background: #0f1724; border-radius: 8px; padding: 14px; }
+.ownership-stat-value { font-size: 1.2rem; font-weight: 800; color: #00d4aa; }
+.ownership-stat-label { font-size: 0.875rem; color: #8499b0; margin-top: 4px; }
 
-.cost-breakdown-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
-.cost-breakdown-table td { padding: 7px 0; border-bottom: 1px solid #243044; font-size: 0.86rem; }
-.cost-breakdown-table td:last-child { text-align: right; font-weight: 600; color: #e8edf5; }
-.cost-breakdown-table .cost-total-row td { font-weight: 800; font-size: 1rem; color: #fff; border-top: 2px solid #243044; border-bottom: none; padding-top: 10px; }
-.cost-note { font-size: 0.93rem; color: #7a95af; margin-top: 8px; }
+.cost-breakdown-table { width: 100%; border-collapse: collapse; margin-top: 14px; }
+.cost-breakdown-table td { padding: 8px 0; border-bottom: 1px solid #243044; font-size: 0.9375rem; color: #b8cce0; }
+.cost-breakdown-table td:last-child { text-align: right; font-weight: 600; color: #eef2f7; }
+.cost-breakdown-table .cost-total-row td { font-weight: 800; font-size: 1.05rem; color: #eef2f7; border-top: 2px solid #243044; border-bottom: none; padding-top: 12px; }
+.cost-note { font-size: 0.875rem; color: #8499b0; margin-top: 10px; line-height: 1.55; }
 
 /* ── Negotiation script ── */
-.script-step { margin-bottom: 16px; }
-.script-step-label { font-size: 0.79rem; font-weight: 700; color: #a8bdd0; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
-.script-step-text { background: #0f1724; border-radius: 8px; padding: 12px 14px; font-size: 0.93rem; color: #c5d3e0; line-height: 1.6; font-style: italic; }
+.script-step { margin-bottom: 20px; }
+.script-step-label { font-size: 0.875rem; font-weight: 700; color: #b8cce0; margin-bottom: 8px; letter-spacing: 0; }
+.script-step-text { background: #0f1724; border-radius: 8px; padding: 14px 16px; font-size: 1rem; color: #eef2f7; line-height: 1.65; font-style: italic; }
 .email-template-wrap { position: relative; margin-top: 8px; }
-.email-template { width: 100%; min-height: 160px; background: #0f1724; border: 1px solid #243044; border-radius: 8px; padding: 12px 14px; font-size: 0.93rem; color: #a8bdd0; font-family: inherit; line-height: 1.6; resize: vertical; cursor: text; }
-.copy-btn { position: absolute; top: 8px; right: 8px; background: #243044; border: none; border-radius: 6px; padding: 5px 12px; font-size: 0.93rem; font-weight: 600; color: #00d4aa; cursor: pointer; transition: background 0.2s; }
+.email-template {
+  width: 100%; min-height: 170px; background: #0f1724; border: 1.5px solid #2a3a50; border-radius: 8px;
+  padding: 14px 16px; font-size: 1rem; color: #b8cce0; font-family: inherit; line-height: 1.65; resize: vertical; cursor: text;
+}
+.copy-btn { position: absolute; top: 8px; right: 8px; background: #243044; border: none; border-radius: 6px; padding: 6px 14px; font-size: 0.9375rem; font-weight: 600; color: #00d4aa; cursor: pointer; transition: background 0.2s; font-family: inherit; }
 .copy-btn:hover { background: #2e3f58; }
-.copy-btn.copied { color: #a8bdd0; }
-.script-pro-tip { font-size: 0.8rem; color: #a8bdd0; background: rgba(0,212,170,0.06); border-radius: 6px; padding: 8px 12px; margin-top: 10px; }
+.copy-btn.copied { color: #b8cce0; }
+.script-pro-tip { font-size: 0.875rem; color: #b8cce0; background: rgba(0,212,170,0.06); border-radius: 8px; padding: 10px 14px; margin-top: 12px; line-height: 1.55; }
 
 /* Fuel economy */
-.mpg-row { display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
-.mpg-stat { flex: 1; min-width: 80px; background: #0f1724; border-radius: 8px; padding: 12px; text-align: center; }
+.mpg-row { display: flex; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+.mpg-stat { flex: 1; min-width: 80px; background: #0f1724; border-radius: 8px; padding: 14px; text-align: center; }
 .mpg-value { font-size: 1.6rem; font-weight: 800; color: #00d4aa; }
-.mpg-label { font-size: 0.79rem; color: #a8bdd0; margin-top: 2px; }
+.mpg-label { font-size: 0.875rem; color: #b8cce0; margin-top: 4px; }
 
 /* Recalls */
-.recall-item { border: 1px solid #243044; border-radius: 8px; padding: 12px; margin-bottom: 8px; }
-.recall-component { font-weight: 700; color: #ef4444; margin-bottom: 4px; font-size: 0.93rem; }
-.recall-summary { font-size: 0.93rem; color: #a8bdd0; line-height: 1.5; }
-.no-recalls { display: flex; align-items: center; gap: 8px; color: #00d4aa; font-weight: 600; font-size: 0.93rem; }
+.recall-item { border: 1.5px solid #2a3a50; border-radius: 8px; padding: 14px; margin-bottom: 10px; }
+.recall-component { font-weight: 700; color: #ef4444; margin-bottom: 6px; font-size: 1rem; }
+.recall-summary { font-size: 1rem; color: #b8cce0; line-height: 1.55; }
+.no-recalls { display: flex; align-items: center; gap: 8px; color: #00d4aa; font-weight: 600; font-size: 1rem; }
 
 /* ── Tip jar ── */
-.tip-jar { background: #1a2535; border-radius: 14px; padding: 28px; margin-top: 24px; text-align: center; }
-.tip-jar-title { font-size: 1rem; font-weight: 700; color: #e8edf5; margin-bottom: 8px; }
-.tip-jar-text { font-size: 0.87rem; color: #a8bdd0; line-height: 1.6; margin-bottom: 18px; max-width: 380px; margin-left: auto; margin-right: auto; }
+.tip-jar { background: #1a2535; border-radius: 14px; padding: 32px; margin-top: 28px; text-align: center; }
+.tip-jar-title { font-size: 1.05rem; font-weight: 700; color: #eef2f7; margin-bottom: 10px; }
+.tip-jar-text { font-size: 0.9375rem; color: #b8cce0; line-height: 1.65; margin-bottom: 22px; max-width: 380px; margin-left: auto; margin-right: auto; }
 .tip-jar-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-.btn-tip { padding: 12px 28px; background: #00d4aa; color: #0f1724; border: none; border-radius: 9px; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+.btn-tip { padding: 13px 30px; background: #00d4aa; color: #0f1724; border: none; border-radius: 9px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: background 0.2s; font-family: inherit; }
 .btn-tip:hover { background: #00bfa0; }
-.btn-skip { padding: 12px 20px; background: transparent; color: #a8bdd0; border: 1px solid #243044; border-radius: 9px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: border-color 0.2s, color 0.2s; }
-.btn-skip:hover { border-color: #a8bdd0; color: #c5d3e0; }
-.tip-thank-you { color: #00d4aa; font-weight: 700; font-size: 0.95rem; display: none; }
+.btn-skip { padding: 13px 22px; background: transparent; color: #b8cce0; border: 1.5px solid #2a3a50; border-radius: 9px; font-size: 0.9375rem; font-weight: 600; cursor: pointer; transition: border-color 0.2s, color 0.2s; font-family: inherit; }
+.btn-skip:hover { border-color: #b8cce0; color: #eef2f7; }
+.tip-thank-you { color: #00d4aa; font-weight: 700; font-size: 1rem; display: none; }
 
 /* ── Utility ── */
 .hidden { display: none !important; }
@@ -561,7 +561,7 @@ a:hover { text-decoration: underline; }
 <body>
 <div class="page">
 
-  <!-- ── Always-visible header ── -->
+  <!-- ── Header ── -->
   <header class="site-header" id="siteHeader">
     <h1>Don't sign a <em>bad new-car deal.</em></h1>
     <p>Check if your dealer's offer is fair — free, on your side.</p>
@@ -569,48 +569,46 @@ a:hover { text-decoration: underline; }
   </header>
 
   <!-- ══════════════════════════════════════════ -->
-  <!-- STEP 1: Brand selection                    -->
+  <!-- Selection: Year + Brand + Model            -->
   <!-- ══════════════════════════════════════════ -->
-  <section class="brand-section" id="brandSection">
-    <div class="section-label" id="brandSectionLabel">Choose your brand</div>
-    <div class="brand-grid" id="brandGrid"></div>
-    <div style="margin-top:12px;font-size:0.84rem;color:#7a95af;text-align:center;line-height:1.5;">
-      We support the top 20 best-selling brands in the US.<br>
-      <span style="color:#a8bdd0;">Missing yours? <a href="mailto:hello@cartru.com" style="color:#00d4aa;text-decoration:underline;">Tell us what to add next.</a></span>
-    </div>
-  </section>
-
-  <!-- ══════════════════════════════════════════ -->
-  <!-- STEP 2: Model + Year (reveal panel)        -->
-  <!-- ══════════════════════════════════════════ -->
-  <section class="reveal-panel model-section" id="modelSection">
-    <div class="panel-header">
-      <button class="change-btn" onclick="changeBrand()">← Change brand</button>
-      <div class="panel-heading" id="modelSectionHeading">Select your model</div>
-    </div>
+  <section class="selection-section">
+    <!-- Year pills -->
     <div class="year-toggle" id="yearToggle"></div>
-    <div class="model-grid" id="modelGrid">
-      <div class="loading-msg">Loading models…</div>
+
+    <!-- Brand + Model dropdowns -->
+    <div class="brand-model-row">
+      <div class="select-group">
+        <label for="brandSelect">Brand</label>
+        <select id="brandSelect" class="brand-model-select" onchange="onBrandChange()">
+          <option value="">Select brand</option>
+        </select>
+      </div>
+      <div class="select-group">
+        <label for="modelSelect">Model</label>
+        <select id="modelSelect" class="brand-model-select" disabled onchange="onModelChange()">
+          <option value="">Select model</option>
+        </select>
+      </div>
     </div>
+    <div class="model-loading-msg" id="modelLoadingMsg"></div>
   </section>
 
   <!-- ══════════════════════════════════════════ -->
   <!-- STEP 3: Deal details (reveal panel)        -->
   <!-- ══════════════════════════════════════════ -->
   <section class="reveal-panel deal-section" id="dealSection">
-    <!-- Vehicle crumb -->
+    <!-- Vehicle badge -->
     <div class="vehicle-crumb" id="vehicleCrumb">
-      <button class="change-btn" onclick="changeModel()">← Change model</button>
-      <div>
+      <div class="vehicle-crumb-tag">
         <span class="vehicle-crumb-label" id="crumbModel"></span>
         <span class="vehicle-crumb-year" id="crumbYear"></span>
       </div>
     </div>
 
-    <!-- Dealer price (pre-filled) -->
+    <!-- Dealer price -->
     <div class="offer-wrap">
-      <label class="offer-label">Dealer price (estimated from typical discounts — edit to match your offer)</label>
-      <div class="offer-sublabel" id="offerSublabel">~5% below MSRP · typical average discount</div>
+      <label class="offer-label" for="dealerOffer">Dealer price</label>
+      <div class="offer-sublabel" id="offerSublabel">~5% below MSRP · typical average discount — edit to match your offer</div>
       <div class="offer-input-row">
         <span class="offer-dollar">$</span>
         <input type="number" id="dealerOffer" class="offer-input" placeholder="Enter dealer price" min="1000" max="200000" autocomplete="off">
@@ -633,7 +631,7 @@ a:hover { text-decoration: underline; }
     <!-- APR + Loan term -->
     <div class="apr-term-row">
       <div class="apr-group">
-        <label>Interest rate (APR)</label>
+        <label for="aprInput">Interest rate (APR)</label>
         <div class="apr-input-wrap">
           <input type="number" id="aprInput" class="apr-input" value="6.8" min="0" max="25" step="0.1" autocomplete="off">
           <span class="apr-pct-sign">%</span>
@@ -687,7 +685,7 @@ a:hover { text-decoration: underline; }
       </div>
     </div>
 
-    <!-- Fuel inputs hidden here, moved to fuel section in results — values still in state -->
+    <!-- Hidden fuel/usage values -->
     <input type="hidden" id="annualMiles" value="13500">
     <input type="hidden" id="gasPrice" value="3.45">
 
@@ -861,21 +859,21 @@ a:hover { text-decoration: underline; }
         <div class="section-body" id="body-vehicle">
 
           <!-- Fuel economy -->
-          <div class="section" style="background:#0f1724;margin-bottom:8px;">
-            <div class="section-header" onclick="toggleSection('fuel')" style="padding:12px 16px;">
-              <div class="section-title" style="font-size:0.88rem;">⛽ Fuel Economy</div>
+          <div class="section" style="background:#0f1724;margin-bottom:10px;">
+            <div class="section-header" onclick="toggleSection('fuel')" style="padding:14px 18px;">
+              <div class="section-title" style="font-size:1rem;">⛽ Fuel Economy</div>
               <div class="section-chevron" id="chevron-fuel">▼</div>
             </div>
-            <div class="section-body hidden" id="body-fuel" style="padding:0 16px 16px;"></div>
+            <div class="section-body hidden" id="body-fuel" style="padding:0 18px 18px;"></div>
           </div>
 
           <!-- NHTSA Recalls -->
-          <div class="section" style="background:#0f1724;margin-bottom:8px;">
-            <div class="section-header" onclick="toggleSection('recalls')" style="padding:12px 16px;">
-              <div class="section-title" style="font-size:0.88rem;">🔔 NHTSA Recalls</div>
+          <div class="section" style="background:#0f1724;margin-bottom:10px;">
+            <div class="section-header" onclick="toggleSection('recalls')" style="padding:14px 18px;">
+              <div class="section-title" style="font-size:1rem;">🔔 NHTSA Recalls</div>
               <div class="section-chevron" id="chevron-recalls">▼</div>
             </div>
-            <div class="section-body hidden" id="body-recalls" style="padding:0 16px 16px;"></div>
+            <div class="section-body hidden" id="body-recalls" style="padding:0 18px 18px;"></div>
           </div>
 
         </div>
@@ -930,7 +928,6 @@ const BRANDS = [
   { name: 'Acura',      slug: 'acura',       color: '#cc0000' },
 ];
 
-const CDN = 'https://cdn.simpleicons.org';
 const CURRENT_YEAR = new Date().getFullYear();
 const YEARS = [CURRENT_YEAR - 2, CURRENT_YEAR - 1, CURRENT_YEAR];
 
@@ -958,6 +955,7 @@ const state = {
   annualMiles:   13500,
   gasPrice:      3.45,
   reportData:    null,
+  _fuelMpg:      27,
 };
 
 // ══════════════════════════════════════════════════════════
@@ -1041,67 +1039,91 @@ function debounce(fn, delay) {
 }
 
 // ══════════════════════════════════════════════════════════
-// Brand grid
+// Brand & Model dropdowns
 // ══════════════════════════════════════════════════════════
 
-function buildBrandLogoHTML(brand) {
-  if (brand.slug) {
-    return `<img class="brand-logo" src="${CDN}/${brand.slug}/FFFFFF" alt="${brand.name}" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="brand-text-logo" style="background:${brand.color};display:none">${brand.name.substring(0,3).toUpperCase()}</div>`;
+function populateBrandSelect() {
+  const select = document.getElementById('brandSelect');
+  select.innerHTML = '<option value="">Select brand</option>' +
+    BRANDS.map(b => `<option value="${escAttr(b.name)}">${b.name}</option>`).join('');
+}
+
+function onBrandChange() {
+  const select = document.getElementById('brandSelect');
+  const brand = select.value;
+
+  if (!brand) {
+    state.brand = null;
+    state.model = null;
+    resetModelSelect();
+    hideDealSection();
+    hideResultSection();
+    return;
   }
-  if (brand.name === 'GMC') return `<div class="brand-text-logo" style="background:${brand.color};font-size:0.9rem;letter-spacing:1px">GMC</div>`;
-  if (brand.name === 'Dodge') return `<div class="brand-text-logo" style="background:${brand.color}">
-    <svg width="26" height="22" viewBox="0 0 26 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M13 2 L4 8 L2 14 L6 13 L7 18 L13 14 L19 18 L20 13 L24 14 L22 8 Z" fill="white"/>
-      <path d="M8 8 L4 8 L6 13 L8 11 Z" fill="rgba(255,255,255,0.5)"/>
-      <path d="M18 8 L22 8 L20 13 L18 11 Z" fill="rgba(255,255,255,0.5)"/>
-      <circle cx="9" cy="9" r="1.5" fill="#c41230"/>
-      <circle cx="17" cy="9" r="1.5" fill="#c41230"/>
-    </svg></div>`;
-  return `<div class="brand-text-logo" style="background:${brand.color}">${brand.name.substring(0,3).toUpperCase()}</div>`;
-}
 
-function renderBrandGrid() {
-  const grid = document.getElementById('brandGrid');
-  grid.innerHTML = BRANDS.map(b => `
-    <button class="brand-card" data-brand="${b.name}" onclick="selectBrand('${b.name}')">
-      ${buildBrandLogoHTML(b)}
-      <div class="brand-name-label">${b.name}</div>
-    </button>
-  `).join('');
-}
-
-function selectBrand(name) {
-  if (state.brand === name && document.getElementById('modelSection').classList.contains('open')) return;
-  state.brand = name;
+  state.brand = brand;
   state.model = null;
-  document.querySelectorAll('.brand-card').forEach(card => {
-    card.classList.toggle('brand-selected', card.dataset.brand === name);
-    card.classList.toggle('dimmed', card.dataset.brand !== name);
-  });
-  document.getElementById('siteHeader').classList.add('compact');
-  document.getElementById('brandSectionLabel').textContent = 'Brand selected';
-  document.getElementById('modelSectionHeading').textContent = `Select your ${name} model`;
-  collapseSection('dealSection');
-  collapseSection('resultSection');
-  resetModelGrid();
-  openSection('modelSection');
-  loadModels();
-  setTimeout(() => scrollToEl('modelSection'), 80);
-  track('brand_selected', { brand: name });
+  resetModelSelect();
+  hideDealSection();
+  hideResultSection();
+  loadModelsForSelect();
+  track('brand_selected', { brand });
 }
 
-function changeBrand() {
-  document.querySelectorAll('.brand-card').forEach(c => c.classList.remove('brand-selected', 'dimmed'));
-  document.getElementById('siteHeader').classList.remove('compact');
-  document.getElementById('brandSectionLabel').textContent = 'Choose your brand';
-  collapseSection('modelSection');
-  collapseSection('dealSection');
-  collapseSection('resultSection');
-  state.brand = null;
-  state.model = null;
-  scrollToTop();
-  track('change_brand');
+function resetModelSelect() {
+  const select = document.getElementById('modelSelect');
+  select.innerHTML = '<option value="">Select model</option>';
+  select.disabled = true;
+  document.getElementById('modelLoadingMsg').textContent = '';
+}
+
+function loadModelsForSelect() {
+  if (!state.brand) return;
+  const select = document.getElementById('modelSelect');
+  const msg = document.getElementById('modelLoadingMsg');
+  select.innerHTML = '<option value="">Loading models…</option>';
+  select.disabled = true;
+  msg.textContent = '';
+
+  fetch(`/models-for-brand?make=${encodeURIComponent(state.brand)}&year=${state.year}`)
+    .then(r => r.json())
+    .then(data => {
+      const models = (data.models || []).sort();
+      if (!models.length) {
+        select.innerHTML = '<option value="">No models found — try a different year</option>';
+        return;
+      }
+      select.innerHTML = '<option value="">Select model</option>' +
+        models.map(m => `<option value="${escAttr(m)}">${m}</option>`).join('');
+      select.disabled = false;
+      track('models_loaded', { brand: state.brand, year: state.year, count: models.length });
+    })
+    .catch(() => {
+      select.innerHTML = '<option value="">Error loading models</option>';
+      msg.textContent = 'Failed to load models. Check your connection.';
+      msg.style.color = '#ef4444';
+    });
+}
+
+function onModelChange() {
+  const select = document.getElementById('modelSelect');
+  const model = select.value;
+
+  if (!model) {
+    state.model = null;
+    hideDealSection();
+    hideResultSection();
+    return;
+  }
+
+  state.model = model;
+  state.msrpEstimate = estimateMsrp(state.brand, model);
+  state.rangeEstimate = msrpToRange(state.msrpEstimate);
+  populateDealSection();
+  hideResultSection();
+  openSection('dealSection');
+  setTimeout(() => scrollToEl('dealSection'), 80);
+  track('model_selected', { brand: state.brand, model, year: state.year });
 }
 
 // ══════════════════════════════════════════════════════════
@@ -1118,70 +1140,16 @@ function renderYearToggle() {
 function selectYear(year) {
   state.year = year;
   document.querySelectorAll('.year-btn').forEach(b => b.classList.toggle('active', parseInt(b.dataset.year) === year));
-  if (state.brand) loadModels();
-}
-
-// ══════════════════════════════════════════════════════════
-// Model loading
-// ══════════════════════════════════════════════════════════
-
-function resetModelGrid() {
-  document.getElementById('modelGrid').innerHTML = '<div class="loading-msg">Loading models…</div>';
-  document.querySelectorAll('.model-card').forEach(c => c.classList.remove('model-selected', 'dimmed'));
-}
-
-function loadModels() {
-  if (!state.brand) return;
-  const grid = document.getElementById('modelGrid');
-  grid.innerHTML = '<div class="loading-msg">Loading models…</div>';
-  fetch(`/models-for-brand?make=${encodeURIComponent(state.brand)}&year=${state.year}`)
-    .then(r => r.json())
-    .then(data => {
-      const models = (data.models || []).sort();
-      if (!models.length) {
-        grid.innerHTML = '<div class="loading-msg">No models found — try a different year.</div>';
-        return;
-      }
-      grid.innerHTML = models.map(m => {
-        const bodyType = inferBodyType(m);
-        return `<button class="model-card" data-model="${escAttr(m)}" onclick="selectModel('${escAttr(m)}')">
-          <div class="model-name">${m}</div>
-          <div class="model-type-badge">${bodyType}</div>
-        </button>`;
-      }).join('');
-      track('models_loaded', { brand: state.brand, year: state.year, count: models.length });
-    })
-    .catch(() => {
-      grid.innerHTML = '<div class="error-msg">Failed to load models. Check your connection.</div>';
-    });
-}
-
-// ══════════════════════════════════════════════════════════
-// Model selection
-// ══════════════════════════════════════════════════════════
-
-function selectModel(model) {
-  state.model = model;
-  document.querySelectorAll('.model-card').forEach(card => {
-    card.classList.toggle('model-selected', card.dataset.model === model);
-    card.classList.toggle('dimmed', card.dataset.model !== model);
-  });
-  state.msrpEstimate = estimateMsrp(state.brand, model);
-  state.rangeEstimate = msrpToRange(state.msrpEstimate);
-  populateDealSection();
-  collapseSection('resultSection');
-  openSection('dealSection');
-  setTimeout(() => scrollToEl('dealSection'), 80);
-  track('model_selected', { brand: state.brand, model, year: state.year });
-}
-
-function changeModel() {
-  document.querySelectorAll('.model-card').forEach(c => c.classList.remove('model-selected', 'dimmed'));
-  collapseSection('dealSection');
-  collapseSection('resultSection');
-  state.model = null;
-  scrollToEl('modelSection');
-  track('change_model');
+  if (state.brand) {
+    // If a model was selected, hide deal form (models may differ by year)
+    if (state.model) {
+      state.model = null;
+      document.getElementById('modelSelect').value = '';
+      hideDealSection();
+      hideResultSection();
+    }
+    loadModelsForSelect();
+  }
 }
 
 // ══════════════════════════════════════════════════════════
@@ -1201,7 +1169,7 @@ function populateDealSection() {
   document.getElementById('msrpDisplay').textContent = `~$${fmt(state.msrpEstimate)}`;
   document.getElementById('msrpInlineInput').value = state.msrpEstimate;
 
-  // Clear live signal — update it immediately with pre-fill
+  // Update live signal and glance with pre-fill
   updateLiveSignal();
   updateGlancePanel();
 }
@@ -1224,7 +1192,6 @@ function toggleMsrpEdit() {
       state.msrpEstimate = val;
       state.rangeEstimate = msrpToRange(val);
       display.textContent = `~$${fmt(val)}`;
-      // Re-prefill dealer offer
       document.getElementById('dealerOffer').value = Math.round(val * 0.95);
       updateLiveSignal();
       updateGlancePanel();
@@ -1267,23 +1234,6 @@ function toggleMore() {
   document.getElementById('morePanel').classList.toggle('open', moreOpen);
   document.getElementById('moreArrow').classList.toggle('open', moreOpen);
   document.getElementById('moreToggle').lastChild.textContent = moreOpen ? ' Hide details' : ' Add more details';
-}
-
-// ══════════════════════════════════════════════════════════
-// Miles helpers
-// ══════════════════════════════════════════════════════════
-
-function setMiles(n) {
-  document.getElementById('annualMiles').value = n;
-  state.annualMiles = n;
-  updateMilesMonth();
-  updateGlancePanel();
-}
-
-function updateMilesMonth() {
-  const miles = parseInt(document.getElementById('annualMiles').value) || 13500;
-  state.annualMiles = miles;
-  document.getElementById('milesMonthLabel').textContent = `≈ ${fmt(Math.round(miles / 12))} miles/month`;
 }
 
 // ══════════════════════════════════════════════════════════
@@ -1334,10 +1284,10 @@ function updateGlancePanel() {
     return;
   }
 
-  const mp           = calcMonthlyPayment(price * 0.90, aprPct, term);
+  const mp            = calcMonthlyPayment(price * 0.90, aprPct, term);
   const totalInterest = (mp * term) - (price * 0.90);
-  const totalCost    = price + totalInterest;
-  const years        = term / 12;
+  const totalCost     = price + totalInterest;
+  const years         = term / 12;
 
   document.getElementById('glanceMonthly').textContent   = `$${fmt(mp)}/mo`;
   document.getElementById('glanceInterest').textContent  = `$${fmt(totalInterest)}`;
@@ -1380,7 +1330,6 @@ function checkDeal() {
 
   track('deal_checked', { make: state.brand, model: state.model, year: state.year });
 
-  const displayPrice = offer || Math.round(state.msrpEstimate * 0.95);
   document.getElementById('resultVehicleLabel').innerHTML =
     `<strong>${state.year} ${state.brand} ${state.model}</strong>`;
 
@@ -1404,7 +1353,7 @@ function checkDeal() {
     })
     .catch(() => {
       document.getElementById('resultLoading').innerHTML =
-        '<div style="color:#ef4444;text-align:center;padding:40px 0;">Failed to analyze deal. Please try again.</div>';
+        '<div style="color:#ef4444;text-align:center;padding:40px 0;font-size:1rem;">Failed to analyze deal. Please try again.</div>';
     });
 }
 
@@ -1423,10 +1372,10 @@ function startOver() {
   state.msrpEstimate = 32000; state.reportData = null; state.loanTerm = 72;
   state.apr = 6.8; state.annualMiles = 13500; state.gasPrice = 3.45;
 
-  document.querySelectorAll('.brand-card').forEach(c => c.classList.remove('brand-selected', 'dimmed'));
+  // Reset dropdowns
+  document.getElementById('brandSelect').value = '';
+  resetModelSelect();
 
-  document.getElementById('siteHeader').classList.remove('compact');
-  document.getElementById('brandSectionLabel').textContent = 'Choose your brand';
   renderYearToggle();
 
   ['dealerOffer','zipCode','destinationCharge','dealerFees','addOns'].forEach(id => {
@@ -1437,20 +1386,18 @@ function startOver() {
   document.getElementById('annualMiles').value = DEFAULTS.annualMiles;
   document.getElementById('gasPrice').value = DEFAULTS.gasPrice;
   selectTerm(72);
-  updateMilesMonth();
 
   zipOpen = false; moreOpen = false;
   document.getElementById('zipHintRow').classList.remove('expanded');
   document.getElementById('zipInputWrap').classList.remove('open');
   document.getElementById('morePanel').classList.remove('open');
   document.getElementById('moreArrow').classList.remove('open');
+  if (document.getElementById('moreToggle').lastChild)
+    document.getElementById('moreToggle').lastChild.textContent = ' Add more details';
 
-  collapseSection('modelSection');
-  collapseSection('dealSection');
-  collapseSection('resultSection');
-  document.getElementById('modelGrid').innerHTML = '<div class="loading-msg">Loading models…</div>';
+  hideDealSection();
+  hideResultSection();
   document.getElementById('glancePanel').classList.remove('visible');
-
   hideLiveSignal();
   scrollToTop();
   track('start_over');
@@ -1460,8 +1407,10 @@ function startOver() {
 // Section helpers
 // ══════════════════════════════════════════════════════════
 
-function openSection(id) { document.getElementById(id).classList.add('open'); }
-function collapseSection(id) { document.getElementById(id).classList.remove('open'); }
+function openSection(id)    { document.getElementById(id).classList.add('open'); }
+function hideDealSection()  { document.getElementById('dealSection').classList.remove('open'); }
+function hideResultSection(){ document.getElementById('resultSection').classList.remove('open'); }
+
 function scrollToEl(id) {
   const el = document.getElementById(id);
   if (el) window.scrollTo({ top: Math.max(0, el.getBoundingClientRect().top + window.pageYOffset - 16), behavior: 'smooth' });
@@ -1563,7 +1512,7 @@ function renderOTD(d) {
 // ── Term Trap Detector ─────────────────────────────────────
 
 function renderTermTrap(d) {
-  const tc     = d.term_comparison;
+  const tc      = d.term_comparison;
   const selTerm = d.loan_term || state.loanTerm;
 
   if (!tc || !tc.terms || tc.terms.length === 0) return;
@@ -1577,25 +1526,22 @@ function renderTermTrap(d) {
     return;
   }
 
-  const terms   = tc.terms;
-  // Find actual 60mo baseline from data
-  const term60  = terms.find(t => t.term === 60);
+  const terms = tc.terms;
+  const term60 = terms.find(t => t.term === 60);
   const baseline60 = term60 ? (term60.total_interest || term60.interest || 0) : (tc.baseline_interest || 0);
 
-  // Build table header
-  let theadHTML = `<thead><tr><th></th>`;
+  let theadHTML = `<thead><tr>`;
   terms.forEach(t => {
     const isSel = t.term === selTerm;
     theadHTML += `<th class="term-col ${isSel ? 'selected-col' : ''}" onclick="switchTermFromTable(${t.term})">${t.term} mo${isSel ? ' ✓' : ''}</th>`;
   });
   theadHTML += `</tr></thead>`;
 
-  // Build table body rows
   const rows = [
-    { label: 'Monthly payment', key: 'monthly_payment', prefix: '$', fmt: true },
-    { label: 'Total interest',  key: 'total_interest',  prefix: '$', fmt: true },
-    { label: 'Total cost',      key: 'total_cost',      prefix: '$', fmt: true },
-    { label: 'vs. 60mo baseline', key: '_baseline', prefix: '', fmt: false },
+    { label: 'Monthly payment', key: 'monthly_payment', prefix: '$' },
+    { label: 'Total interest',  key: 'total_interest',  prefix: '$' },
+    { label: 'Total cost',      key: 'total_cost',      prefix: '$' },
+    { label: 'vs. 60mo baseline', key: '_baseline', prefix: '' },
   ];
 
   let tbodyHTML = `<tbody>`;
@@ -1610,16 +1556,10 @@ function renderTermTrap(d) {
           cellVal = '— baseline';
           cellClass += ' baseline-col';
         } else {
-          const diff = t.total_interest - baseline60;
-          if (diff > 0) {
-            cellVal = `+$${fmt(diff)}`;
-            cellClass += ' extra-col-pos';
-          } else if (diff < 0) {
-            cellVal = `-$${fmt(Math.abs(diff))}`;
-            cellClass += ' extra-col-neg';
-          } else {
-            cellVal = '$0';
-          }
+          const diff = (t.total_interest || t.interest) - baseline60;
+          if (diff > 0) { cellVal = `+$${fmt(diff)}`; cellClass += ' extra-col-pos'; }
+          else if (diff < 0) { cellVal = `-$${fmt(Math.abs(diff))}`; cellClass += ' extra-col-neg'; }
+          else { cellVal = '$0'; }
         }
       } else {
         cellVal = `$${fmt(t[row.key])}`;
@@ -1632,12 +1572,11 @@ function renderTermTrap(d) {
 
   document.getElementById('termTable').innerHTML = theadHTML + tbodyHTML;
 
-  // Term trap summary
-  const selData    = terms.find(t => t.term === selTerm);
-  const summaryEl  = document.getElementById('termTrapSummary');
-
+  const selData   = terms.find(t => t.term === selTerm);
+  const summaryEl = document.getElementById('termTrapSummary');
   if (selData && selTerm !== 60) {
-    const extraInterest = selData.total_interest - baseline60;
+    const selInterest = selData.total_interest || selData.interest || 0;
+    const extraInterest = selInterest - baseline60;
     const extraMonths   = selTerm - 60;
     if (extraInterest > 0) {
       summaryEl.className   = 'term-trap-summary';
@@ -1651,17 +1590,17 @@ function renderTermTrap(d) {
     summaryEl.textContent = `60 months is the baseline. Shorter terms save interest; longer terms hide costs by stretching payments.`;
   }
 
-  // Interest bar chart
-  const maxInterest = Math.max(...terms.map(t => t.total_interest));
+  const maxInterest = Math.max(...terms.map(t => t.total_interest || t.interest || 0));
   const barsHTML = terms.map(t => {
-    const pct    = Math.round((t.total_interest / maxInterest) * 100);
-    const isSel  = t.term === selTerm;
-    const isWorst = t.total_interest === maxInterest;
+    const interest = t.total_interest || t.interest || 0;
+    const pct      = Math.round((interest / maxInterest) * 100);
+    const isSel    = t.term === selTerm;
+    const isWorst  = interest === maxInterest;
     const fillClass = isWorst ? 'worst' : (isSel ? 'selected' : 'not-selected');
     return `<div class="interest-bar-row">
       <div class="interest-bar-label">${t.term} mo</div>
       <div class="interest-bar-track"><div class="interest-bar-fill ${fillClass}" style="width:${pct}%"></div></div>
-      <div class="interest-bar-amount">$${fmt(t.total_interest)}</div>
+      <div class="interest-bar-amount">$${fmt(interest)}</div>
     </div>`;
   }).join('');
   document.getElementById('interestBars').innerHTML = barsHTML;
@@ -1669,7 +1608,6 @@ function renderTermTrap(d) {
 
 function switchTermFromTable(term) {
   selectTerm(term);
-  // Re-render term trap with fresh client-side calculation (avoids stale server data)
   const price  = state.reportData ? (state.reportData.dealer_offer || state.reportData.negotiation?.estimated_invoice || 0) : parseFloat(document.getElementById('dealerOffer').value) || 0;
   const aprPct = state.apr || DEFAULTS.apr;
   if (price > 0) {
@@ -1683,11 +1621,10 @@ function switchTermFromTable(term) {
   track('term_switched_from_table', { term });
 }
 
-// ── Ownership Cost Section ─────────────────────────────────
+// ── Client-side term trap render ────────────────────────────
 
-// Client-side term trap render — uses fresh JS calculations, not stale server data
 function renderTermTrapFromClientData(comparison, selTerm) {
-  const terms = comparison.terms;
+  const terms      = comparison.terms;
   const baseline60 = comparison.baseline60Interest || 0;
 
   let theadHTML = `<thead><tr><th></th>`;
@@ -1711,11 +1648,10 @@ function renderTermTrapFromClientData(comparison, selTerm) {
     tbodyHTML += `</tr>`;
   });
 
-  // vs 60mo baseline row
   tbodyHTML += `<tr><td>vs. 60mo</td>`;
   terms.forEach(t => {
     const isSel = t.term === selTerm;
-    const diff = t.interest - baseline60;
+    const diff  = t.interest - baseline60;
     let cellVal = '', cellClass = isSel ? 'selected-col' : '';
     if (t.term === 60) { cellVal = '— baseline'; cellClass += ' baseline-col'; }
     else if (diff > 0) { cellVal = `+$${fmt(diff)}`; cellClass += ' extra-col-pos'; }
@@ -1727,29 +1663,45 @@ function renderTermTrapFromClientData(comparison, selTerm) {
   const tableEl = document.getElementById('termTable');
   if (tableEl) tableEl.innerHTML = theadHTML + tbodyHTML;
 
-  // Summary line
-  const selData = terms.find(t => t.term === selTerm);
+  const selData   = terms.find(t => t.term === selTerm);
   const summaryEl = document.getElementById('termTrapSummary');
   if (summaryEl && selData) {
-    const extra = selData.interest - baseline60;
+    const extra       = selData.interest - baseline60;
     const extraMonths = selTerm - 60;
     if (selTerm === 60) {
-      summaryEl.className = 'term-trap-summary safe';
+      summaryEl.className   = 'term-trap-summary safe';
       summaryEl.textContent = '60 months is the baseline. Shorter terms save interest; longer terms hide costs by stretching payments.';
     } else if (extra > 0) {
-      summaryEl.className = 'term-trap-summary';
+      summaryEl.className   = 'term-trap-summary';
       summaryEl.textContent = `At ${selTerm} months, you pay $${fmt(extra)} more in interest than a 60-month loan and stay in debt ${extraMonths} extra months.`;
     } else {
-      summaryEl.className = 'term-trap-summary safe';
+      summaryEl.className   = 'term-trap-summary safe';
       summaryEl.textContent = `At ${selTerm} months, you save $${fmt(Math.abs(extra))} in interest vs. a 60-month loan, but your monthly payment is higher.`;
     }
   }
+
+  const maxInterest = Math.max(...terms.map(t => t.interest));
+  const barsHTML    = terms.map(t => {
+    const pct       = Math.round((t.interest / maxInterest) * 100);
+    const isSel     = t.term === selTerm;
+    const isWorst   = t.interest === maxInterest;
+    const fillClass = isWorst ? 'worst' : (isSel ? 'selected' : 'not-selected');
+    return `<div class="interest-bar-row">
+      <div class="interest-bar-label">${t.term} mo</div>
+      <div class="interest-bar-track"><div class="interest-bar-fill ${fillClass}" style="width:${pct}%"></div></div>
+      <div class="interest-bar-amount">$${fmt(t.interest)}</div>
+    </div>`;
+  }).join('');
+  const barsEl = document.getElementById('interestBars');
+  if (barsEl) barsEl.innerHTML = barsHTML;
 }
 
+// ── Ownership Cost Section ─────────────────────────────────
+
 function renderOwnershipCost(d) {
-  const tc       = d.true_cost;
-  const selTerm  = d.loan_term || state.loanTerm;
-  const years    = selTerm / 12;
+  const tc      = d.true_cost;
+  const selTerm = d.loan_term || state.loanTerm;
+  const years   = selTerm / 12;
 
   document.getElementById('ownershipTitle').textContent = `${years}-Year Cost of Ownership`;
 
@@ -1758,14 +1710,13 @@ function renderOwnershipCost(d) {
     return;
   }
 
-  const gasP  = tc.gas_price  || DEFAULTS.gasPrice;
+  const gasP  = tc.gas_price   || DEFAULTS.gasPrice;
   const miles = tc.annual_miles || DEFAULTS.annualMiles;
   const mpg   = tc.combined_mpg || 27;
 
   document.getElementById('ownershipContext').textContent =
     `Based on ${fmt(miles)} miles/year · $${gasP.toFixed(2)}/gal · ~${mpg} combined MPG`;
 
-  // Monthly breakdown
   document.getElementById('own-monthly-payment').textContent = `$${fmt(tc.monthly_payment)}/mo`;
   document.getElementById('own-fuel-label').textContent      = `Fuel (at ${fmt(miles)}/yr @ $${gasP.toFixed(2)}/gal)`;
   document.getElementById('own-monthly-fuel').textContent    = `$${fmt(tc.monthly_fuel_cost)}/mo`;
@@ -1773,13 +1724,11 @@ function renderOwnershipCost(d) {
   document.getElementById('own-monthly-maint').textContent   = `~$${fmt(tc.monthly_maintenance)}/mo`;
   document.getElementById('own-monthly-total').textContent   = `$${fmt(tc.total_monthly_budget)}/mo`;
 
-  // Annual totals
   const annualTotal = tc.total_monthly_budget * 12;
-  document.getElementById('own-annual-total').textContent = `$${fmt(annualTotal)}/yr`;
-  document.getElementById('own-term-total').textContent   = `$${fmt(tc.total_cost)}`;
+  document.getElementById('own-annual-total').textContent   = `$${fmt(annualTotal)}/yr`;
+  document.getElementById('own-term-total').textContent     = `$${fmt(tc.total_cost)}`;
   document.getElementById('own-term-total-label').textContent = `Total over ${years} years`;
 
-  // Cost breakdown table
   const tableRows = [
     ['Depreciation', tc.depreciation],
     [`Fuel (${years} yr)`, tc.fuel_cost],
@@ -1814,10 +1763,10 @@ function renderFees(d) {
   html += `<div class="fee-note-row"><span class="${flagClass[jf.dest_flag]}"><strong>${flagIcon[jf.dest_flag]}</strong></span><span>${jf.dest_note}</span></div>`;
 
   if (jf.flagged_from_input && jf.flagged_from_input.length > 0) {
-    html += `<div style="margin-top:12px;color:#ef4444;font-weight:700;font-size:0.85rem;">⚠️ Add-ons flagged from your entry: ${jf.flagged_from_input.join(', ')}</div>`;
+    html += `<div style="margin-top:14px;color:#ef4444;font-weight:700;font-size:1rem;">⚠️ Add-ons flagged from your entry: ${jf.flagged_from_input.join(', ')}</div>`;
   }
 
-  html += `<div class="junk-addon-list"><div style="font-size:0.8rem;color:#a8bdd0;margin-bottom:10px;margin-top:8px;">Common dealer add-ons to watch for:</div>`;
+  html += `<div class="junk-addon-list"><div style="font-size:0.875rem;color:#b8cce0;margin-bottom:12px;margin-top:10px;">Common dealer add-ons to watch for:</div>`;
   (jf.junk_addons_to_watch || []).forEach(addon => {
     const vClass = addon.verdict === 'Skip it' ? 'verdict-skip' : addon.verdict === 'Wait' ? 'verdict-wait' : 'verdict-elsewhere';
     html += `<div class="junk-addon">
@@ -1836,7 +1785,7 @@ function renderNegotiationScript(d) {
   const ns   = d.negotiation_script;
   const body = document.getElementById('body-script');
   if (!ns) {
-    body.innerHTML = '<div style="color:#a8bdd0;font-size:0.88rem;">Analysis complete — see signal and term details above.</div>';
+    body.innerHTML = '<div style="color:#b8cce0;font-size:1rem;">Analysis complete — see signal and term details above.</div>';
     return;
   }
   body.innerHTML = `
@@ -1873,13 +1822,13 @@ function renderVehicleDetails(d) {
 function renderFuelEconomy(fe) {
   const body = document.getElementById('body-fuel');
   if (!fe) {
-    body.innerHTML = '<div style="color:#a8bdd0;font-size:0.85rem;">Fuel economy data not available for this vehicle.</div>';
+    body.innerHTML = '<div style="color:#b8cce0;font-size:1rem;">Fuel economy data not available for this vehicle.</div>';
     return;
   }
 
-  const miles   = state.annualMiles || DEFAULTS.annualMiles;
-  const gasP    = state.gasPrice    || DEFAULTS.gasPrice;
-  const mpg     = fe.combined_mpg  || 27;
+  const miles       = state.annualMiles || DEFAULTS.annualMiles;
+  const gasP        = state.gasPrice    || DEFAULTS.gasPrice;
+  const mpg         = fe.combined_mpg   || 27;
   const annualFuel  = Math.round((miles / mpg) * gasP);
   const monthlyFuel = Math.round(annualFuel / 12);
   const costPerMile = ((gasP / mpg) * 100).toFixed(1);
@@ -1891,48 +1840,48 @@ function renderFuelEconomy(fe) {
       <div class="mpg-stat"><div class="mpg-value">${fe.combined_mpg}</div><div class="mpg-label">Combined</div></div>
     </div>
 
-    <div style="font-size:0.82rem;color:#a8bdd0;line-height:1.6;margin-bottom:16px;">
+    <div style="font-size:0.9375rem;color:#b8cce0;line-height:1.65;margin-bottom:18px;">
       Fuel type: ${fe.fuel_type}${fe.engine ? ' · ' + fe.engine + 'L' : ''}${fe.cylinders ? ' · ' + fe.cylinders + ' cyl' : ''}
     </div>
 
-    <!-- Fuel playground -->
-    <div style="background:#1a2535;border-radius:10px;padding:16px;margin-bottom:12px;">
-      <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;color:#a8bdd0;margin-bottom:12px;">Your Fuel Scenario</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+    <div style="background:#1a2535;border-radius:10px;padding:18px;margin-bottom:14px;">
+      <div style="font-size:0.875rem;font-weight:700;color:#b8cce0;margin-bottom:14px;letter-spacing:0;">Your Fuel Scenario</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
         <div>
-          <label style="font-size:0.8rem;color:#a8bdd0;display:block;margin-bottom:4px;">Miles per year</label>
-          <input type="number" id="annualMilesResult" class="fuel-input" value="${miles}" min="1000" max="100000" step="500" oninput="updateFuelCalc()" style="width:100%;background:#0f1724;border:1.5px solid #2a3a50;border-radius:6px;padding:8px 10px;color:#fff;font-size:0.95rem;">
-          <div style="font-size:0.75rem;color:#a8bdd0;margin-top:4px;" id="fuelMilesMonth">≈ ${Math.round(miles/12).toLocaleString()} mi/month</div>
-          <div style="display:flex;gap:5px;margin-top:6px;flex-wrap:wrap;">
-            <span onclick="setFuelMiles(10000)" style="cursor:pointer;background:#0f1724;border:1px solid #2a3a50;border-radius:4px;padding:3px 8px;font-size:0.72rem;color:#a8bdd0;">10k/yr</span>
-            <span onclick="setFuelMiles(13500)" style="cursor:pointer;background:#0f1724;border:1px solid #2a3a50;border-radius:4px;padding:3px 8px;font-size:0.72rem;color:#a8bdd0;">13.5k/yr</span>
-            <span onclick="setFuelMiles(20000)" style="cursor:pointer;background:#0f1724;border:1px solid #2a3a50;border-radius:4px;padding:3px 8px;font-size:0.72rem;color:#a8bdd0;">20k/yr</span>
+          <label style="font-size:0.875rem;color:#b8cce0;display:block;margin-bottom:8px;font-weight:600;">Miles per year</label>
+          <input type="number" id="annualMilesResult" value="${miles}" min="1000" max="100000" step="500" oninput="updateFuelCalc()"
+            style="width:100%;background:#0f1724;border:1.5px solid #2a3a50;border-radius:8px;padding:10px 14px;color:#eef2f7;font-size:1rem;outline:none;font-family:inherit;">
+          <div style="font-size:0.875rem;color:#8499b0;margin-top:6px;" id="fuelMilesMonth">≈ ${Math.round(miles/12).toLocaleString()} mi/month</div>
+          <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">
+            <span onclick="setFuelMiles(10000)" style="cursor:pointer;background:#0f1724;border:1.5px solid #2a3a50;border-radius:6px;padding:4px 10px;font-size:0.875rem;color:#b8cce0;">10k/yr</span>
+            <span onclick="setFuelMiles(13500)" style="cursor:pointer;background:#0f1724;border:1.5px solid #2a3a50;border-radius:6px;padding:4px 10px;font-size:0.875rem;color:#b8cce0;">13.5k/yr</span>
+            <span onclick="setFuelMiles(20000)" style="cursor:pointer;background:#0f1724;border:1.5px solid #2a3a50;border-radius:6px;padding:4px 10px;font-size:0.875rem;color:#b8cce0;">20k/yr</span>
           </div>
         </div>
         <div>
-          <label style="font-size:0.8rem;color:#a8bdd0;display:block;margin-bottom:4px;">Gas price ($/gal)</label>
-          <input type="number" id="gasPriceResult" class="fuel-input" value="${gasP}" min="1" max="10" step="0.05" oninput="updateFuelCalc()" style="width:100%;background:#0f1724;border:1.5px solid #2a3a50;border-radius:6px;padding:8px 10px;color:#fff;font-size:0.95rem;">
-          <div style="font-size:0.75rem;color:#a8bdd0;margin-top:4px;">National avg · adjust for your area</div>
+          <label style="font-size:0.875rem;color:#b8cce0;display:block;margin-bottom:8px;font-weight:600;">Gas price ($/gal)</label>
+          <input type="number" id="gasPriceResult" value="${gasP}" min="1" max="10" step="0.05" oninput="updateFuelCalc()"
+            style="width:100%;background:#0f1724;border:1.5px solid #2a3a50;border-radius:8px;padding:10px 14px;color:#eef2f7;font-size:1rem;outline:none;font-family:inherit;">
+          <div style="font-size:0.875rem;color:#8499b0;margin-top:6px;">National avg · adjust for your area</div>
         </div>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;" id="fuelResultCards">
-        <div style="background:#0f1724;border-radius:8px;padding:10px;text-align:center;">
-          <div style="font-size:1.1rem;font-weight:800;color:#00d4aa;" id="fuelMonthly">$${monthlyFuel}</div>
-          <div style="font-size:0.72rem;color:#a8bdd0;">per month</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;" id="fuelResultCards">
+        <div style="background:#0f1724;border-radius:8px;padding:12px;text-align:center;">
+          <div style="font-size:1.25rem;font-weight:800;color:#00d4aa;" id="fuelMonthly">$${monthlyFuel}</div>
+          <div style="font-size:0.875rem;color:#8499b0;margin-top:4px;">per month</div>
         </div>
-        <div style="background:#0f1724;border-radius:8px;padding:10px;text-align:center;">
-          <div style="font-size:1.1rem;font-weight:800;color:#e8edf5;" id="fuelAnnual">$${annualFuel.toLocaleString()}</div>
-          <div style="font-size:0.72rem;color:#a8bdd0;">per year</div>
+        <div style="background:#0f1724;border-radius:8px;padding:12px;text-align:center;">
+          <div style="font-size:1.25rem;font-weight:800;color:#eef2f7;" id="fuelAnnual">$${annualFuel.toLocaleString()}</div>
+          <div style="font-size:0.875rem;color:#8499b0;margin-top:4px;">per year</div>
         </div>
-        <div style="background:#0f1724;border-radius:8px;padding:10px;text-align:center;">
-          <div style="font-size:1.1rem;font-weight:800;color:#e8edf5;" id="fuelPerMile">${costPerMile}¢</div>
-          <div style="font-size:0.72rem;color:#a8bdd0;">per mile</div>
+        <div style="background:#0f1724;border-radius:8px;padding:12px;text-align:center;">
+          <div style="font-size:1.25rem;font-weight:800;color:#eef2f7;" id="fuelPerMile">${costPerMile}¢</div>
+          <div style="font-size:0.875rem;color:#8499b0;margin-top:4px;">per mile</div>
         </div>
       </div>
     </div>
   `;
 
-  // Store MPG for live calc
   state._fuelMpg = mpg;
 }
 
@@ -1948,7 +1897,7 @@ function updateFuelCalc() {
 
   const miles = parseFloat(milesEl.value) || DEFAULTS.annualMiles;
   const gasP  = parseFloat(gasEl.value)   || DEFAULTS.gasPrice;
-  const mpg   = state._fuelMpg           || 27;
+  const mpg   = state._fuelMpg            || 27;
 
   state.annualMiles = miles;
   state.gasPrice    = gasP;
@@ -1957,16 +1906,15 @@ function updateFuelCalc() {
   const monthlyFuel = Math.round(annualFuel / 12);
   const costPerMile = ((gasP / mpg) * 100).toFixed(1);
 
-  const mEl = document.getElementById('fuelMonthly');
-  const aEl = document.getElementById('fuelAnnual');
-  const pEl = document.getElementById('fuelPerMile');
+  const mEl  = document.getElementById('fuelMonthly');
+  const aEl  = document.getElementById('fuelAnnual');
+  const pEl  = document.getElementById('fuelPerMile');
   const mmEl = document.getElementById('fuelMilesMonth');
-  if (mEl) mEl.textContent = `$${monthlyFuel}`;
-  if (aEl) aEl.textContent = `$${annualFuel.toLocaleString()}`;
-  if (pEl) pEl.textContent = `${costPerMile}¢`;
+  if (mEl)  mEl.textContent  = `$${monthlyFuel}`;
+  if (aEl)  aEl.textContent  = `$${annualFuel.toLocaleString()}`;
+  if (pEl)  pEl.textContent  = `${costPerMile}¢`;
   if (mmEl) mmEl.textContent = `≈ ${Math.round(miles/12).toLocaleString()} mi/month`;
 
-  // Also sync hidden inputs for next report call
   const hiddenMiles = document.getElementById('annualMiles');
   const hiddenGas   = document.getElementById('gasPrice');
   if (hiddenMiles) hiddenMiles.value = miles;
@@ -1982,8 +1930,10 @@ function renderRecalls(recalls, count) {
     return;
   }
   body.classList.remove('hidden'); chevron.classList.add('open');
-  body.innerHTML = `<div style="color:#ef4444;font-weight:700;font-size:0.88rem;margin-bottom:10px;">⚠️ ${count} recall${count !== 1 ? 's' : ''} found — check with your dealer about remedy status.</div>` +
-    recalls.slice(0, 5).map(r => `<div class="recall-item"><div class="recall-component">${r.component}</div><div class="recall-summary">${r.summary}</div></div>`).join('');
+  body.innerHTML = `<div style="color:#ef4444;font-weight:700;font-size:1rem;margin-bottom:12px;">⚠️ ${count} recall${count !== 1 ? 's' : ''} found — check with your dealer about remedy status.</div>` +
+    recalls.slice(0, 5).map(r =>
+      `<div class="recall-item"><div class="recall-component">${r.component}</div><div class="recall-summary">${r.summary}</div></div>`
+    ).join('');
 }
 
 // ══════════════════════════════════════════════════════════
@@ -2013,7 +1963,7 @@ function sendTip() {
   track('tip_clicked');
 }
 
-function skipTip() { document.getElementById('tipJar').style.display = 'none'; track('tip_skipped'); }
+function skipTip()  { document.getElementById('tipJar').style.display = 'none'; track('tip_skipped'); }
 function resetTipJar() {
   document.getElementById('tipActions').style.display = '';
   document.getElementById('tipThankYou').style.display = 'none';
@@ -2050,9 +2000,8 @@ function escAttr(s) { return (s || '').replace(/'/g, "\\'").replace(/"/g, '&quot
 // ══════════════════════════════════════════════════════════
 
 document.addEventListener('DOMContentLoaded', () => {
-  renderBrandGrid();
+  populateBrandSelect();
   renderYearToggle();
-  updateMilesMonth();
 
   // Dealer offer → live signal + glance (debounced)
   document.getElementById('dealerOffer').addEventListener('input', () => {
@@ -2062,35 +2011,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // APR → glance
   document.getElementById('aprInput').addEventListener('input', () => {
+    state.apr = parseFloat(document.getElementById('aprInput').value) || DEFAULTS.apr;
     debouncedGlance();
-  });
-
-  // Miles → month label + glance
-  document.getElementById('annualMiles').addEventListener('input', () => {
-    updateMilesMonth();
-    debouncedGlance();
-  });
-
-  // Gas price → glance
-  document.getElementById('gasPrice').addEventListener('input', () => {
-    state.gasPrice = parseFloat(document.getElementById('gasPrice').value) || DEFAULTS.gasPrice;
-    debouncedGlance();
-  });
-
-  // MSRP inline input — save on Enter
-  document.getElementById('msrpInlineInput').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') toggleMsrpEdit();
   });
 
   // ZIP input
   document.getElementById('zipCode').addEventListener('input', function() {
     if (this.value.length === 5) {
       document.getElementById('zipConfirmMsg').textContent = '📍 Local pricing applied';
-      document.getElementById('gasPriceHelper').textContent = 'Using national average — adjust if your local price differs';
       track('zip_entered', { zip: this.value });
     } else {
       document.getElementById('zipConfirmMsg').textContent = '';
     }
+  });
+
+  // MSRP inline input — save on Enter
+  document.getElementById('msrpInlineInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') toggleMsrpEdit();
   });
 
   track('page_loaded');
