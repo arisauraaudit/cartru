@@ -84,7 +84,7 @@ a:hover { text-decoration: underline; }
   border: 1.5px solid #2a3a50;
   border-radius: 16px;
   padding: 28px 28px 24px;
-  margin-bottom: 24px;
+  margin-bottom: 36px;
 }
 
 .year-toggle {
@@ -231,7 +231,7 @@ a:hover { text-decoration: underline; }
 /* Dealer price input (large) */
 .offer-wrap { margin-bottom: 24px; }
 .offer-label { display: block; font-size: 0.875rem; font-weight: 600; color: #b8cce0; margin-bottom: 8px; letter-spacing: 0; }
-.offer-sublabel { font-size: 0.875rem; color: #8499b0; margin-bottom: 10px; }
+.offer-sublabel { font-size: 0.8rem; color: #6a8599; margin-bottom: 10px; }
 .offer-input-row {
   display: flex; align-items: center; background: #1a2535; border: 1.5px solid #2a3a50;
   border-radius: 12px; overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s;
@@ -283,7 +283,7 @@ a:hover { text-decoration: underline; }
 }
 .apr-input:focus { border-color: #00d4aa; box-shadow: 0 0 0 3px rgba(0,212,170,0.12); }
 .apr-pct-sign { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #8499b0; font-weight: 700; pointer-events: none; }
-.field-helper { font-size: 0.875rem; color: #8499b0; margin-top: 6px; line-height: 1.5; }
+.field-helper { font-size: 0.8rem; color: #6a8599; margin-top: 5px; line-height: 1.5; }
 
 /* Pill toggle for loan term */
 .term-pills { display: flex; gap: 6px; flex-wrap: wrap; }
@@ -314,8 +314,8 @@ a:hover { text-decoration: underline; }
 }
 .glance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px; }
 @media (min-width: 520px) { .glance-grid { grid-template-columns: 1fr 1fr 1fr 1fr; } }
-.glance-label { font-size: 0.875rem; color: #8499b0; margin-bottom: 3px; }
-.glance-value { font-size: 1rem; font-weight: 800; color: #00d4aa; }
+.glance-label { font-size: 0.79rem; color: #6a8599; margin-bottom: 2px; letter-spacing: 0; }
+.glance-value { font-size: 1.5rem; font-weight: 800; color: #00d4aa; }
 
 /* ZIP section */
 .zip-section { margin-bottom: 24px; }
@@ -389,11 +389,11 @@ a:hover { text-decoration: underline; }
 .result-vehicle-label { font-size: 0.9375rem; color: #b8cce0; }
 .result-vehicle-label strong { color: #eef2f7; font-weight: 700; }
 .change-btn {
-  background: none; border: none; color: #b8cce0; font-size: 0.9375rem; font-weight: 600;
+  background: none; border: none; color: #6a8599; font-size: 0.8rem; font-weight: 500;
   cursor: pointer; padding: 0; display: inline-flex; align-items: center; gap: 4px;
-  transition: color 0.2s; font-family: inherit;
+  transition: color 0.2s; font-family: inherit; text-decoration: underline; text-underline-offset: 3px;
 }
-.change-btn:hover { color: #00d4aa; }
+.change-btn:hover { color: #b8cce0; }
 .edit-offer-btn {
   background: #1a2535; border: 1.5px solid #2a3a50; border-radius: 8px; padding: 8px 18px;
   color: #b8cce0; font-size: 0.875rem; font-weight: 600; cursor: pointer;
@@ -410,7 +410,7 @@ a:hover { text-decoration: underline; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ── Signal badge ── */
-.signal-block { border-radius: 14px; padding: 26px; margin-bottom: 16px; display: flex; align-items: flex-start; gap: 18px; }
+.signal-block { border-radius: 14px; padding: 28px; margin-bottom: 24px; display: flex; align-items: flex-start; gap: 18px; }
 .signal-block.green { background: rgba(0,212,170,0.08); border: 2px solid rgba(0,212,170,0.45); }
 .signal-block.yellow { background: rgba(245,158,11,0.08); border: 2px solid rgba(245,158,11,0.45); }
 .signal-block.red { background: rgba(239,68,68,0.08); border: 2px solid rgba(239,68,68,0.45); }
@@ -442,7 +442,7 @@ a:hover { text-decoration: underline; }
 .range-disclaimer { font-size: 0.875rem; color: #8499b0; margin-top: 10px; line-height: 1.55; }
 
 /* ── Reasons ── */
-.reasons-block { background: #1a2535; border-radius: 12px; padding: 22px; margin-bottom: 16px; }
+.reasons-block { background: #1a2535; border-radius: 12px; padding: 24px; margin-bottom: 24px; }
 .block-title { font-size: 1rem; font-weight: 700; color: #eef2f7; margin-bottom: 16px; }
 .reason-item { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 12px; font-size: 1rem; color: #b8cce0; line-height: 1.65; }
 .reason-item:last-child { margin-bottom: 0; }
@@ -454,7 +454,7 @@ a:hover { text-decoration: underline; }
 .say-text { font-size: 1rem; font-weight: 700; color: #00d4aa; line-height: 1.65; }
 
 /* ── Collapsible sections ── */
-.section { background: #1a2535; border-radius: 12px; margin-bottom: 12px; overflow: hidden; }
+.section { background: #1a2535; border-radius: 12px; margin-bottom: 16px; overflow: hidden; }
 .section-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; cursor: pointer; user-select: none; transition: background 0.2s; }
 .section-header:hover { background: #1e2e42; }
 .section-title { font-size: 1rem; font-weight: 700; color: #eef2f7; display: flex; align-items: center; gap: 10px; }
@@ -620,7 +620,7 @@ a:hover { text-decoration: underline; }
     <div class="year-toggle" id="yearToggle"></div>
 
     <!-- Brand logo grid -->
-    <div class="brand-section-label">Select your brand</div>
+    <div class="brand-section-label" style="font-size:0.8rem;color:#6a8599;font-weight:500;">Top 20 brands by US sales</div>
     <div class="brand-grid" id="brandGrid"></div>
     <div style="margin-top:10px;font-size:0.875rem;color:#8499b0;text-align:center;">
       Missing a brand? <a href="mailto:hello@cartru.com" style="color:#00d4aa;">Contact us and we'll prioritize it.</a>
