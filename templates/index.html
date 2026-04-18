@@ -108,6 +108,50 @@ a:hover { text-decoration: underline; }
 .year-btn:hover { border-color: #00d4aa; color: #00d4aa; }
 .year-btn.active { border-color: #00d4aa; background: rgba(0,212,170,0.12); color: #00d4aa; }
 
+/* Brand logo grid */
+.brand-section-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #b8cce0;
+  margin-bottom: 14px;
+  letter-spacing: 0;
+}
+.brand-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-bottom: 8px;
+}
+@media (max-width: 560px) { .brand-grid { grid-template-columns: repeat(3, 1fr); } }
+
+.brand-card {
+  background: #0f1724;
+  border: 1.5px solid #2a3a50;
+  border-radius: 10px;
+  padding: 12px 8px 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.15s, opacity 0.25s, filter 0.25s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-height: 72px;
+  justify-content: center;
+}
+.brand-card:hover { border-color: #00d4aa; transform: scale(1.03); }
+.brand-card.brand-selected { border-color: #00d4aa !important; background: rgba(0,212,170,0.08) !important; opacity: 1 !important; filter: none !important; }
+.brand-card.brand-inactive { opacity: 0.3; filter: grayscale(60%); transform: scale(0.96); }
+.brand-logo-img { width: 32px; height: 32px; object-fit: contain; }
+.brand-logo-text { font-size: 0.875rem; font-weight: 900; color: #fff; letter-spacing: 0.5px; }
+.brand-name-label { font-size: 0.875rem; font-weight: 600; color: #b8cce0; line-height: 1.2; }
+.brand-card.brand-selected .brand-name-label { color: #00d4aa; }
+
+/* Model row */
+.model-row {
+  margin-top: 20px;
+}
+
 .brand-model-row {
   display: flex;
   gap: 16px;
@@ -569,23 +613,24 @@ a:hover { text-decoration: underline; }
   </header>
 
   <!-- ══════════════════════════════════════════ -->
-  <!-- Selection: Year + Brand + Model            -->
+  <!-- Selection: Year + Brand (logos) + Model    -->
   <!-- ══════════════════════════════════════════ -->
   <section class="selection-section">
     <!-- Year pills -->
     <div class="year-toggle" id="yearToggle"></div>
 
-    <!-- Brand + Model dropdowns -->
-    <div class="brand-model-row">
-      <div class="select-group">
-        <label for="brandSelect">Brand</label>
-        <select id="brandSelect" class="brand-model-select" onchange="onBrandChange()">
-          <option value="">Select brand</option>
-        </select>
-      </div>
-      <div class="select-group">
+    <!-- Brand logo grid -->
+    <div class="brand-section-label">Select your brand</div>
+    <div class="brand-grid" id="brandGrid"></div>
+    <div style="margin-top:10px;font-size:0.875rem;color:#8499b0;text-align:center;">
+      Missing a brand? <a href="mailto:hello@cartru.com" style="color:#00d4aa;">Contact us and we'll prioritize it.</a>
+    </div>
+
+    <!-- Model dropdown (appears after brand selected) -->
+    <div class="model-row reveal-panel" id="modelRow">
+      <div class="select-group" style="width:100%;">
         <label for="modelSelect">Model</label>
-        <select id="modelSelect" class="brand-model-select" disabled onchange="onModelChange()">
+        <select id="modelSelect" class="brand-model-select" onchange="onModelChange()">
           <option value="">Select model</option>
         </select>
       </div>
@@ -1042,32 +1087,51 @@ function debounce(fn, delay) {
 // Brand & Model dropdowns
 // ══════════════════════════════════════════════════════════
 
-function populateBrandSelect() {
-  const select = document.getElementById('brandSelect');
-  select.innerHTML = '<option value="">Select brand</option>' +
-    BRANDS.map(b => `<option value="${escAttr(b.name)}">${b.name}</option>`).join('');
+const CDN = 'https://cdn.simpleicons.org';
+
+function renderBrandGrid() {
+  const grid = document.getElementById('brandGrid');
+  if (!grid) return;
+  grid.innerHTML = BRANDS.map(b => {
+    const logoHtml = b.slug
+      ? `<img class="brand-logo-img" src="${CDN}/${b.slug}/FFFFFF" alt="${b.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+         <span class="brand-logo-text" style="display:none">${b.name.substring(0,3).toUpperCase()}</span>`
+      : `<span class="brand-logo-text">${b.name.substring(0,3).toUpperCase()}</span>`;
+    return `<div class="brand-card" onclick="selectBrand('${escAttr(b.name)}')" id="brand-${escAttr(b.name.toLowerCase().replace(/\s/g,'-'))}">
+      ${logoHtml}
+      <div class="brand-name-label">${b.name}</div>
+    </div>`;
+  }).join('');
 }
 
-function onBrandChange() {
-  const select = document.getElementById('brandSelect');
-  const brand = select.value;
-
-  if (!brand) {
-    state.brand = null;
-    state.model = null;
-    resetModelSelect();
-    hideDealSection();
-    hideResultSection();
-    return;
-  }
-
+function selectBrand(brand) {
   state.brand = brand;
   state.model = null;
+
+  // Update card states
+  document.querySelectorAll('.brand-card').forEach(card => {
+    card.classList.remove('brand-selected', 'brand-inactive');
+    card.classList.add('brand-inactive');
+  });
+  const selectedCard = document.getElementById('brand-' + brand.toLowerCase().replace(/\s/g, '-'));
+  if (selectedCard) {
+    selectedCard.classList.remove('brand-inactive');
+    selectedCard.classList.add('brand-selected');
+  }
+
+  // Show model row
+  const modelRow = document.getElementById('modelRow');
+  if (modelRow) { modelRow.classList.add('open'); }
+
   resetModelSelect();
   hideDealSection();
   hideResultSection();
   loadModelsForSelect();
   track('brand_selected', { brand });
+}
+
+function onBrandChange() {
+  // Kept for compatibility — actual selection via selectBrand()
 }
 
 function resetModelSelect() {
@@ -1372,8 +1436,10 @@ function startOver() {
   state.msrpEstimate = 32000; state.reportData = null; state.loanTerm = 72;
   state.apr = 6.8; state.annualMiles = 13500; state.gasPrice = 3.45;
 
-  // Reset dropdowns
-  document.getElementById('brandSelect').value = '';
+  // Reset brand grid + model
+  document.querySelectorAll('.brand-card').forEach(c => c.classList.remove('brand-selected','brand-inactive'));
+  const modelRow = document.getElementById('modelRow');
+  if (modelRow) modelRow.classList.remove('open');
   resetModelSelect();
 
   renderYearToggle();
@@ -2000,7 +2066,7 @@ function escAttr(s) { return (s || '').replace(/'/g, "\\'").replace(/"/g, '&quot
 // ══════════════════════════════════════════════════════════
 
 document.addEventListener('DOMContentLoaded', () => {
-  populateBrandSelect();
+  renderBrandGrid();
   renderYearToggle();
 
   // Dealer offer → live signal + glance (debounced)
