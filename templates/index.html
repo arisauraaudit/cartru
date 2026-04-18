@@ -681,27 +681,9 @@ a:hover { text-decoration: underline; }
       </div>
     </div>
 
-    <!-- Fuel / usage section -->
-    <div class="fuel-fields">
-      <div class="fuel-fields-title">Fuel &amp; Usage</div>
-      <div class="fuel-fields-row">
-        <div class="fuel-group">
-          <label>Miles per year</label>
-          <input type="number" id="annualMiles" class="fuel-input" value="13500" min="1000" max="100000" step="500" autocomplete="off">
-          <div class="miles-month-label" id="milesMonthLabel">≈ 1,125 miles/month</div>
-          <div class="miles-chips">
-            <span class="miles-chip" onclick="setMiles(10000)">10k/yr</span>
-            <span class="miles-chip" onclick="setMiles(13500)">13.5k/yr</span>
-            <span class="miles-chip" onclick="setMiles(20000)">20k/yr</span>
-          </div>
-        </div>
-        <div class="fuel-group">
-          <label>Gas price ($/gal)</label>
-          <input type="number" id="gasPrice" class="fuel-input" value="3.45" min="1" max="10" step="0.05" autocomplete="off">
-          <div class="field-helper" id="gasPriceHelper">National average · adjust for your area</div>
-        </div>
-      </div>
-    </div>
+    <!-- Fuel inputs hidden here, moved to fuel section in results — values still in state -->
+    <input type="hidden" id="annualMiles" value="13500">
+    <input type="hidden" id="gasPrice" value="3.45">
 
     <!-- More details -->
     <button class="more-toggle" id="moreToggle" onclick="toggleMore()">
@@ -1574,8 +1556,19 @@ function renderTermTrap(d) {
 
   if (!tc || !tc.terms || tc.terms.length === 0) return;
 
+  // Prefer client-side fresh calculation over stale server data
+  const price  = d.dealer_offer || (d.negotiation && d.negotiation.estimated_invoice) || 0;
+  const aprPct = state.apr || DEFAULTS.apr;
+  if (price > 0) {
+    const fresh = calcTermComparison(price, aprPct);
+    renderTermTrapFromClientData(fresh, selTerm);
+    return;
+  }
+
   const terms   = tc.terms;
-  const baseline60 = tc.baseline_interest || 0;
+  // Find actual 60mo baseline from data
+  const term60  = terms.find(t => t.term === 60);
+  const baseline60 = term60 ? (term60.total_interest || term60.interest || 0) : (tc.baseline_interest || 0);
 
   // Build table header
   let theadHTML = `<thead><tr><th></th>`;
@@ -1664,16 +1657,82 @@ function renderTermTrap(d) {
 
 function switchTermFromTable(term) {
   selectTerm(term);
-  // Re-render term trap with updated selection if we have report data
+  // Re-render term trap with fresh client-side calculation (avoids stale server data)
+  const price  = state.reportData ? (state.reportData.dealer_offer || state.reportData.negotiation?.estimated_invoice || 0) : parseFloat(document.getElementById('dealerOffer').value) || 0;
+  const aprPct = state.apr || DEFAULTS.apr;
+  if (price > 0) {
+    const freshComparison = calcTermComparison(price, aprPct);
+    renderTermTrapFromClientData(freshComparison, term);
+  }
   if (state.reportData) {
     state.reportData.loan_term = term;
-    renderTermTrap(state.reportData);
     renderOwnershipCost(state.reportData);
   }
   track('term_switched_from_table', { term });
 }
 
 // ── Ownership Cost Section ─────────────────────────────────
+
+// Client-side term trap render — uses fresh JS calculations, not stale server data
+function renderTermTrapFromClientData(comparison, selTerm) {
+  const terms = comparison.terms;
+  const baseline60 = comparison.baseline60Interest || 0;
+
+  let theadHTML = `<thead><tr><th></th>`;
+  terms.forEach(t => {
+    const isSel = t.term === selTerm;
+    theadHTML += `<th class="term-col ${isSel ? 'selected-col' : ''}" onclick="switchTermFromTable(${t.term})">${t.term} mo${isSel ? ' ✓' : ''}</th>`;
+  });
+  theadHTML += `</tr></thead>`;
+
+  let tbodyHTML = `<tbody>`;
+  [
+    { label: 'Monthly payment', key: 'monthly', prefix: '$' },
+    { label: 'Total interest',  key: 'interest', prefix: '$' },
+    { label: 'Total cost',      key: 'total',    prefix: '$' },
+  ].forEach(row => {
+    tbodyHTML += `<tr><td>${row.label}</td>`;
+    terms.forEach(t => {
+      const isSel = t.term === selTerm;
+      tbodyHTML += `<td class="${isSel ? 'selected-col' : ''}">${row.prefix}${fmt(t[row.key])}</td>`;
+    });
+    tbodyHTML += `</tr>`;
+  });
+
+  // vs 60mo baseline row
+  tbodyHTML += `<tr><td>vs. 60mo</td>`;
+  terms.forEach(t => {
+    const isSel = t.term === selTerm;
+    const diff = t.interest - baseline60;
+    let cellVal = '', cellClass = isSel ? 'selected-col' : '';
+    if (t.term === 60) { cellVal = '— baseline'; cellClass += ' baseline-col'; }
+    else if (diff > 0) { cellVal = `+$${fmt(diff)}`; cellClass += ' extra-col-pos'; }
+    else { cellVal = `-$${fmt(Math.abs(diff))}`; cellClass += ' extra-col-neg'; }
+    tbodyHTML += `<td class="${cellClass.trim()}">${cellVal}</td>`;
+  });
+  tbodyHTML += `</tr></tbody>`;
+
+  const tableEl = document.getElementById('termTable');
+  if (tableEl) tableEl.innerHTML = theadHTML + tbodyHTML;
+
+  // Summary line
+  const selData = terms.find(t => t.term === selTerm);
+  const summaryEl = document.getElementById('termTrapSummary');
+  if (summaryEl && selData) {
+    const extra = selData.interest - baseline60;
+    const extraMonths = selTerm - 60;
+    if (selTerm === 60) {
+      summaryEl.className = 'term-trap-summary safe';
+      summaryEl.textContent = '60 months is the baseline. Shorter terms save interest; longer terms hide costs by stretching payments.';
+    } else if (extra > 0) {
+      summaryEl.className = 'term-trap-summary';
+      summaryEl.textContent = `At ${selTerm} months, you pay $${fmt(extra)} more in interest than a 60-month loan and stay in debt ${extraMonths} extra months.`;
+    } else {
+      summaryEl.className = 'term-trap-summary safe';
+      summaryEl.textContent = `At ${selTerm} months, you save $${fmt(Math.abs(extra))} in interest vs. a 60-month loan, but your monthly payment is higher.`;
+    }
+  }
+}
 
 function renderOwnershipCost(d) {
   const tc       = d.true_cost;
@@ -1805,17 +1864,101 @@ function renderFuelEconomy(fe) {
     body.innerHTML = '<div style="color:#8fa3b8;font-size:0.85rem;">Fuel economy data not available for this vehicle.</div>';
     return;
   }
+
+  const miles   = state.annualMiles || DEFAULTS.annualMiles;
+  const gasP    = state.gasPrice    || DEFAULTS.gasPrice;
+  const mpg     = fe.combined_mpg  || 27;
+  const annualFuel  = Math.round((miles / mpg) * gasP);
+  const monthlyFuel = Math.round(annualFuel / 12);
+  const costPerMile = ((gasP / mpg) * 100).toFixed(1);
+
   body.innerHTML = `
     <div class="mpg-row">
       <div class="mpg-stat"><div class="mpg-value">${fe.city_mpg}</div><div class="mpg-label">City MPG</div></div>
       <div class="mpg-stat"><div class="mpg-value">${fe.highway_mpg}</div><div class="mpg-label">Hwy MPG</div></div>
       <div class="mpg-stat"><div class="mpg-value">${fe.combined_mpg}</div><div class="mpg-label">Combined</div></div>
     </div>
-    <div style="font-size:0.82rem;color:#8fa3b8;line-height:1.6;">
-      Fuel type: ${fe.fuel_type}${fe.engine ? ' · ' + fe.engine + 'L' : ''}${fe.cylinders ? ' · ' + fe.cylinders + ' cyl' : ''}${fe.transmission ? '<br>' + fe.transmission : ''}
-      ${fe.annual_fuel_cost && fe.annual_fuel_cost !== 'N/A' ? '<br>Est. annual fuel cost: <strong style="color:#e8edf5">$' + fmt(fe.annual_fuel_cost) + '</strong> (EPA est.)' : ''}
+
+    <div style="font-size:0.82rem;color:#8fa3b8;line-height:1.6;margin-bottom:16px;">
+      Fuel type: ${fe.fuel_type}${fe.engine ? ' · ' + fe.engine + 'L' : ''}${fe.cylinders ? ' · ' + fe.cylinders + ' cyl' : ''}
+    </div>
+
+    <!-- Fuel playground -->
+    <div style="background:#1a2535;border-radius:10px;padding:16px;margin-bottom:12px;">
+      <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;color:#8fa3b8;margin-bottom:12px;">Your Fuel Scenario</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+        <div>
+          <label style="font-size:0.8rem;color:#8fa3b8;display:block;margin-bottom:4px;">Miles per year</label>
+          <input type="number" id="annualMilesResult" class="fuel-input" value="${miles}" min="1000" max="100000" step="500" oninput="updateFuelCalc()" style="width:100%;background:#0f1724;border:1.5px solid #2a3a50;border-radius:6px;padding:8px 10px;color:#fff;font-size:0.95rem;">
+          <div style="font-size:0.75rem;color:#8fa3b8;margin-top:4px;" id="fuelMilesMonth">≈ ${Math.round(miles/12).toLocaleString()} mi/month</div>
+          <div style="display:flex;gap:5px;margin-top:6px;flex-wrap:wrap;">
+            <span onclick="setFuelMiles(10000)" style="cursor:pointer;background:#0f1724;border:1px solid #2a3a50;border-radius:4px;padding:3px 8px;font-size:0.72rem;color:#8fa3b8;">10k/yr</span>
+            <span onclick="setFuelMiles(13500)" style="cursor:pointer;background:#0f1724;border:1px solid #2a3a50;border-radius:4px;padding:3px 8px;font-size:0.72rem;color:#8fa3b8;">13.5k/yr</span>
+            <span onclick="setFuelMiles(20000)" style="cursor:pointer;background:#0f1724;border:1px solid #2a3a50;border-radius:4px;padding:3px 8px;font-size:0.72rem;color:#8fa3b8;">20k/yr</span>
+          </div>
+        </div>
+        <div>
+          <label style="font-size:0.8rem;color:#8fa3b8;display:block;margin-bottom:4px;">Gas price ($/gal)</label>
+          <input type="number" id="gasPriceResult" class="fuel-input" value="${gasP}" min="1" max="10" step="0.05" oninput="updateFuelCalc()" style="width:100%;background:#0f1724;border:1.5px solid #2a3a50;border-radius:6px;padding:8px 10px;color:#fff;font-size:0.95rem;">
+          <div style="font-size:0.75rem;color:#8fa3b8;margin-top:4px;">National avg · adjust for your area</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;" id="fuelResultCards">
+        <div style="background:#0f1724;border-radius:8px;padding:10px;text-align:center;">
+          <div style="font-size:1.1rem;font-weight:800;color:#00d4aa;" id="fuelMonthly">$${monthlyFuel}</div>
+          <div style="font-size:0.72rem;color:#8fa3b8;">per month</div>
+        </div>
+        <div style="background:#0f1724;border-radius:8px;padding:10px;text-align:center;">
+          <div style="font-size:1.1rem;font-weight:800;color:#e8edf5;" id="fuelAnnual">$${annualFuel.toLocaleString()}</div>
+          <div style="font-size:0.72rem;color:#8fa3b8;">per year</div>
+        </div>
+        <div style="background:#0f1724;border-radius:8px;padding:10px;text-align:center;">
+          <div style="font-size:1.1rem;font-weight:800;color:#e8edf5;" id="fuelPerMile">${costPerMile}¢</div>
+          <div style="font-size:0.72rem;color:#8fa3b8;">per mile</div>
+        </div>
+      </div>
     </div>
   `;
+
+  // Store MPG for live calc
+  state._fuelMpg = mpg;
+}
+
+function setFuelMiles(miles) {
+  const el = document.getElementById('annualMilesResult');
+  if (el) { el.value = miles; updateFuelCalc(); }
+}
+
+function updateFuelCalc() {
+  const milesEl = document.getElementById('annualMilesResult');
+  const gasEl   = document.getElementById('gasPriceResult');
+  if (!milesEl || !gasEl) return;
+
+  const miles = parseFloat(milesEl.value) || DEFAULTS.annualMiles;
+  const gasP  = parseFloat(gasEl.value)   || DEFAULTS.gasPrice;
+  const mpg   = state._fuelMpg           || 27;
+
+  state.annualMiles = miles;
+  state.gasPrice    = gasP;
+
+  const annualFuel  = Math.round((miles / mpg) * gasP);
+  const monthlyFuel = Math.round(annualFuel / 12);
+  const costPerMile = ((gasP / mpg) * 100).toFixed(1);
+
+  const mEl = document.getElementById('fuelMonthly');
+  const aEl = document.getElementById('fuelAnnual');
+  const pEl = document.getElementById('fuelPerMile');
+  const mmEl = document.getElementById('fuelMilesMonth');
+  if (mEl) mEl.textContent = `$${monthlyFuel}`;
+  if (aEl) aEl.textContent = `$${annualFuel.toLocaleString()}`;
+  if (pEl) pEl.textContent = `${costPerMile}¢`;
+  if (mmEl) mmEl.textContent = `≈ ${Math.round(miles/12).toLocaleString()} mi/month`;
+
+  // Also sync hidden inputs for next report call
+  const hiddenMiles = document.getElementById('annualMiles');
+  const hiddenGas   = document.getElementById('gasPrice');
+  if (hiddenMiles) hiddenMiles.value = miles;
+  if (hiddenGas)   hiddenGas.value   = gasP;
 }
 
 function renderRecalls(recalls, count) {
