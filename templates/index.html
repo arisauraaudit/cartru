@@ -600,6 +600,51 @@ a:hover { text-decoration: underline; }
 
 /* ── Utility ── */
 .hidden { display: none !important; }
+/* Model chips */
+.model-chips-label {
+  font-size: 0.8rem; font-weight: 500; color: #6a8599;
+  margin-bottom: 12px; letter-spacing: 0;
+}
+.model-chips-grid {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 4px;
+}
+.model-chip {
+  background: #0f1724; border: 1.5px solid #2a3a50; border-radius: 8px;
+  padding: 8px 14px; font-size: 0.9rem; font-weight: 600; color: #b8cce0;
+  cursor: pointer; transition: border-color 0.18s, color 0.18s, background 0.18s;
+  white-space: nowrap; font-family: inherit;
+}
+.model-chip:hover { border-color: #00d4aa; color: #eef2f7; }
+.model-chip.model-selected { border-color: #00d4aa; background: rgba(0,212,170,0.1); color: #00d4aa; }
+.model-chip.model-hidden { display: none; }
+.model-show-more-btn {
+  background: none; border: none; color: #6a8599; font-size: 0.8rem;
+  cursor: pointer; padding: 6px 0; font-family: inherit;
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.model-show-more-btn:hover { color: #b8cce0; }
+
+/* Footer */
+.site-footer {
+  border-top: 1px solid #1e2d3d; margin-top: 64px; padding: 28px 0 40px;
+  text-align: center;
+}
+.footer-love {
+  font-size: 0.9rem; color: #6a8599; margin-bottom: 16px; line-height: 1.6;
+}
+.footer-love span { color: #ef4444; }
+.footer-links {
+  display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.footer-link {
+  font-size: 0.825rem; color: #6a8599; text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-link:hover { color: #b8cce0; }
+.footer-copy {
+  font-size: 0.775rem; color: #4a6070; margin-top: 8px;
+}
 </style>
 </head>
 <body>
@@ -626,13 +671,12 @@ a:hover { text-decoration: underline; }
       Missing a brand? <a href="mailto:hello@cartru.com" style="color:#00d4aa;">Contact us and we'll prioritize it.</a>
     </div>
 
-    <!-- Model dropdown (appears after brand selected) -->
+    <!-- Model chips (appears after brand selected) -->
     <div class="model-row reveal-panel" id="modelRow">
-      <div class="select-group" style="width:100%;">
-        <label for="modelSelect">Model</label>
-        <select id="modelSelect" class="brand-model-select" onchange="onModelChange()">
-          <option value="">Select model</option>
-        </select>
+      <div class="model-chips-label">Select your model</div>
+      <div class="model-chips-grid" id="modelChipsGrid"></div>
+      <div class="model-show-more" id="modelShowMore" style="display:none;">
+        <button class="model-show-more-btn" onclick="showAllModels()">Show all models ↓</button>
       </div>
     </div>
     <div class="model-loading-msg" id="modelLoadingMsg"></div>
@@ -1134,53 +1178,60 @@ function onBrandChange() {
   // Kept for compatibility — actual selection via selectBrand()
 }
 
-function resetModelSelect() {
-  const select = document.getElementById('modelSelect');
-  select.innerHTML = '<option value="">Select model</option>';
-  select.disabled = true;
-  document.getElementById('modelLoadingMsg').textContent = '';
-}
+const MODEL_CHIP_LIMIT = 16; // show first N chips, "show all" for longer lists
+let allModels = [];
 
 function loadModelsForSelect() {
   if (!state.brand) return;
-  const select = document.getElementById('modelSelect');
-  const msg = document.getElementById('modelLoadingMsg');
-  select.innerHTML = '<option value="">Loading models…</option>';
-  select.disabled = true;
+  const grid = document.getElementById('modelChipsGrid');
+  const msg  = document.getElementById('modelLoadingMsg');
+  const more = document.getElementById('modelShowMore');
+  grid.innerHTML = '<span style="color:#6a8599;font-size:0.875rem;">Loading models…</span>';
+  if (more) more.style.display = 'none';
   msg.textContent = '';
+  allModels = [];
 
   fetch(`/models-for-brand?make=${encodeURIComponent(state.brand)}&year=${state.year}`)
     .then(r => r.json())
     .then(data => {
-      const models = (data.models || []).sort();
-      if (!models.length) {
-        select.innerHTML = '<option value="">No models found — try a different year</option>';
+      allModels = (data.models || []).sort();
+      if (!allModels.length) {
+        grid.innerHTML = '<span style="color:#6a8599;font-size:0.875rem;">No models found — try a different year</span>';
         return;
       }
-      select.innerHTML = '<option value="">Select model</option>' +
-        models.map(m => `<option value="${escAttr(m)}">${m}</option>`).join('');
-      select.disabled = false;
-      track('models_loaded', { brand: state.brand, year: state.year, count: models.length });
+      renderModelChips(false);
+      track('models_loaded', { brand: state.brand, year: state.year, count: allModels.length });
     })
     .catch(() => {
-      select.innerHTML = '<option value="">Error loading models</option>';
-      msg.textContent = 'Failed to load models. Check your connection.';
-      msg.style.color = '#ef4444';
+      grid.innerHTML = '<span style="color:#ef4444;font-size:0.875rem;">Error loading models — check your connection</span>';
     });
 }
 
-function onModelChange() {
-  const select = document.getElementById('modelSelect');
-  const model = select.value;
-
-  if (!model) {
-    state.model = null;
-    hideDealSection();
-    hideResultSection();
-    return;
+function renderModelChips(showAll) {
+  const grid = document.getElementById('modelChipsGrid');
+  const more = document.getElementById('modelShowMore');
+  const visible = showAll ? allModels : allModels.slice(0, MODEL_CHIP_LIMIT);
+  grid.innerHTML = visible.map(m =>
+    `<button class="model-chip ${m === state.model ? 'model-selected' : ''}" onclick="selectModelChip('${escAttr(m)}')">${m}</button>`
+  ).join('');
+  if (more) {
+    if (!showAll && allModels.length > MODEL_CHIP_LIMIT) {
+      more.style.display = 'block';
+      more.querySelector('button').textContent = `Show all ${allModels.length} models ↓`;
+    } else {
+      more.style.display = 'none';
+    }
   }
+}
 
+function showAllModels() { renderModelChips(true); }
+
+function selectModelChip(model) {
   state.model = model;
+  // Update chip states
+  document.querySelectorAll('.model-chip').forEach(c => {
+    c.classList.toggle('model-selected', c.textContent === model);
+  });
   state.msrpEstimate = estimateMsrp(state.brand, model);
   state.rangeEstimate = msrpToRange(state.msrpEstimate);
   populateDealSection();
@@ -1188,6 +1239,18 @@ function onModelChange() {
   openSection('dealSection');
   setTimeout(() => scrollToEl('dealSection'), 80);
   track('model_selected', { brand: state.brand, model, year: state.year });
+}
+
+function onModelChange() { /* legacy — chips used instead */ }
+
+function resetModelSelect() {
+  const grid = document.getElementById('modelChipsGrid');
+  const more = document.getElementById('modelShowMore');
+  const msg  = document.getElementById('modelLoadingMsg');
+  if (grid) grid.innerHTML = '';
+  if (more) more.style.display = 'none';
+  if (msg)  msg.textContent = '';
+  allModels = [];
 }
 
 // ══════════════════════════════════════════════════════════
@@ -2099,6 +2162,19 @@ document.addEventListener('DOMContentLoaded', () => {
   track('page_loaded');
 });
 </script>
+
+<footer class="site-footer">
+  <div class="page">
+    <div class="footer-love">Built with love <span>❤️</span> for buyers, not dealers.</div>
+    <div class="footer-links">
+      <a href="mailto:hello@cartru.com" class="footer-link">Contact</a>
+      <a href="#" class="footer-link">X / Twitter</a>
+      <a href="#" class="footer-link">Instagram</a>
+      <a href="#" class="footer-link">LinkedIn</a>
+    </div>
+    <div class="footer-copy">© 2026 Cartru · 100% buyer-funded · No dealer leads</div>
+  </div>
+</footer>
 </body>
 </html>
 
