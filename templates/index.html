@@ -71,7 +71,7 @@ a:hover { text-decoration: underline; }
   pointer-events: none;
 }
 .reveal-panel.open {
-  max-height: 8000px;
+  max-height: 14000px;
   opacity: 1;
   transform: translateY(0);
   pointer-events: all;
@@ -110,13 +110,11 @@ a:hover { text-decoration: underline; }
   align-items: center;
   gap: 4px;
   transition: color 0.2s;
-  text-decoration: none;
 }
 .change-btn:hover { color: #00d4aa; }
 
 /* ── Brand grid ── */
 .brand-section { margin-bottom: 8px; }
-
 .brand-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -138,117 +136,39 @@ a:hover { text-decoration: underline; }
   align-items: center;
   gap: 9px;
   min-height: 96px;
-  transition: border-color 0.25s ease-out, background 0.25s ease-out, transform 0.25s ease-out,
-              opacity 0.3s ease-out, filter 0.3s ease-out;
+  transition: border-color 0.25s, background 0.25s, transform 0.25s, opacity 0.3s, filter 0.3s;
   position: relative;
   overflow: hidden;
 }
-.brand-card:hover {
-  border-color: #00d4aa;
-  background: #1e2e42;
-  transform: scale(1.03);
-}
-.brand-card.brand-selected {
-  border-color: #00d4aa !important;
-  background: rgba(0,212,170,0.08) !important;
-  transform: scale(1) !important;
-  opacity: 1 !important;
-  filter: none !important;
-}
-.brand-card.dimmed {
-  opacity: 0.28;
-  filter: grayscale(60%);
-  transform: scale(0.94);
-  pointer-events: none;
-}
-.brand-logo {
-  width: 38px;
-  height: 38px;
-  object-fit: contain;
-  display: block;
-  flex-shrink: 0;
-}
-/* Text logo badge for brands without Simple Icons */
+.brand-card:hover { border-color: #00d4aa; background: #1e2e42; transform: scale(1.03); }
+.brand-card.brand-selected { border-color: #00d4aa !important; background: rgba(0,212,170,0.08) !important; transform: scale(1) !important; opacity: 1 !important; filter: none !important; }
+.brand-card.dimmed { opacity: 0.28; filter: grayscale(60%); transform: scale(0.94); pointer-events: none; }
+.brand-logo { width: 38px; height: 38px; object-fit: contain; display: block; flex-shrink: 0; }
 .brand-text-logo {
-  width: 38px;
-  height: 38px;
-  border-radius: 7px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 900;
-  font-size: 0.72rem;
-  color: #fff;
-  letter-spacing: 0.5px;
-  flex-shrink: 0;
+  width: 38px; height: 38px; border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 0.72rem; color: #fff; letter-spacing: 0.5px; flex-shrink: 0;
 }
-.brand-name-label {
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: #c5d3e0;
-  line-height: 1.2;
-  letter-spacing: 0.2px;
-}
+.brand-name-label { font-size: 0.72rem; font-weight: 700; color: #c5d3e0; line-height: 1.2; letter-spacing: 0.2px; }
 .brand-card.brand-selected .brand-name-label { color: #00d4aa; }
-
-/* Other brand input */
-.brand-other {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 4px;
-  flex-wrap: wrap;
-}
-.brand-other label {
-  font-size: 0.8rem;
-  color: #8fa3b8;
-  white-space: nowrap;
-}
+.brand-other { display: flex; align-items: center; gap: 10px; margin-top: 4px; flex-wrap: wrap; }
+.brand-other label { font-size: 0.8rem; color: #8fa3b8; white-space: nowrap; }
 .brand-other input {
-  padding: 9px 14px;
-  background: #1a2535;
-  border: 2px solid #243044;
-  border-radius: 8px;
-  color: #e8edf5;
-  font-size: 0.9rem;
-  width: 220px;
-  transition: border-color 0.2s;
+  padding: 9px 14px; background: #1a2535; border: 2px solid #243044; border-radius: 8px;
+  color: #e8edf5; font-size: 0.9rem; width: 220px; transition: border-color 0.2s; outline: none;
 }
-.brand-other input:focus { outline: none; border-color: #00d4aa; }
+.brand-other input:focus { border-color: #00d4aa; }
 .brand-other input::placeholder { color: #4a5f75; }
 
 /* ── Model section ── */
-.model-section {
-  margin-top: 4px;
-  border-top: 1px solid rgba(255,255,255,0.06);
-  padding-top: 28px;
-}
-
-/* Year toggle */
-.year-toggle {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 20px;
-}
+.model-section { margin-top: 4px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 28px; }
+.year-toggle { display: flex; gap: 8px; margin-bottom: 20px; }
 .year-btn {
-  padding: 8px 22px;
-  background: #1a2535;
-  border: 2px solid #243044;
-  border-radius: 99px;
-  color: #8fa3b8;
-  font-size: 0.9rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
+  padding: 8px 22px; background: #1a2535; border: 2px solid #243044; border-radius: 99px;
+  color: #8fa3b8; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: all 0.2s;
 }
 .year-btn:hover { border-color: #00d4aa; color: #00d4aa; }
-.year-btn.active {
-  border-color: #00d4aa;
-  background: rgba(0,212,170,0.12);
-  color: #00d4aa;
-}
-
-/* Model grid */
+.year-btn.active { border-color: #00d4aa; background: rgba(0,212,170,0.12); color: #00d4aa; }
 .model-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -257,244 +177,103 @@ a:hover { text-decoration: underline; }
 }
 @media (min-width: 480px) { .model-grid { grid-template-columns: repeat(3, 1fr); } }
 @media (min-width: 660px) { .model-grid { grid-template-columns: repeat(4, 1fr); } }
-
 .model-card {
-  background: #1a2535;
-  border: 2px solid #243044;
-  border-radius: 10px;
-  padding: 13px 12px 11px;
-  cursor: pointer;
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  transition: border-color 0.25s ease-out, background 0.25s ease-out, transform 0.25s ease-out,
-              opacity 0.3s ease-out, filter 0.3s ease-out;
+  background: #1a2535; border: 2px solid #243044; border-radius: 10px;
+  padding: 13px 12px 11px; cursor: pointer; text-align: left; display: flex; flex-direction: column; gap: 5px;
+  transition: border-color 0.25s, background 0.25s, transform 0.25s, opacity 0.3s, filter 0.3s;
 }
-.model-card:hover {
-  border-color: #00d4aa;
-  background: #1e2e42;
-  transform: translateY(-1px);
-}
-.model-card.model-selected {
-  border-color: #00d4aa !important;
-  background: rgba(0,212,170,0.08) !important;
-  transform: none !important;
-  opacity: 1 !important;
-  filter: none !important;
-}
-.model-card.dimmed {
-  opacity: 0.28;
-  filter: grayscale(50%);
-  transform: scale(0.96);
-  pointer-events: none;
-}
+.model-card:hover { border-color: #00d4aa; background: #1e2e42; transform: translateY(-1px); }
+.model-card.model-selected { border-color: #00d4aa !important; background: rgba(0,212,170,0.08) !important; transform: none !important; opacity: 1 !important; filter: none !important; }
+.model-card.dimmed { opacity: 0.28; filter: grayscale(50%); transform: scale(0.96); pointer-events: none; }
 .model-name { font-size: 0.88rem; font-weight: 700; color: #e8edf5; line-height: 1.25; }
 .model-card.model-selected .model-name { color: #00d4aa; }
-.model-type-badge {
-  font-size: 0.65rem;
-  font-weight: 700;
-  color: #4a5f75;
-  text-transform: uppercase;
-  letter-spacing: 0.7px;
-}
-.loading-msg {
-  color: #8fa3b8;
-  font-size: 0.9rem;
-  text-align: center;
-  padding: 24px 0;
-  grid-column: 1/-1;
-}
-.error-msg {
-  color: #ef4444;
-  font-size: 0.88rem;
-  text-align: center;
-  padding: 20px 0;
-  grid-column: 1/-1;
-}
+.model-type-badge { font-size: 0.65rem; font-weight: 700; color: #4a5f75; text-transform: uppercase; letter-spacing: 0.7px; }
+.loading-msg { color: #8fa3b8; font-size: 0.9rem; text-align: center; padding: 24px 0; grid-column: 1/-1; }
+.error-msg { color: #ef4444; font-size: 0.88rem; text-align: center; padding: 20px 0; grid-column: 1/-1; }
 
 /* ── Deal section ── */
-.deal-section {
-  margin-top: 4px;
-  border-top: 1px solid rgba(255,255,255,0.06);
-  padding-top: 28px;
-}
+.deal-section { margin-top: 4px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 28px; }
+.vehicle-crumb { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+.vehicle-crumb-label { font-size: 1rem; font-weight: 700; color: #00d4aa; }
+.vehicle-crumb-year { font-size: 0.85rem; color: #8fa3b8; font-weight: 600; }
 
-.vehicle-crumb {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-}
-.vehicle-crumb-label {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #00d4aa;
-}
-.vehicle-crumb-year {
-  font-size: 0.85rem;
-  color: #8fa3b8;
-  font-weight: 600;
-}
-
-/* Dealer offer input */
-.offer-wrap {
-  margin-bottom: 18px;
-}
-.offer-label {
-  display: block;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.9px;
-  color: #8fa3b8;
-  margin-bottom: 8px;
-}
+/* Dealer price input (large) */
+.offer-wrap { margin-bottom: 16px; }
+.offer-label { display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.9px; color: #8fa3b8; margin-bottom: 6px; }
+.offer-sublabel { font-size: 0.76rem; color: #4a5f75; margin-bottom: 8px; font-style: italic; }
+.offer-estimated-note { font-size: 0.76rem; color: #4a5f75; margin-top: 5px; }
 .offer-input-row {
-  display: flex;
-  align-items: center;
-  background: #1a2535;
-  border: 2px solid #243044;
-  border-radius: 12px;
-  overflow: hidden;
-  transition: border-color 0.2s;
+  display: flex; align-items: center; background: #1a2535; border: 2px solid #243044;
+  border-radius: 12px; overflow: hidden; transition: border-color 0.2s;
 }
 .offer-input-row:focus-within { border-color: #00d4aa; }
-.offer-dollar {
-  padding: 0 4px 0 20px;
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: #4a5f75;
-  line-height: 1;
-  user-select: none;
-}
+.offer-dollar { padding: 0 4px 0 20px; font-size: 1.6rem; font-weight: 700; color: #4a5f75; line-height: 1; user-select: none; }
 .offer-input {
-  flex: 1;
-  padding: 18px 20px 18px 6px;
-  background: transparent;
-  border: none;
-  color: #fff;
-  font-size: 1.6rem;
-  font-weight: 700;
-  outline: none;
-  min-width: 0;
+  flex: 1; padding: 18px 20px 18px 6px; background: transparent; border: none;
+  color: #fff; font-size: 1.6rem; font-weight: 700; outline: none; min-width: 0;
 }
 .offer-input::placeholder { color: #3a4f65; font-weight: 400; font-size: 1.35rem; }
 
 /* Live signal preview */
 .live-signal-preview {
-  margin-top: 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 28px;
-  transition: opacity 0.3s;
+  margin-top: 10px; display: flex; align-items: center; gap: 10px; min-height: 28px; transition: opacity 0.3s;
 }
-.live-signal-badge {
-  padding: 4px 14px;
-  border-radius: 99px;
-  font-size: 0.8rem;
-  font-weight: 800;
-  letter-spacing: 0.5px;
-}
+.live-signal-badge { padding: 4px 14px; border-radius: 99px; font-size: 0.8rem; font-weight: 800; letter-spacing: 0.5px; }
 .live-signal-badge.green { background: rgba(0,212,170,0.15); color: #00d4aa; border: 1px solid rgba(0,212,170,0.3); }
 .live-signal-badge.yellow { background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); }
 .live-signal-badge.red { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
-.live-signal-vs {
-  font-size: 0.82rem;
-  color: #8fa3b8;
-}
+.live-signal-vs { font-size: 0.82rem; color: #8fa3b8; }
 
-/* MSRP suggestion */
-.msrp-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-  flex-wrap: wrap;
+/* APR field */
+.apr-term-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+@media (max-width: 480px) { .apr-term-row { grid-template-columns: 1fr; } }
+.apr-group label, .term-group label { display: block; font-size: 0.74rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: #8fa3b8; margin-bottom: 6px; }
+.apr-input-wrap { position: relative; }
+.apr-input {
+  width: 100%; padding: 11px 36px 11px 14px; background: #1a2535; border: 2px solid #243044;
+  border-radius: 8px; color: #e8edf5; font-size: 1rem; font-weight: 700; outline: none; transition: border-color 0.2s;
 }
-.msrp-suggest-label {
-  font-size: 0.82rem;
-  color: #8fa3b8;
+.apr-input:focus { border-color: #00d4aa; }
+.apr-pct-sign { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #4a5f75; font-weight: 700; pointer-events: none; }
+.field-helper { font-size: 0.73rem; color: #4a5f75; margin-top: 5px; line-height: 1.4; }
+
+/* Pill toggle for loan term */
+.term-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+.term-pill {
+  padding: 9px 16px; background: #1a2535; border: 2px solid #243044; border-radius: 99px;
+  color: #8fa3b8; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.18s; white-space: nowrap;
 }
-.msrp-suggest-value {
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: #c5d3e0;
-}
-.msrp-edit-btn {
-  background: none;
-  border: none;
-  color: #4a5f75;
-  cursor: pointer;
-  font-size: 0.88rem;
-  padding: 0 4px;
-  transition: color 0.2s;
-  line-height: 1;
-}
-.msrp-edit-btn:hover { color: #00d4aa; }
-.msrp-inline-input {
-  padding: 4px 10px;
-  background: #1a2535;
-  border: 1px solid #00d4aa;
-  border-radius: 6px;
-  color: #fff;
-  font-size: 0.85rem;
-  width: 120px;
-  outline: none;
+.term-pill:hover { border-color: #00d4aa; color: #00d4aa; }
+.term-pill.selected { border-color: #00d4aa; background: rgba(0,212,170,0.12); color: #00d4aa; }
+
+/* Live glance panel */
+.glance-panel {
+  background: rgba(0,212,170,0.06);
+  border: 1px solid rgba(0,212,170,0.2);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
   display: none;
 }
-.typical-range-note {
-  font-size: 0.78rem;
-  color: #4a5f75;
-  margin-bottom: 16px;
-}
+.glance-panel.visible { display: block; }
+.glance-title { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.9px; color: rgba(0,212,170,0.7); margin-bottom: 12px; }
+.glance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 24px; }
+@media (min-width: 520px) { .glance-grid { grid-template-columns: 1fr 1fr 1fr 1fr; } }
+.glance-item { }
+.glance-label { font-size: 0.72rem; color: #4a5f75; margin-bottom: 2px; }
+.glance-value { font-size: 0.95rem; font-weight: 800; color: #00d4aa; }
 
 /* ZIP section */
 .zip-section { margin-bottom: 16px; }
-.zip-hint-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.84rem;
-  color: #8fa3b8;
-  cursor: pointer;
-  transition: color 0.2s;
-  user-select: none;
-}
+.zip-hint-row { display: flex; align-items: center; gap: 8px; font-size: 0.84rem; color: #8fa3b8; cursor: pointer; transition: color 0.2s; user-select: none; }
 .zip-hint-row:hover { color: #c5d3e0; }
-.zip-expand-icon {
-  font-size: 0.72rem;
-  color: #00d4aa;
-  font-weight: 700;
-  transition: transform 0.2s;
-}
+.zip-expand-icon { font-size: 0.72rem; color: #00d4aa; font-weight: 700; transition: transform 0.2s; }
 .zip-hint-row.expanded .zip-expand-icon { transform: rotate(90deg); }
-.zip-input-wrap {
-  margin-top: 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  overflow: hidden;
-  max-height: 0;
-  opacity: 0;
-  transition: max-height 0.3s ease-out, opacity 0.25s ease-out;
-}
-.zip-input-wrap.open {
-  max-height: 60px;
-  opacity: 1;
-}
+.zip-input-wrap { margin-top: 10px; display: flex; align-items: center; gap: 10px; overflow: hidden; max-height: 0; opacity: 0; transition: max-height 0.3s ease-out, opacity 0.25s ease-out; }
+.zip-input-wrap.open { max-height: 60px; opacity: 1; }
 .zip-input-wrap input {
-  width: 140px;
-  padding: 9px 14px;
-  background: #1a2535;
-  border: 2px solid #243044;
-  border-radius: 8px;
-  color: #fff;
-  font-size: 0.95rem;
-  transition: border-color 0.2s;
-  outline: none;
+  width: 140px; padding: 9px 14px; background: #1a2535; border: 2px solid #243044;
+  border-radius: 8px; color: #fff; font-size: 0.95rem; transition: border-color 0.2s; outline: none;
 }
 .zip-input-wrap input:focus { border-color: #00d4aa; }
 .zip-input-wrap input::placeholder { color: #4a5f75; }
@@ -502,177 +281,84 @@ a:hover { text-decoration: underline; }
 
 /* More details toggle */
 .more-toggle {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: none;
-  border: none;
-  color: #00d4aa;
-  font-size: 0.88rem;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 0;
-  margin-bottom: 14px;
-  transition: opacity 0.2s;
-  user-select: none;
+  display: flex; align-items: center; gap: 8px; background: none; border: none; color: #00d4aa;
+  font-size: 0.88rem; font-weight: 600; cursor: pointer; padding: 0; margin-bottom: 14px;
+  transition: opacity 0.2s; user-select: none;
 }
 .more-toggle:hover { opacity: 0.8; }
-.more-arrow {
-  display: inline-block;
-  transition: transform 0.25s ease-out;
-  font-size: 0.7rem;
-}
+.more-arrow { display: inline-block; transition: transform 0.25s; font-size: 0.7rem; }
 .more-arrow.open { transform: rotate(90deg); }
+.more-panel { overflow: hidden; max-height: 0; opacity: 0; transition: max-height 0.4s ease-out, opacity 0.3s ease-out; }
+.more-panel.open { max-height: 600px; opacity: 1; }
 
-.more-panel {
-  overflow: hidden;
-  max-height: 0;
-  opacity: 0;
-  transition: max-height 0.4s ease-out, opacity 0.3s ease-out;
+/* Fuel/usage interactive fields */
+.fuel-fields { margin-bottom: 16px; }
+.fuel-fields-title { font-size: 0.74rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: #8fa3b8; margin-bottom: 10px; }
+.fuel-fields-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 480px) { .fuel-fields-row { grid-template-columns: 1fr; } }
+.fuel-group { }
+.fuel-group label { display: block; font-size: 0.72rem; font-weight: 700; color: #4a5f75; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; }
+.fuel-input {
+  width: 100%; padding: 9px 12px; background: #1a2535; border: 2px solid #243044; border-radius: 8px;
+  color: #e8edf5; font-size: 0.92rem; font-weight: 600; outline: none; transition: border-color 0.2s;
 }
-.more-panel.open {
-  max-height: 600px;
-  opacity: 1;
+.fuel-input:focus { border-color: #00d4aa; }
+.miles-month-label { font-size: 0.72rem; color: #4a5f75; margin-top: 4px; }
+.miles-chips { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+.miles-chip {
+  padding: 4px 10px; background: #1a2535; border: 1px solid #2d3f55; border-radius: 99px;
+  font-size: 0.73rem; font-weight: 600; color: #8fa3b8; cursor: pointer; transition: all 0.15s; white-space: nowrap;
 }
+.miles-chip:hover { border-color: #00d4aa; color: #00d4aa; }
 
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 12px;
-}
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
 @media (max-width: 480px) { .form-row { grid-template-columns: 1fr; } }
-
-.form-group label {
-  display: block;
-  font-size: 0.74rem;
-  font-weight: 700;
-  color: #8fa3b8;
-  text-transform: uppercase;
-  letter-spacing: 0.7px;
-  margin-bottom: 6px;
+.form-group label { display: block; font-size: 0.74rem; font-weight: 700; color: #8fa3b8; text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 6px; }
+.form-group input {
+  width: 100%; padding: 10px 12px; background: #1a2535; border: 2px solid #243044;
+  border-radius: 8px; color: #e8edf5; font-size: 0.92rem; outline: none; transition: border-color 0.2s;
 }
-.form-group input,
-.form-group select {
-  width: 100%;
-  padding: 10px 12px;
-  background: #1a2535;
-  border: 2px solid #243044;
-  border-radius: 8px;
-  color: #e8edf5;
-  font-size: 0.92rem;
-  outline: none;
-  transition: border-color 0.2s;
-}
-.form-group input:focus,
-.form-group select:focus { border-color: #00d4aa; }
+.form-group input:focus { border-color: #00d4aa; }
 .form-group input::placeholder { color: #4a5f75; }
-.form-group select {
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238fa3b8' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  padding-right: 32px;
-}
-.form-group select option { background: #1a2535; }
 
 /* CTA button */
 .btn-check {
-  width: 100%;
-  padding: 18px;
-  background: #00d4aa;
-  color: #0f1724;
-  border: none;
-  border-radius: 12px;
-  font-size: 1.1rem;
-  font-weight: 800;
-  cursor: pointer;
-  margin-top: 20px;
-  margin-bottom: 10px;
-  letter-spacing: 0.3px;
-  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+  width: 100%; padding: 18px; background: #00d4aa; color: #0f1724; border: none; border-radius: 12px;
+  font-size: 1.1rem; font-weight: 800; cursor: pointer; margin-top: 20px; margin-bottom: 10px;
+  letter-spacing: 0.3px; transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
   box-shadow: 0 4px 20px rgba(0,212,170,0.25);
 }
-.btn-check:hover {
-  background: #00c09a;
-  box-shadow: 0 6px 28px rgba(0,212,170,0.35);
-}
+.btn-check:hover { background: #00c09a; box-shadow: 0 6px 28px rgba(0,212,170,0.35); }
 .btn-check:active { transform: scale(0.98); }
-.form-disclaimer {
-  font-size: 0.74rem;
-  color: #4a5f75;
-  text-align: center;
-  margin-bottom: 8px;
-  line-height: 1.5;
-}
+.form-disclaimer { font-size: 0.74rem; color: #4a5f75; text-align: center; margin-bottom: 8px; line-height: 1.5; }
+
+/* MSRP row */
+.msrp-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+.msrp-suggest-label { font-size: 0.82rem; color: #8fa3b8; }
+.msrp-suggest-value { font-size: 0.82rem; font-weight: 700; color: #c5d3e0; }
+.msrp-edit-btn { background: none; border: none; color: #4a5f75; cursor: pointer; font-size: 0.88rem; padding: 0 4px; transition: color 0.2s; line-height: 1; }
+.msrp-edit-btn:hover { color: #00d4aa; }
+.msrp-inline-input { padding: 4px 10px; background: #1a2535; border: 1px solid #00d4aa; border-radius: 6px; color: #fff; font-size: 0.85rem; width: 120px; outline: none; display: none; }
 
 /* ── Result section ── */
-.result-section {
-  margin-top: 4px;
-  border-top: 1px solid rgba(255,255,255,0.06);
-  padding-top: 28px;
-}
-
-.result-top-nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-.result-top-nav-left {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-.result-vehicle-label {
-  font-size: 0.88rem;
-  color: #8fa3b8;
-}
+.result-section { margin-top: 4px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 28px; }
+.result-top-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+.result-top-nav-left { display: flex; align-items: center; gap: 14px; }
+.result-vehicle-label { font-size: 0.88rem; color: #8fa3b8; }
 .result-vehicle-label strong { color: #e8edf5; font-weight: 700; }
-.edit-offer-btn {
-  background: #1a2535;
-  border: 1px solid #243044;
-  border-radius: 8px;
-  padding: 7px 16px;
-  color: #8fa3b8;
-  font-size: 0.84rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: border-color 0.2s, color 0.2s;
-}
+.edit-offer-btn { background: #1a2535; border: 1px solid #243044; border-radius: 8px; padding: 7px 16px; color: #8fa3b8; font-size: 0.84rem; font-weight: 600; cursor: pointer; transition: border-color 0.2s, color 0.2s; }
 .edit-offer-btn:hover { border-color: #00d4aa; color: #00d4aa; }
 
 /* Loading spinner */
-.spinner {
-  text-align: center;
-  padding: 48px 0;
-  color: #8fa3b8;
-  font-size: 0.9rem;
-}
+.spinner { text-align: center; padding: 48px 0; color: #8fa3b8; font-size: 0.9rem; }
 .spinner::before {
-  content: '';
-  display: block;
-  width: 38px;
-  height: 38px;
-  border: 3px solid #243044;
-  border-top-color: #00d4aa;
-  border-radius: 50%;
-  margin: 0 auto 18px;
-  animation: spin 0.8s linear infinite;
+  content: ''; display: block; width: 38px; height: 38px; border: 3px solid #243044;
+  border-top-color: #00d4aa; border-radius: 50%; margin: 0 auto 18px; animation: spin 0.8s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ── Signal badge ── */
-.signal-block {
-  border-radius: 14px;
-  padding: 24px;
-  margin-bottom: 14px;
-  display: flex;
-  align-items: flex-start;
-  gap: 18px;
-}
+.signal-block { border-radius: 14px; padding: 24px; margin-bottom: 14px; display: flex; align-items: flex-start; gap: 18px; }
 .signal-block.green { background: rgba(0,212,170,0.08); border: 2px solid rgba(0,212,170,0.45); }
 .signal-block.yellow { background: rgba(245,158,11,0.08); border: 2px solid rgba(245,158,11,0.45); }
 .signal-block.red { background: rgba(239,68,68,0.08); border: 2px solid rgba(239,68,68,0.45); }
@@ -755,17 +441,80 @@ a:hover { text-decoration: underline; }
 .junk-addon-cost { font-size: 0.78rem; color: #4a5f75; margin-bottom: 2px; }
 .junk-addon-note { font-size: 0.8rem; color: #8fa3b8; }
 
-/* Payment trap */
-.payment-stat { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #243044; font-size: 0.88rem; }
-.payment-stat:last-of-type { border-bottom: none; }
-.payment-stat-label { color: #8fa3b8; }
-.payment-stat-value { font-weight: 700; color: #e8edf5; }
-.payment-stat-value.danger { color: #ef4444; }
-.payment-trap-warnings { margin-top: 14px; }
-.trap-warning { padding: 10px 12px; background: rgba(239,68,68,0.07); border-left: 3px solid #ef4444; border-radius: 0 6px 6px 0; font-size: 0.83rem; color: #c5d3e0; margin-bottom: 8px; line-height: 1.5; }
-.trap-warning.tip { background: rgba(0,212,170,0.07); border-left-color: #00d4aa; }
+/* ── Term Trap Detector ── */
+.term-trap-block { background: #1a2535; border-radius: 14px; padding: 22px; margin-bottom: 14px; }
+.term-trap-title { font-size: 1rem; font-weight: 800; color: #fff; margin-bottom: 4px; }
+.term-trap-subtitle { font-size: 0.8rem; color: #8fa3b8; margin-bottom: 18px; }
+.term-table-scroll { overflow-x: auto; margin-bottom: 16px; }
+.term-table {
+  width: 100%; border-collapse: collapse; min-width: 380px;
+}
+.term-table th {
+  text-align: center; font-size: 0.82rem; font-weight: 700; color: #8fa3b8; padding: 8px 10px;
+  border-bottom: 2px solid #243044; white-space: nowrap; cursor: pointer; transition: color 0.15s;
+}
+.term-table th.term-col { cursor: pointer; }
+.term-table th.term-col:hover { color: #00d4aa; }
+.term-table th.selected-col { color: #00d4aa; border-bottom: 2px solid #00d4aa; }
+.term-table td { text-align: center; padding: 9px 10px; font-size: 0.88rem; color: #c5d3e0; border-bottom: 1px solid #1d2c3f; }
+.term-table td:first-child { text-align: left; font-size: 0.8rem; color: #8fa3b8; white-space: nowrap; }
+.term-table tr:last-child td { border-bottom: none; }
+.term-table td.selected-col { color: #00d4aa; font-weight: 700; }
+.term-table td.baseline-col { color: #8fa3b8; font-style: italic; }
+.term-table td.extra-col-pos { color: #ef4444; font-weight: 700; }
+.term-table td.extra-col-neg { color: #00d4aa; font-weight: 700; }
 
-/* Negotiation script */
+/* Highlight column with border trick — using wrapper */
+.term-table .selected-col-header {
+  background: rgba(0,212,170,0.07);
+  border-left: 2px solid rgba(0,212,170,0.3);
+  border-right: 2px solid rgba(0,212,170,0.3);
+}
+.term-table tr:first-child .selected-col-header { border-top: 2px solid rgba(0,212,170,0.3); }
+.term-table tr:last-child .selected-col-header { border-bottom: 2px solid rgba(0,212,170,0.3); }
+
+.term-trap-summary { font-size: 0.88rem; color: #c5d3e0; line-height: 1.6; margin-bottom: 16px; padding: 12px 14px; background: rgba(239,68,68,0.06); border-left: 3px solid rgba(239,68,68,0.4); border-radius: 0 6px 6px 0; }
+.term-trap-summary.safe { background: rgba(0,212,170,0.06); border-left-color: rgba(0,212,170,0.4); }
+
+/* Interest bar chart */
+.interest-bars { margin-top: 14px; }
+.interest-bars-title { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: #4a5f75; margin-bottom: 10px; }
+.interest-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.interest-bar-label { font-size: 0.78rem; color: #8fa3b8; width: 46px; text-align: right; flex-shrink: 0; }
+.interest-bar-track { flex: 1; height: 16px; background: #243044; border-radius: 4px; overflow: hidden; }
+.interest-bar-fill { height: 100%; border-radius: 4px; background: #00d4aa; transition: width 0.4s ease-out; }
+.interest-bar-fill.selected { background: #00d4aa; }
+.interest-bar-fill.not-selected { background: #2d4a6a; }
+.interest-bar-fill.worst { background: #ef4444; }
+.interest-bar-amount { font-size: 0.78rem; color: #8fa3b8; width: 70px; flex-shrink: 0; }
+
+/* ── Ownership cost section (dynamic) ── */
+.ownership-section { background: #1a2535; border-radius: 14px; padding: 22px; margin-bottom: 14px; }
+.ownership-title { font-size: 1rem; font-weight: 800; color: #fff; margin-bottom: 4px; }
+.ownership-context { font-size: 0.78rem; color: #4a5f75; margin-bottom: 18px; }
+
+.monthly-breakdown { background: #0f1724; border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+.monthly-breakdown-title { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: #4a5f75; margin-bottom: 12px; }
+.monthly-line { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; font-size: 0.88rem; color: #8fa3b8; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.monthly-line:last-of-type { border-bottom: none; }
+.monthly-line .ml-label { }
+.monthly-line .ml-value { font-weight: 600; color: #c5d3e0; }
+.monthly-divider { border: none; border-top: 1px solid #243044; margin: 8px 0; }
+.monthly-total-line { display: flex; justify-content: space-between; align-items: center; padding-top: 8px; font-weight: 800; font-size: 0.95rem; color: #fff; }
+.monthly-total-line .ml-value { color: #00d4aa; font-size: 1.05rem; }
+
+.ownership-annuals { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.ownership-stat { background: #0f1724; border-radius: 8px; padding: 12px; }
+.ownership-stat-value { font-size: 1.1rem; font-weight: 800; color: #00d4aa; }
+.ownership-stat-label { font-size: 0.72rem; color: #4a5f75; margin-top: 2px; }
+
+.cost-breakdown-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+.cost-breakdown-table td { padding: 7px 0; border-bottom: 1px solid #243044; font-size: 0.86rem; }
+.cost-breakdown-table td:last-child { text-align: right; font-weight: 600; color: #e8edf5; }
+.cost-breakdown-table .cost-total-row td { font-weight: 800; font-size: 1rem; color: #fff; border-top: 2px solid #243044; border-bottom: none; padding-top: 10px; }
+.cost-note { font-size: 0.75rem; color: #4a5f75; margin-top: 8px; }
+
+/* ── Negotiation script ── */
 .script-step { margin-bottom: 16px; }
 .script-step-label { font-size: 0.72rem; font-weight: 700; color: #8fa3b8; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
 .script-step-text { background: #0f1724; border-radius: 8px; padding: 12px 14px; font-size: 0.88rem; color: #c5d3e0; line-height: 1.6; font-style: italic; }
@@ -781,13 +530,6 @@ a:hover { text-decoration: underline; }
 .mpg-stat { flex: 1; min-width: 80px; background: #0f1724; border-radius: 8px; padding: 12px; text-align: center; }
 .mpg-value { font-size: 1.6rem; font-weight: 800; color: #00d4aa; }
 .mpg-label { font-size: 0.72rem; color: #8fa3b8; margin-top: 2px; }
-
-/* True cost */
-.cost-table { width: 100%; border-collapse: collapse; }
-.cost-table td { padding: 7px 0; border-bottom: 1px solid #243044; font-size: 0.87rem; }
-.cost-table td:last-child { text-align: right; font-weight: 600; color: #e8edf5; }
-.cost-table .cost-total td { font-weight: 800; font-size: 1rem; color: #fff; border-top: 2px solid #243044; border-bottom: none; padding-top: 10px; }
-.cost-note { font-size: 0.75rem; color: #4a5f75; margin-top: 8px; }
 
 /* Recalls */
 .recall-item { border: 1px solid #243044; border-radius: 8px; padding: 12px; margin-bottom: 8px; }
@@ -825,9 +567,7 @@ a:hover { text-decoration: underline; }
   <!-- ══════════════════════════════════════════ -->
   <section class="brand-section" id="brandSection">
     <div class="section-label" id="brandSectionLabel">Choose your brand</div>
-    <div class="brand-grid" id="brandGrid">
-      <!-- filled by JS -->
-    </div>
+    <div class="brand-grid" id="brandGrid"></div>
     <div class="brand-other">
       <label>Other brand:</label>
       <input type="text" id="brandOtherInput" placeholder="e.g. Acura, Buick, Volvo…" autocomplete="off">
@@ -861,12 +601,13 @@ a:hover { text-decoration: underline; }
       </div>
     </div>
 
-    <!-- Dealer offer -->
+    <!-- Dealer price (pre-filled) -->
     <div class="offer-wrap">
-      <label class="offer-label">Dealer's offer <span style="color:#888;font-size:0.8em;font-weight:400">(optional)</span></label>
+      <label class="offer-label">Dealer price (estimated from typical discounts — edit to match your offer)</label>
+      <div class="offer-sublabel" id="offerSublabel">~5% below MSRP · typical average discount</div>
       <div class="offer-input-row">
         <span class="offer-dollar">$</span>
-        <input type="number" id="dealerOffer" class="offer-input" placeholder="Enter dealer's offer (or skip to explore)" min="1000" max="200000" autocomplete="off">
+        <input type="number" id="dealerOffer" class="offer-input" placeholder="Enter dealer price" min="1000" max="200000" autocomplete="off">
       </div>
       <!-- Live signal preview -->
       <div class="live-signal-preview" id="liveSignalPreview">
@@ -882,7 +623,51 @@ a:hover { text-decoration: underline; }
       <button class="msrp-edit-btn" onclick="toggleMsrpEdit()" title="Edit MSRP">✎</button>
       <input type="number" id="msrpInlineInput" class="msrp-inline-input" placeholder="e.g. 32000">
     </div>
-    <div class="typical-range-note" id="typicalRangeNote">Typical range: <span id="typicalRangeSpan"></span></div>
+
+    <!-- APR + Loan term -->
+    <div class="apr-term-row">
+      <div class="apr-group">
+        <label>Interest rate (APR)</label>
+        <div class="apr-input-wrap">
+          <input type="number" id="aprInput" class="apr-input" value="6.8" min="0" max="25" step="0.1" autocomplete="off">
+          <span class="apr-pct-sign">%</span>
+        </div>
+        <div class="field-helper">We used an average new-car APR — edit if you know your rate</div>
+      </div>
+      <div class="term-group">
+        <label>Loan term</label>
+        <div class="term-pills" id="termPills">
+          <button class="term-pill" data-term="48" onclick="selectTerm(48)">48 mo</button>
+          <button class="term-pill" data-term="60" onclick="selectTerm(60)">60 mo</button>
+          <button class="term-pill selected" data-term="72" onclick="selectTerm(72)">72 mo</button>
+          <button class="term-pill" data-term="84" onclick="selectTerm(84)">84 mo</button>
+        </div>
+        <div class="field-helper">Default 72 mo · click to change</div>
+      </div>
+    </div>
+
+    <!-- Live glance panel -->
+    <div class="glance-panel" id="glancePanel">
+      <div class="glance-title">Your deal at a glance</div>
+      <div class="glance-grid">
+        <div class="glance-item">
+          <div class="glance-label">Monthly payment</div>
+          <div class="glance-value" id="glanceMonthly">—</div>
+        </div>
+        <div class="glance-item">
+          <div class="glance-label">Total interest</div>
+          <div class="glance-value" id="glanceInterest">—</div>
+        </div>
+        <div class="glance-item">
+          <div class="glance-label">Total cost</div>
+          <div class="glance-value" id="glanceTotalCost">—</div>
+        </div>
+        <div class="glance-item">
+          <div class="glance-label">Loan term</div>
+          <div class="glance-value" id="glanceTerm">—</div>
+        </div>
+      </div>
+    </div>
 
     <!-- ZIP -->
     <div class="zip-section">
@@ -893,6 +678,28 @@ a:hover { text-decoration: underline; }
       <div class="zip-input-wrap" id="zipInputWrap">
         <input type="text" id="zipCode" placeholder="ZIP code" maxlength="5" pattern="[0-9]{5}" autocomplete="postal-code">
         <span class="zip-confirm-msg" id="zipConfirmMsg"></span>
+      </div>
+    </div>
+
+    <!-- Fuel / usage section -->
+    <div class="fuel-fields">
+      <div class="fuel-fields-title">Fuel &amp; Usage</div>
+      <div class="fuel-fields-row">
+        <div class="fuel-group">
+          <label>Miles per year</label>
+          <input type="number" id="annualMiles" class="fuel-input" value="13500" min="1000" max="100000" step="500" autocomplete="off">
+          <div class="miles-month-label" id="milesMonthLabel">≈ 1,125 miles/month</div>
+          <div class="miles-chips">
+            <span class="miles-chip" onclick="setMiles(10000)">10k/yr</span>
+            <span class="miles-chip" onclick="setMiles(13500)">13.5k/yr</span>
+            <span class="miles-chip" onclick="setMiles(20000)">20k/yr</span>
+          </div>
+        </div>
+        <div class="fuel-group">
+          <label>Gas price ($/gal)</label>
+          <input type="number" id="gasPrice" class="fuel-input" value="3.45" min="1" max="10" step="0.05" autocomplete="off">
+          <div class="field-helper" id="gasPriceHelper">National average · adjust for your area</div>
+        </div>
       </div>
     </div>
 
@@ -917,23 +724,6 @@ a:hover { text-decoration: underline; }
           <label>Add-ons (describe)</label>
           <input type="text" id="addOns" placeholder="e.g. paint protection, tint">
         </div>
-        <div class="form-group">
-          <label>Monthly payment offered</label>
-          <input type="number" id="monthlyPayment" placeholder="e.g. 549">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Loan term</label>
-          <select id="loanTerm">
-            <option value="">Not sure</option>
-            <option value="36">36 months</option>
-            <option value="48">48 months</option>
-            <option value="60" selected>60 months</option>
-            <option value="72">72 months</option>
-            <option value="84">84 months</option>
-          </select>
-        </div>
         <div class="form-group"><!-- spacer --></div>
       </div>
     </div>
@@ -955,7 +745,7 @@ a:hover { text-decoration: underline; }
         <button class="change-btn" onclick="startOver()">← Start over</button>
         <div class="result-vehicle-label" id="resultVehicleLabel"></div>
       </div>
-      <button class="edit-offer-btn" onclick="editOffer()">✎ Edit offer</button>
+      <button class="edit-offer-btn" onclick="editOffer()">✎ Edit deal</button>
     </div>
 
     <!-- Loading -->
@@ -1012,6 +802,50 @@ a:hover { text-decoration: underline; }
         </div>
       </div>
 
+      <!-- Term Trap Detector -->
+      <div class="term-trap-block" id="termTrapBlock">
+        <div class="term-trap-title">🪤 The Term Trap — See What Dealers Hide</div>
+        <div class="term-trap-subtitle">Dealers extend loan terms to lower monthly payments — hiding thousands in extra interest.</div>
+        <div class="term-table-scroll">
+          <table class="term-table" id="termTable"></table>
+        </div>
+        <div class="term-trap-summary" id="termTrapSummary"></div>
+        <div class="interest-bars">
+          <div class="interest-bars-title">Total interest paid by term</div>
+          <div id="interestBars"></div>
+        </div>
+      </div>
+
+      <!-- Ownership cost section -->
+      <div class="ownership-section" id="ownershipSection">
+        <div class="ownership-title" id="ownershipTitle">N-Year Cost of Ownership</div>
+        <div class="ownership-context" id="ownershipContext"></div>
+
+        <div class="monthly-breakdown">
+          <div class="monthly-breakdown-title">Monthly budget</div>
+          <div class="monthly-line"><span class="ml-label">Loan payment</span><span class="ml-value" id="own-monthly-payment">—</span></div>
+          <div class="monthly-line"><span class="ml-label" id="own-fuel-label">Monthly fuel</span><span class="ml-value" id="own-monthly-fuel">—</span></div>
+          <div class="monthly-line"><span class="ml-label">Insurance (est.)</span><span class="ml-value" id="own-monthly-ins">~$142</span></div>
+          <div class="monthly-line"><span class="ml-label">Maintenance (est.)</span><span class="ml-value" id="own-monthly-maint">—</span></div>
+          <hr class="monthly-divider">
+          <div class="monthly-total-line"><span>Total monthly all-in</span><span class="ml-value" id="own-monthly-total">—</span></div>
+        </div>
+
+        <div class="ownership-annuals">
+          <div class="ownership-stat">
+            <div class="ownership-stat-value" id="own-annual-total">—</div>
+            <div class="ownership-stat-label">Annual total cost</div>
+          </div>
+          <div class="ownership-stat">
+            <div class="ownership-stat-value" id="own-term-total">—</div>
+            <div class="ownership-stat-label" id="own-term-total-label">Total over loan term</div>
+          </div>
+        </div>
+
+        <table class="cost-breakdown-table" id="costBreakdownTable"></table>
+        <div class="cost-note" id="costNote"></div>
+      </div>
+
       <!-- Fee & add-on review -->
       <div class="section">
         <div class="section-header" onclick="toggleSection('fees')">
@@ -1019,15 +853,6 @@ a:hover { text-decoration: underline; }
           <div class="section-chevron open" id="chevron-fees">▼</div>
         </div>
         <div class="section-body" id="body-fees"></div>
-      </div>
-
-      <!-- Payment trap (shown conditionally) -->
-      <div class="section hidden" id="section-payment">
-        <div class="section-header" onclick="toggleSection('payment')">
-          <div class="section-title"><span class="section-icon">⚠️</span> Payment Trap Check</div>
-          <div class="section-chevron open" id="chevron-payment">▼</div>
-        </div>
-        <div class="section-body" id="body-payment"></div>
       </div>
 
       <!-- Negotiation script -->
@@ -1065,15 +890,6 @@ a:hover { text-decoration: underline; }
             <div class="section-body hidden" id="body-recalls" style="padding:0 16px 16px;"></div>
           </div>
 
-          <!-- 5-Year cost -->
-          <div class="section" style="background:#0f1724;">
-            <div class="section-header" onclick="toggleSection('cost')" style="padding:12px 16px;">
-              <div class="section-title" style="font-size:0.88rem;">💰 5-Year Cost of Ownership</div>
-              <div class="section-chevron" id="chevron-cost">▼</div>
-            </div>
-            <div class="section-body hidden" id="body-cost" style="padding:0 16px 16px;"></div>
-          </div>
-
         </div>
       </div>
 
@@ -1099,7 +915,7 @@ a:hover { text-decoration: underline; }
 
 <script>
 // ══════════════════════════════════════════════════════════
-// Constants
+// Constants & Config
 // ══════════════════════════════════════════════════════════
 
 const BRANDS = [
@@ -1124,25 +940,64 @@ const CDN = 'https://cdn.simpleicons.org';
 const CURRENT_YEAR = new Date().getFullYear();
 const YEARS = [CURRENT_YEAR - 2, CURRENT_YEAR - 1, CURRENT_YEAR];
 
+// Default scenario values
+const DEFAULTS = {
+  apr: 6.8,
+  loanTerm: 72,
+  annualMiles: 13500,
+  gasPrice: 3.45,
+  dealerDiscountPct: 0.05,
+};
+
 // ══════════════════════════════════════════════════════════
 // State
 // ══════════════════════════════════════════════════════════
 
 const state = {
-  brand:      null,
-  model:      null,
-  year:       CURRENT_YEAR - 1,
-  msrpEstimate:   32000,
-  rangeEstimate:  { low: 30720, high: 32960 },
-  reportData: null,
+  brand:         null,
+  model:         null,
+  year:          CURRENT_YEAR - 1,
+  msrpEstimate:  32000,
+  rangeEstimate: { low: 30720, high: 32960 },
+  loanTerm:      72,
+  apr:           6.8,
+  annualMiles:   13500,
+  gasPrice:      3.45,
+  reportData:    null,
 };
 
 // ══════════════════════════════════════════════════════════
-// Analytics (preserved)
+// Analytics
 // ══════════════════════════════════════════════════════════
 
 function track(event, data = {}) {
   console.log('[Cartru]', event, data);
+}
+
+// ══════════════════════════════════════════════════════════
+// Finance math (client-side, matches server exactly)
+// ══════════════════════════════════════════════════════════
+
+function calcMonthlyPayment(principal, aprPct, termMonths) {
+  const monthlyRate = aprPct / 100 / 12;
+  if (monthlyRate === 0) return principal / termMonths;
+  return principal * (monthlyRate * Math.pow(1 + monthlyRate, termMonths)) /
+    (Math.pow(1 + monthlyRate, termMonths) - 1);
+}
+
+function calcTermComparison(dealerPrice, aprPct, terms = [48, 60, 72, 84]) {
+  const principal = dealerPrice * 0.90;
+  const results = [];
+  let baseline60Interest = null;
+
+  for (const term of terms) {
+    const mp = calcMonthlyPayment(principal, aprPct, term);
+    const totalInterest = (mp * term) - principal;
+    const totalCost = dealerPrice + totalInterest;
+    results.push({ term, monthly: Math.round(mp), interest: Math.round(totalInterest), total: Math.round(totalCost) });
+    if (term === 60) baseline60Interest = Math.round(totalInterest);
+  }
+  return { terms: results, baseline60Interest };
 }
 
 // ══════════════════════════════════════════════════════════
@@ -1152,35 +1007,16 @@ function track(event, data = {}) {
 function estimateMsrp(brandName, modelName) {
   const b = (brandName || '').toLowerCase();
   const m = (modelName || '').toLowerCase();
-
-  // Tesla always ~$42k
   if (b === 'tesla') return 42000;
-
-  // Full-size trucks
   if (/f-?150|silverado|ram 1500|tundra|titan|sierra 1500/.test(m)) return 45000;
-
-  // Large SUVs
   if (/tahoe|expedition|suburban|sequoia|navigator|armada|yukon|escalade/.test(m)) return 55000;
-
-  // Midsize SUVs/CUVs
   if (/rav4|cr-?v|tucson|rogue|forester|escape|equinox|tiguan|compass|santa fe|cx-?5|outback|venza|murano|edge|explorer|pilot|passport|pathfinder|traverse|blazer|telluride|palisade|sorento|cx-?9|atlas/.test(m)) return 30000;
-
-  // Midsize sedans
   if (/camry|accord|altima|sonata|passat|fusion/.test(m)) return 28000;
-
-  // Compact cars
   if (/corolla|civic|elantra|forte|sentra|jetta|impreza|focus|cruze|spark|fit|yaris|accent|rio|mirage|versa|mazda3|golf/.test(m)) return 23000;
-
-  // Compact SUVs (smaller ones)
   if (/hrv|venue|trax|encore|renegade|bronco sport|taos|seltos|kona|trailblazer/.test(m)) return 26000;
-
-  // Midsize trucks
   if (/tacoma|ranger|colorado|frontier|gladiator|ridgeline|maverick|canyon/.test(m)) return 35000;
-
-  // Muscle/sports
   if (/mustang|camaro|challenger|charger|corvette|supra|86|brz|miata|mx-?5/.test(m)) return 38000;
-
-  return 32000; // default
+  return 32000;
 }
 
 function msrpToRange(msrp) {
@@ -1194,11 +1030,20 @@ function msrpToRange(msrp) {
 function inferBodyType(modelName) {
   const m = modelName.toLowerCase();
   if (/f-?150|silverado|ram 1500|tundra|tacoma|ranger|colorado|frontier|titan|ridgeline|maverick|canyon|sierra/.test(m)) return 'Truck';
-  if (/sienna|odyssey|carnival|pacifica|voyager/.test(m)) return 'Minivan';
+  if (/sienna|odyssey|carnival|pacifica/.test(m)) return 'Minivan';
   if (/mustang|camaro|challenger|charger|corvette|supra|86|brz|miata|mx-?5/.test(m)) return 'Coupe';
-  if (/transit|sprinter|econoline|express|savana|promaster/.test(m)) return 'Van';
-  if (/rav4|cr-?v|tucson|rogue|forester|escape|equinox|explorer|pilot|passport|blazer|edge|tiguan|atlas|pathfinder|murano|armada|tahoe|suburban|yukon|sequoia|expedition|navigator|4runner|highlander|palisade|telluride|sorento|santa fe|cx-?5|cx-?9|outback|ascent|compass|cherokee|wrangler|bronco|venue|hrv|kona|seltos|trax|trailblazer|taos|venza|traverse|escalade|navigator|durango|grand cherokee|ioniq 5|ioniq5|ev6|bz4x|rav/.test(m)) return 'SUV';
+  if (/transit|sprinter|econoline|express/.test(m)) return 'Van';
+  if (/rav4|cr-?v|tucson|rogue|forester|escape|equinox|explorer|pilot|passport|blazer|edge|tiguan|atlas|pathfinder|murano|armada|tahoe|suburban|yukon|sequoia|expedition|navigator|4runner|highlander|palisade|telluride|sorento|santa fe|cx-?5|cx-?9|outback|ascent|compass|cherokee|wrangler|bronco|venue|hrv|kona|seltos|trax|trailblazer|taos|venza|traverse|escalade|durango|grand cherokee|ioniq|ev6|bz4x/.test(m)) return 'SUV';
   return 'Sedan';
+}
+
+// ══════════════════════════════════════════════════════════
+// Debounce helper
+// ══════════════════════════════════════════════════════════
+
+function debounce(fn, delay) {
+  let t;
+  return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), delay); };
 }
 
 // ══════════════════════════════════════════════════════════
@@ -1210,22 +1055,15 @@ function buildBrandLogoHTML(brand) {
     return `<img class="brand-logo" src="${CDN}/${brand.slug}/FFFFFF" alt="${brand.name}" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
             <div class="brand-text-logo" style="background:${brand.color};display:none">${brand.name.substring(0,3).toUpperCase()}</div>`;
   }
-  // Text badge for GMC / Dodge
-  if (brand.name === 'GMC') {
-    return `<div class="brand-text-logo" style="background:${brand.color};font-size:0.9rem;letter-spacing:1px">GMC</div>`;
-  }
-  if (brand.name === 'Dodge') {
-    // Simple Dodge ram head SVG approximation
-    return `<div class="brand-text-logo" style="background:${brand.color}">
-      <svg width="26" height="22" viewBox="0 0 26 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M13 2 L4 8 L2 14 L6 13 L7 18 L13 14 L19 18 L20 13 L24 14 L22 8 Z" fill="white"/>
-        <path d="M8 8 L4 8 L6 13 L8 11 Z" fill="rgba(255,255,255,0.5)"/>
-        <path d="M18 8 L22 8 L20 13 L18 11 Z" fill="rgba(255,255,255,0.5)"/>
-        <circle cx="9" cy="9" r="1.5" fill="#c41230"/>
-        <circle cx="17" cy="9" r="1.5" fill="#c41230"/>
-      </svg>
-    </div>`;
-  }
+  if (brand.name === 'GMC') return `<div class="brand-text-logo" style="background:${brand.color};font-size:0.9rem;letter-spacing:1px">GMC</div>`;
+  if (brand.name === 'Dodge') return `<div class="brand-text-logo" style="background:${brand.color}">
+    <svg width="26" height="22" viewBox="0 0 26 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M13 2 L4 8 L2 14 L6 13 L7 18 L13 14 L19 18 L20 13 L24 14 L22 8 Z" fill="white"/>
+      <path d="M8 8 L4 8 L6 13 L8 11 Z" fill="rgba(255,255,255,0.5)"/>
+      <path d="M18 8 L22 8 L20 13 L18 11 Z" fill="rgba(255,255,255,0.5)"/>
+      <circle cx="9" cy="9" r="1.5" fill="#c41230"/>
+      <circle cx="17" cy="9" r="1.5" fill="#c41230"/>
+    </svg></div>`;
   return `<div class="brand-text-logo" style="background:${brand.color}">${brand.name.substring(0,3).toUpperCase()}</div>`;
 }
 
@@ -1241,50 +1079,26 @@ function renderBrandGrid() {
 
 function selectBrand(name) {
   if (state.brand === name && document.getElementById('modelSection').classList.contains('open')) return;
-
   state.brand = name;
   state.model = null;
-
-  // Dim all cards, highlight selected
   document.querySelectorAll('.brand-card').forEach(card => {
-    if (card.dataset.brand === name) {
-      card.classList.add('brand-selected');
-      card.classList.remove('dimmed');
-    } else {
-      card.classList.remove('brand-selected');
-      card.classList.add('dimmed');
-    }
+    card.classList.toggle('brand-selected', card.dataset.brand === name);
+    card.classList.toggle('dimmed', card.dataset.brand !== name);
   });
-
-  // Update header
   document.getElementById('siteHeader').classList.add('compact');
   document.getElementById('brandSectionLabel').textContent = 'Brand selected';
-
-  // Update model section heading
   document.getElementById('modelSectionHeading').textContent = `Select your ${name} model`;
-
-  // Reset model grid + hide deal/result sections
   collapseSection('dealSection');
   collapseSection('resultSection');
   resetModelGrid();
-
-  // Open model section
   openSection('modelSection');
-
-  // Load models
   loadModels();
-
-  // Smooth scroll to model section
   setTimeout(() => scrollToEl('modelSection'), 80);
-
   track('brand_selected', { brand: name });
 }
 
 function changeBrand() {
-  // Undim all brands, collapse model + deal + result
-  document.querySelectorAll('.brand-card').forEach(c => {
-    c.classList.remove('brand-selected', 'dimmed');
-  });
+  document.querySelectorAll('.brand-card').forEach(c => c.classList.remove('brand-selected', 'dimmed'));
   document.getElementById('siteHeader').classList.remove('compact');
   document.getElementById('brandSectionLabel').textContent = 'Choose your brand';
   collapseSection('modelSection');
@@ -1302,16 +1116,14 @@ function changeBrand() {
 
 function renderYearToggle() {
   const toggle = document.getElementById('yearToggle');
-  toggle.innerHTML = YEARS.map(y => `
-    <button class="year-btn ${y === state.year ? 'active' : ''}" data-year="${y}" onclick="selectYear(${y})">${y}</button>
-  `).join('');
+  toggle.innerHTML = YEARS.map(y =>
+    `<button class="year-btn ${y === state.year ? 'active' : ''}" data-year="${y}" onclick="selectYear(${y})">${y}</button>`
+  ).join('');
 }
 
 function selectYear(year) {
   state.year = year;
-  document.querySelectorAll('.year-btn').forEach(b => {
-    b.classList.toggle('active', parseInt(b.dataset.year) === year);
-  });
+  document.querySelectorAll('.year-btn').forEach(b => b.classList.toggle('active', parseInt(b.dataset.year) === year));
   if (state.brand) loadModels();
 }
 
@@ -1320,9 +1132,7 @@ function selectYear(year) {
 // ══════════════════════════════════════════════════════════
 
 function resetModelGrid() {
-  const grid = document.getElementById('modelGrid');
-  grid.innerHTML = '<div class="loading-msg">Loading models…</div>';
-  // Undim all model cards
+  document.getElementById('modelGrid').innerHTML = '<div class="loading-msg">Loading models…</div>';
   document.querySelectorAll('.model-card').forEach(c => c.classList.remove('model-selected', 'dimmed'));
 }
 
@@ -1330,7 +1140,6 @@ function loadModels() {
   if (!state.brand) return;
   const grid = document.getElementById('modelGrid');
   grid.innerHTML = '<div class="loading-msg">Loading models…</div>';
-
   fetch(`/models-for-brand?make=${encodeURIComponent(state.brand)}&year=${state.year}`)
     .then(r => r.json())
     .then(data => {
@@ -1341,7 +1150,7 @@ function loadModels() {
       }
       grid.innerHTML = models.map(m => {
         const bodyType = inferBodyType(m);
-        return `<button class="model-card" data-model="${escAttr(m)}" onclick="selectModel('${escAttr(m)}')" >
+        return `<button class="model-card" data-model="${escAttr(m)}" onclick="selectModel('${escAttr(m)}')">
           <div class="model-name">${m}</div>
           <div class="model-type-badge">${bodyType}</div>
         </button>`;
@@ -1359,39 +1168,20 @@ function loadModels() {
 
 function selectModel(model) {
   state.model = model;
-
-  // Dim all model cards, highlight selected
   document.querySelectorAll('.model-card').forEach(card => {
-    if (card.dataset.model === model) {
-      card.classList.add('model-selected');
-      card.classList.remove('dimmed');
-    } else {
-      card.classList.remove('model-selected');
-      card.classList.add('dimmed');
-    }
+    card.classList.toggle('model-selected', card.dataset.model === model);
+    card.classList.toggle('dimmed', card.dataset.model !== model);
   });
-
-  // Estimate MSRP
   state.msrpEstimate = estimateMsrp(state.brand, model);
   state.rangeEstimate = msrpToRange(state.msrpEstimate);
-
-  // Populate deal section
   populateDealSection();
-
-  // Collapse result if open
   collapseSection('resultSection');
-
-  // Open deal section
   openSection('dealSection');
-
-  // Scroll to it
   setTimeout(() => scrollToEl('dealSection'), 80);
-
   track('model_selected', { brand: state.brand, model, year: state.year });
 }
 
 function changeModel() {
-  // Undim model cards
   document.querySelectorAll('.model-card').forEach(c => c.classList.remove('model-selected', 'dimmed'));
   collapseSection('dealSection');
   collapseSection('resultSection');
@@ -1409,21 +1199,17 @@ function populateDealSection() {
   document.getElementById('crumbModel').textContent = `${state.brand} ${state.model}`;
   document.getElementById('crumbYear').textContent = state.year;
 
-  // MSRP suggestion
+  // Pre-fill dealer offer at 5% below MSRP
+  const estimatedDealerPrice = Math.round(state.msrpEstimate * 0.95);
+  document.getElementById('dealerOffer').value = estimatedDealerPrice;
+
+  // MSRP display
   document.getElementById('msrpDisplay').textContent = `~$${fmt(state.msrpEstimate)}`;
   document.getElementById('msrpInlineInput').value = state.msrpEstimate;
 
-  // Typical range note
-  const r = state.rangeEstimate;
-  document.getElementById('typicalRangeSpan').textContent = `$${fmt(r.low)} – $${fmt(r.high)}`;
-
-  // Clear offer input + live preview
-  document.getElementById('dealerOffer').value = '';
-  hideLiveSignal();
-
-  // Reset ZIP
-  document.getElementById('zipCode').value = '';
-  document.getElementById('zipConfirmMsg').textContent = '';
+  // Clear live signal — update it immediately with pre-fill
+  updateLiveSignal();
+  updateGlancePanel();
 }
 
 // ══════════════════════════════════════════════════════════
@@ -1431,11 +1217,10 @@ function populateDealSection() {
 // ══════════════════════════════════════════════════════════
 
 function toggleMsrpEdit() {
-  const input = document.getElementById('msrpInlineInput');
+  const input   = document.getElementById('msrpInlineInput');
   const display = document.getElementById('msrpDisplay');
-  const isVisible = input.style.display === 'inline-block';
-
-  if (!isVisible) {
+  const visible = input.style.display === 'inline-block';
+  if (!visible) {
     input.style.display = 'inline-block';
     input.focus();
     display.style.display = 'none';
@@ -1445,13 +1230,25 @@ function toggleMsrpEdit() {
       state.msrpEstimate = val;
       state.rangeEstimate = msrpToRange(val);
       display.textContent = `~$${fmt(val)}`;
-      document.getElementById('typicalRangeSpan').textContent = `$${fmt(state.rangeEstimate.low)} – $${fmt(state.rangeEstimate.high)}`;
-      // Re-run live signal if offer is entered
+      // Re-prefill dealer offer
+      document.getElementById('dealerOffer').value = Math.round(val * 0.95);
       updateLiveSignal();
+      updateGlancePanel();
     }
     input.style.display = 'none';
     display.style.display = 'inline';
   }
+}
+
+// ══════════════════════════════════════════════════════════
+// Loan term selector
+// ══════════════════════════════════════════════════════════
+
+function selectTerm(term) {
+  state.loanTerm = term;
+  document.querySelectorAll('.term-pill').forEach(p => p.classList.toggle('selected', parseInt(p.dataset.term) === term));
+  updateGlancePanel();
+  track('term_selected', { term });
 }
 
 // ══════════════════════════════════════════════════════════
@@ -1461,10 +1258,8 @@ function toggleMsrpEdit() {
 let zipOpen = false;
 function toggleZip() {
   zipOpen = !zipOpen;
-  const row = document.getElementById('zipHintRow');
-  const wrap = document.getElementById('zipInputWrap');
-  row.classList.toggle('expanded', zipOpen);
-  wrap.classList.toggle('open', zipOpen);
+  document.getElementById('zipHintRow').classList.toggle('expanded', zipOpen);
+  document.getElementById('zipInputWrap').classList.toggle('open', zipOpen);
   if (zipOpen) document.getElementById('zipCode').focus();
 }
 
@@ -1475,12 +1270,26 @@ function toggleZip() {
 let moreOpen = false;
 function toggleMore() {
   moreOpen = !moreOpen;
-  const panel = document.getElementById('morePanel');
-  const arrow = document.getElementById('moreArrow');
-  panel.classList.toggle('open', moreOpen);
-  arrow.classList.toggle('open', moreOpen);
-  document.getElementById('moreToggle').lastChild.textContent =
-    moreOpen ? ' Hide details' : ' Add more details';
+  document.getElementById('morePanel').classList.toggle('open', moreOpen);
+  document.getElementById('moreArrow').classList.toggle('open', moreOpen);
+  document.getElementById('moreToggle').lastChild.textContent = moreOpen ? ' Hide details' : ' Add more details';
+}
+
+// ══════════════════════════════════════════════════════════
+// Miles helpers
+// ══════════════════════════════════════════════════════════
+
+function setMiles(n) {
+  document.getElementById('annualMiles').value = n;
+  state.annualMiles = n;
+  updateMilesMonth();
+  updateGlancePanel();
+}
+
+function updateMilesMonth() {
+  const miles = parseInt(document.getElementById('annualMiles').value) || 13500;
+  state.annualMiles = miles;
+  document.getElementById('milesMonthLabel').textContent = `≈ ${fmt(Math.round(miles / 12))} miles/month`;
 }
 
 // ══════════════════════════════════════════════════════════
@@ -1488,55 +1297,76 @@ function toggleMore() {
 // ══════════════════════════════════════════════════════════
 
 function hideLiveSignal() {
-  document.getElementById('liveSignalPreview').style.opacity = '0';
-  document.getElementById('liveSignalPreview').style.pointerEvents = 'none';
+  const preview = document.getElementById('liveSignalPreview');
+  preview.style.opacity = '0';
+  preview.style.pointerEvents = 'none';
 }
 
 function updateLiveSignal() {
   const rawOffer = parseFloat(document.getElementById('dealerOffer').value);
-  const preview = document.getElementById('liveSignalPreview');
-
-  if (!rawOffer || rawOffer < 1000) {
-    hideLiveSignal();
-    return;
-  }
-
+  const preview  = document.getElementById('liveSignalPreview');
+  if (!rawOffer || rawOffer < 1000) { hideLiveSignal(); return; }
   const r = state.rangeEstimate;
   let label, colorClass, vsText;
-
   if (rawOffer <= r.low) {
-    label = '🟢 LOOKS FAIR';
-    colorClass = 'green';
-    const diff = Math.round(r.low - rawOffer);
-    vsText = diff > 0 ? `$${fmt(diff)} below typical range` : 'At the low end of range';
+    label = '🟢 LOOKS FAIR'; colorClass = 'green';
+    vsText = rawOffer < r.low ? `$${fmt(r.low - rawOffer)} below typical range` : 'At the low end of range';
   } else if (rawOffer <= r.high) {
-    label = '🟡 PUSH BACK';
-    colorClass = 'yellow';
-    vsText = 'Within range — negotiate';
+    label = '🟡 PUSH BACK'; colorClass = 'yellow'; vsText = 'Within range — negotiate';
   } else {
-    label = '🔴 HIGH RISK';
-    colorClass = 'red';
-    const diff = Math.round(rawOffer - r.high);
-    vsText = `$${fmt(diff)} above typical range`;
+    label = '🔴 HIGH RISK'; colorClass = 'red'; vsText = `$${fmt(rawOffer - r.high)} above typical range`;
   }
-
   const badge = document.getElementById('liveSignalBadge');
   badge.textContent = label;
   badge.className = `live-signal-badge ${colorClass}`;
   document.getElementById('liveSignalVs').textContent = vsText;
-
   preview.style.opacity = '1';
   preview.style.pointerEvents = 'auto';
 }
+
+// ══════════════════════════════════════════════════════════
+// Live glance panel (debounced)
+// ══════════════════════════════════════════════════════════
+
+function updateGlancePanel() {
+  const price  = parseFloat(document.getElementById('dealerOffer').value);
+  const aprPct = parseFloat(document.getElementById('aprInput').value) || DEFAULTS.apr;
+  const term   = state.loanTerm;
+
+  state.apr = aprPct;
+
+  if (!price || price < 1000) {
+    document.getElementById('glancePanel').classList.remove('visible');
+    return;
+  }
+
+  const mp           = calcMonthlyPayment(price * 0.90, aprPct, term);
+  const totalInterest = (mp * term) - (price * 0.90);
+  const totalCost    = price + totalInterest;
+  const years        = term / 12;
+
+  document.getElementById('glanceMonthly').textContent   = `$${fmt(mp)}/mo`;
+  document.getElementById('glanceInterest').textContent  = `$${fmt(totalInterest)}`;
+  document.getElementById('glanceTotalCost').textContent = `$${fmt(totalCost)}`;
+  document.getElementById('glanceTerm').textContent      = `${years} yr`;
+
+  document.getElementById('glancePanel').classList.add('visible');
+}
+
+const debouncedGlance = debounce(updateGlancePanel, 400);
+const debouncedSignal = debounce(updateLiveSignal, 180);
 
 // ══════════════════════════════════════════════════════════
 // Check deal
 // ══════════════════════════════════════════════════════════
 
 function checkDeal() {
-  const offer = document.getElementById('dealerOffer').value || null;
-
-  const msrpVal = document.getElementById('msrpInlineInput').value || state.msrpEstimate;
+  const rawOffer   = document.getElementById('dealerOffer').value;
+  const offer      = rawOffer ? parseFloat(rawOffer) : null;
+  const msrpVal    = document.getElementById('msrpInlineInput').value || state.msrpEstimate;
+  const aprPct     = parseFloat(document.getElementById('aprInput').value) || DEFAULTS.apr;
+  const miles      = parseInt(document.getElementById('annualMiles').value) || DEFAULTS.annualMiles;
+  const gasP       = parseFloat(document.getElementById('gasPrice').value) || DEFAULTS.gasPrice;
 
   const payload = {
     year:               state.year,
@@ -1548,21 +1378,20 @@ function checkDeal() {
     destination_charge: document.getElementById('destinationCharge').value || 0,
     dealer_fees:        document.getElementById('dealerFees').value || 0,
     add_ons:            document.getElementById('addOns').value || '',
-    monthly_payment:    document.getElementById('monthlyPayment').value || null,
-    loan_term:          document.getElementById('loanTerm').value || 60,
+    apr:                aprPct / 100,
+    loan_term:          state.loanTerm,
+    gas_price:          gasP,
+    annual_miles:       miles,
   };
 
   track('deal_checked', { make: state.brand, model: state.model, year: state.year });
 
-  // Update result nav label
+  const displayPrice = offer || Math.round(state.msrpEstimate * 0.95);
   document.getElementById('resultVehicleLabel').innerHTML =
-    `<strong>${state.year} ${state.brand} ${state.model}</strong> · $${fmt(parseFloat(offer))}`;
+    `<strong>${state.year} ${state.brand} ${state.model}</strong>`;
 
-  // Show spinner, hide content
   document.getElementById('resultLoading').style.display = 'block';
   document.getElementById('resultContent').classList.add('hidden');
-
-  // Open result section
   openSection('resultSection');
   setTimeout(() => scrollToEl('resultSection'), 80);
 
@@ -1586,7 +1415,7 @@ function checkDeal() {
 }
 
 // ══════════════════════════════════════════════════════════
-// Edit offer
+// Edit offer / Start over
 // ══════════════════════════════════════════════════════════
 
 function editOffer() {
@@ -1595,49 +1424,38 @@ function editOffer() {
   track('edit_offer');
 }
 
-// ══════════════════════════════════════════════════════════
-// Start over
-// ══════════════════════════════════════════════════════════
-
 function startOver() {
-  // Reset state
-  state.brand = null;
-  state.model = null;
-  state.year = CURRENT_YEAR - 1;
-  state.msrpEstimate = 32000;
-  state.reportData = null;
+  state.brand = null; state.model = null; state.year = CURRENT_YEAR - 1;
+  state.msrpEstimate = 32000; state.reportData = null; state.loanTerm = 72;
+  state.apr = 6.8; state.annualMiles = 13500; state.gasPrice = 3.45;
 
-  // Reset UI
   document.querySelectorAll('.brand-card').forEach(c => c.classList.remove('brand-selected', 'dimmed'));
   document.getElementById('brandOtherInput').value = '';
   document.getElementById('siteHeader').classList.remove('compact');
   document.getElementById('brandSectionLabel').textContent = 'Choose your brand';
-
-  // Reset year toggle
   renderYearToggle();
 
-  // Clear form fields
-  ['dealerOffer','zipCode','destinationCharge','dealerFees','addOns','monthlyPayment'].forEach(id => {
+  ['dealerOffer','zipCode','destinationCharge','dealerFees','addOns'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
-  document.getElementById('loanTerm').value = '60';
+  document.getElementById('aprInput').value = DEFAULTS.apr;
+  document.getElementById('annualMiles').value = DEFAULTS.annualMiles;
+  document.getElementById('gasPrice').value = DEFAULTS.gasPrice;
+  selectTerm(72);
+  updateMilesMonth();
 
-  // Reset ZIP/more toggles
-  zipOpen = false;
-  moreOpen = false;
+  zipOpen = false; moreOpen = false;
   document.getElementById('zipHintRow').classList.remove('expanded');
   document.getElementById('zipInputWrap').classList.remove('open');
   document.getElementById('morePanel').classList.remove('open');
   document.getElementById('moreArrow').classList.remove('open');
 
-  // Collapse panels
   collapseSection('modelSection');
   collapseSection('dealSection');
   collapseSection('resultSection');
-
-  // Reset model grid
   document.getElementById('modelGrid').innerHTML = '<div class="loading-msg">Loading models…</div>';
+  document.getElementById('glancePanel').classList.remove('visible');
 
   hideLiveSignal();
   scrollToTop();
@@ -1648,23 +1466,13 @@ function startOver() {
 // Section helpers
 // ══════════════════════════════════════════════════════════
 
-function openSection(id) {
-  document.getElementById(id).classList.add('open');
-}
-function collapseSection(id) {
-  document.getElementById(id).classList.remove('open');
-}
-
+function openSection(id) { document.getElementById(id).classList.add('open'); }
+function collapseSection(id) { document.getElementById(id).classList.remove('open'); }
 function scrollToEl(id) {
   const el = document.getElementById(id);
-  if (el) {
-    const top = el.getBoundingClientRect().top + window.pageYOffset - 16;
-    window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
-  }
+  if (el) window.scrollTo({ top: Math.max(0, el.getBoundingClientRect().top + window.pageYOffset - 16), behavior: 'smooth' });
 }
-function scrollToTop() {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
 // ══════════════════════════════════════════════════════════
 // Result rendering
@@ -1676,24 +1484,21 @@ function renderResult(d) {
   renderReasons(d);
   renderWhatToSay(d);
   renderOTD(d);
+  renderTermTrap(d);
+  renderOwnershipCost(d);
   renderFees(d);
-  renderPaymentTrap(d);
   renderNegotiationScript(d);
   renderVehicleDetails(d);
   resetTipJar();
 }
 
 function renderSignal(d) {
-  const block  = document.getElementById('signalBlock');
-  const icon   = document.getElementById('signalIcon');
-  const name   = document.getElementById('signalName');
-  const expl   = document.getElementById('signalExplanation');
-  const color  = d.signal_color || 'green';
+  const block = document.getElementById('signalBlock');
+  const color = d.signal_color || 'green';
   block.className = 'signal-block ' + color;
-  const icons = { green: '🟢', yellow: '🟡', red: '🔴' };
-  icon.textContent = icons[color] || '⚪';
-  name.textContent = d.signal || 'N/A';
-  expl.textContent = d.signal_explanation || '';
+  document.getElementById('signalIcon').textContent = { green: '🟢', yellow: '🟡', red: '🔴' }[color] || '⚪';
+  document.getElementById('signalName').textContent = d.signal || 'N/A';
+  document.getElementById('signalExplanation').textContent = d.signal_explanation || '';
 }
 
 function renderRange(d) {
@@ -1703,41 +1508,28 @@ function renderRange(d) {
 
   document.getElementById('rangeTitle').textContent =
     `${d.vehicle.year} ${d.vehicle.make} ${d.vehicle.model} — estimated range (${area})`;
-
   document.getElementById('rangeNumbers').innerHTML =
     `<span class="range-accent">$${fmt(lr.low)}</span> – <span class="range-accent">$${fmt(lr.high)}</span>`;
 
   const deltaEl = document.getElementById('offerDelta');
   if (offer) {
-    const base = lr.base_msrp_estimate || lr.low;
-    const delta = offer - base;
     if (offer < lr.low) {
-      deltaEl.className = 'offer-delta-pill below';
-      deltaEl.textContent = `$${fmt(Math.abs(offer - lr.low))} below range`;
+      deltaEl.className = 'offer-delta-pill below'; deltaEl.textContent = `$${fmt(lr.low - offer)} below range`;
     } else if (offer > lr.high) {
-      deltaEl.className = 'offer-delta-pill above';
-      deltaEl.textContent = `$${fmt(offer - lr.high)} above range`;
+      deltaEl.className = 'offer-delta-pill above'; deltaEl.textContent = `$${fmt(offer - lr.high)} above range`;
     } else {
-      deltaEl.className = 'offer-delta-pill within';
-      deltaEl.textContent = 'Within range';
+      deltaEl.className = 'offer-delta-pill within'; deltaEl.textContent = 'Within range';
     }
-  } else {
-    deltaEl.textContent = '';
-  }
+  } else { deltaEl.textContent = ''; }
 
-  // Bar
-  document.getElementById('rangeBarFill').style.width = '100%';
   if (offer && lr.low !== undefined && lr.high !== undefined) {
     const span = lr.high - lr.low || 1;
-    const pct = ((Math.max(lr.low, Math.min(lr.high, offer)) - lr.low) / span) * 100;
+    const pct  = ((Math.max(lr.low, Math.min(lr.high, offer)) - lr.low) / span) * 100;
     const marker = document.getElementById('rangeBarMarker');
     marker.style.left = Math.max(2, Math.min(98, pct)) + '%';
     marker.className = 'range-bar-marker marker-' + (d.signal_color || 'green');
   }
-
-  document.getElementById('rangeBarLabels').innerHTML =
-    `<span>$${fmt(lr.low)}</span><span>$${fmt(lr.high)}</span>`;
-
+  document.getElementById('rangeBarLabels').innerHTML = `<span>$${fmt(lr.low)}</span><span>$${fmt(lr.high)}</span>`;
   document.getElementById('rangeDisclaimer').textContent = lr.source_note || '';
 }
 
@@ -1752,12 +1544,12 @@ function renderWhatToSay(d) {
 }
 
 function renderOTD(d) {
-  const offer  = d.dealer_offer || 0;
-  const dest   = d.destination_charge || 0;
-  const fees   = d.dealer_fees || 0;
-  const tax    = Math.round(offer * 0.08);
-  const reg    = 350;
-  const total  = Math.round(offer + dest + fees + tax + reg);
+  const offer = d.dealer_offer || 0;
+  const dest  = d.destination_charge || 0;
+  const fees  = d.dealer_fees || 0;
+  const tax   = Math.round(offer * 0.08);
+  const reg   = 350;
+  const total = Math.round(offer + dest + fees + tax + reg);
 
   const rows = [
     ['Vehicle price (dealer offer)', offer],
@@ -1774,104 +1566,208 @@ function renderOTD(d) {
     `<tr class="otd-total"><td><strong>Estimated Out-the-Door Total</strong></td><td><strong>$${fmt(total)}</strong></td></tr>`;
 }
 
+// ── Term Trap Detector ─────────────────────────────────────
+
+function renderTermTrap(d) {
+  const tc     = d.term_comparison;
+  const selTerm = d.loan_term || state.loanTerm;
+
+  if (!tc || !tc.terms || tc.terms.length === 0) return;
+
+  const terms   = tc.terms;
+  const baseline60 = tc.baseline_interest || 0;
+
+  // Build table header
+  let theadHTML = `<thead><tr><th></th>`;
+  terms.forEach(t => {
+    const isSel = t.term === selTerm;
+    theadHTML += `<th class="term-col ${isSel ? 'selected-col' : ''}" onclick="switchTermFromTable(${t.term})">${t.term} mo${isSel ? ' ✓' : ''}</th>`;
+  });
+  theadHTML += `</tr></thead>`;
+
+  // Build table body rows
+  const rows = [
+    { label: 'Monthly payment', key: 'monthly_payment', prefix: '$', fmt: true },
+    { label: 'Total interest',  key: 'total_interest',  prefix: '$', fmt: true },
+    { label: 'Total cost',      key: 'total_cost',      prefix: '$', fmt: true },
+    { label: 'vs. 60mo baseline', key: '_baseline', prefix: '', fmt: false },
+  ];
+
+  let tbodyHTML = `<tbody>`;
+  rows.forEach(row => {
+    tbodyHTML += `<tr><td>${row.label}</td>`;
+    terms.forEach(t => {
+      const isSel = t.term === selTerm;
+      let cellClass = isSel ? 'selected-col' : '';
+      let cellVal = '';
+      if (row.key === '_baseline') {
+        if (t.term === 60) {
+          cellVal = '— baseline';
+          cellClass += ' baseline-col';
+        } else {
+          const diff = t.total_interest - baseline60;
+          if (diff > 0) {
+            cellVal = `+$${fmt(diff)}`;
+            cellClass += ' extra-col-pos';
+          } else if (diff < 0) {
+            cellVal = `-$${fmt(Math.abs(diff))}`;
+            cellClass += ' extra-col-neg';
+          } else {
+            cellVal = '$0';
+          }
+        }
+      } else {
+        cellVal = `$${fmt(t[row.key])}`;
+      }
+      tbodyHTML += `<td class="${cellClass.trim()}">${cellVal}</td>`;
+    });
+    tbodyHTML += `</tr>`;
+  });
+  tbodyHTML += `</tbody>`;
+
+  document.getElementById('termTable').innerHTML = theadHTML + tbodyHTML;
+
+  // Term trap summary
+  const selData    = terms.find(t => t.term === selTerm);
+  const summaryEl  = document.getElementById('termTrapSummary');
+
+  if (selData && selTerm !== 60) {
+    const extraInterest = selData.total_interest - baseline60;
+    const extraMonths   = selTerm - 60;
+    if (extraInterest > 0) {
+      summaryEl.className   = 'term-trap-summary';
+      summaryEl.textContent = `At ${selTerm} months, you pay $${fmt(extraInterest)} more in interest than a 60-month loan and stay in debt ${extraMonths} extra months.`;
+    } else {
+      summaryEl.className   = 'term-trap-summary safe';
+      summaryEl.textContent = `At ${selTerm} months, you save $${fmt(Math.abs(extraInterest))} in interest vs. a 60-month loan, but your monthly payment is higher.`;
+    }
+  } else if (selTerm === 60) {
+    summaryEl.className   = 'term-trap-summary safe';
+    summaryEl.textContent = `60 months is the baseline. Shorter terms save interest; longer terms hide costs by stretching payments.`;
+  }
+
+  // Interest bar chart
+  const maxInterest = Math.max(...terms.map(t => t.total_interest));
+  const barsHTML = terms.map(t => {
+    const pct    = Math.round((t.total_interest / maxInterest) * 100);
+    const isSel  = t.term === selTerm;
+    const isWorst = t.total_interest === maxInterest;
+    const fillClass = isWorst ? 'worst' : (isSel ? 'selected' : 'not-selected');
+    return `<div class="interest-bar-row">
+      <div class="interest-bar-label">${t.term} mo</div>
+      <div class="interest-bar-track"><div class="interest-bar-fill ${fillClass}" style="width:${pct}%"></div></div>
+      <div class="interest-bar-amount">$${fmt(t.total_interest)}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('interestBars').innerHTML = barsHTML;
+}
+
+function switchTermFromTable(term) {
+  selectTerm(term);
+  // Re-render term trap with updated selection if we have report data
+  if (state.reportData) {
+    state.reportData.loan_term = term;
+    renderTermTrap(state.reportData);
+    renderOwnershipCost(state.reportData);
+  }
+  track('term_switched_from_table', { term });
+}
+
+// ── Ownership Cost Section ─────────────────────────────────
+
+function renderOwnershipCost(d) {
+  const tc       = d.true_cost;
+  const selTerm  = d.loan_term || state.loanTerm;
+  const years    = selTerm / 12;
+
+  document.getElementById('ownershipTitle').textContent = `${years}-Year Cost of Ownership`;
+
+  if (!tc) {
+    document.getElementById('ownershipContext').textContent = 'Enter MSRP for ownership cost details.';
+    return;
+  }
+
+  const gasP  = tc.gas_price  || DEFAULTS.gasPrice;
+  const miles = tc.annual_miles || DEFAULTS.annualMiles;
+  const mpg   = tc.combined_mpg || 27;
+
+  document.getElementById('ownershipContext').textContent =
+    `Based on ${fmt(miles)} miles/year · $${gasP.toFixed(2)}/gal · ~${mpg} combined MPG`;
+
+  // Monthly breakdown
+  document.getElementById('own-monthly-payment').textContent = `$${fmt(tc.monthly_payment)}/mo`;
+  document.getElementById('own-fuel-label').textContent      = `Fuel (at ${fmt(miles)}/yr @ $${gasP.toFixed(2)}/gal)`;
+  document.getElementById('own-monthly-fuel').textContent    = `$${fmt(tc.monthly_fuel_cost)}/mo`;
+  document.getElementById('own-monthly-ins').textContent     = `~$${fmt(tc.monthly_insurance)}/mo`;
+  document.getElementById('own-monthly-maint').textContent   = `~$${fmt(tc.monthly_maintenance)}/mo`;
+  document.getElementById('own-monthly-total').textContent   = `$${fmt(tc.total_monthly_budget)}/mo`;
+
+  // Annual totals
+  const annualTotal = tc.total_monthly_budget * 12;
+  document.getElementById('own-annual-total').textContent = `$${fmt(annualTotal)}/yr`;
+  document.getElementById('own-term-total').textContent   = `$${fmt(tc.total_cost)}`;
+  document.getElementById('own-term-total-label').textContent = `Total over ${years} years`;
+
+  // Cost breakdown table
+  const tableRows = [
+    ['Depreciation', tc.depreciation],
+    [`Fuel (${years} yr)`, tc.fuel_cost],
+    [`Insurance (${years} yr)`, tc.insurance],
+    [`Maintenance (${years} yr)`, tc.maintenance],
+    [`Financing interest (${selTerm} mo @ ${((d.apr || 0.068) * 100).toFixed(1)}%)`, tc.total_interest],
+    ['Taxes & fees (est. 10%)', tc.taxes_fees],
+  ];
+  document.getElementById('costBreakdownTable').innerHTML =
+    tableRows.map(([label, val]) =>
+      `<tr><td>${label}</td><td>$${fmt(val)}</td></tr>`
+    ).join('') +
+    `<tr class="cost-total-row"><td><strong>Total ${years}-Year Cost</strong></td><td><strong>$${fmt(tc.total_cost)}</strong></td></tr>`;
+
+  document.getElementById('costNote').textContent =
+    `~$${fmt(tc.cost_per_month)}/month all-in · Based on MSRP of $${fmt(tc.msrp)} · Estimates only.`;
+}
+
+// ── Fee review ─────────────────────────────────────────────
+
 function renderFees(d) {
-  const jf = d.junk_fees;
+  const jf   = d.junk_fees;
   if (!jf) return;
   const body = document.getElementById('body-fees');
 
   const verdictClass = jf.verdict_color || 'yellow';
   let html = `<div class="fee-verdict ${verdictClass}">${jf.fee_verdict}</div>`;
-
   const flagIcon  = { ok: '✓', caution: '~', high: '✗', unknown: '?' };
   const flagClass = { ok: 'fee-flag-ok', caution: 'fee-flag-caution', high: 'fee-flag-high', unknown: 'fee-flag-unknown' };
 
-  html += `<div class="fee-note-row">
-    <span class="${flagClass[jf.doc_fee_flag]}"><strong>${flagIcon[jf.doc_fee_flag]}</strong></span>
-    <span>${jf.doc_fee_note}</span>
-  </div>`;
-
-  html += `<div class="fee-note-row">
-    <span class="${flagClass[jf.dest_flag]}"><strong>${flagIcon[jf.dest_flag]}</strong></span>
-    <span>${jf.dest_note}</span>
-  </div>`;
+  html += `<div class="fee-note-row"><span class="${flagClass[jf.doc_fee_flag]}"><strong>${flagIcon[jf.doc_fee_flag]}</strong></span><span>${jf.doc_fee_note}</span></div>`;
+  html += `<div class="fee-note-row"><span class="${flagClass[jf.dest_flag]}"><strong>${flagIcon[jf.dest_flag]}</strong></span><span>${jf.dest_note}</span></div>`;
 
   if (jf.flagged_from_input && jf.flagged_from_input.length > 0) {
-    html += `<div style="margin-top:12px;color:#ef4444;font-weight:700;font-size:0.85rem;">
-      ⚠️ Add-ons flagged from your entry: ${jf.flagged_from_input.join(', ')}
-    </div>`;
+    html += `<div style="margin-top:12px;color:#ef4444;font-weight:700;font-size:0.85rem;">⚠️ Add-ons flagged from your entry: ${jf.flagged_from_input.join(', ')}</div>`;
   }
 
-  html += `<div class="junk-addon-list">
-    <div style="font-size:0.8rem;color:#8fa3b8;margin-bottom:10px;margin-top:8px;">Common dealer add-ons to watch for:</div>`;
-
+  html += `<div class="junk-addon-list"><div style="font-size:0.8rem;color:#8fa3b8;margin-bottom:10px;margin-top:8px;">Common dealer add-ons to watch for:</div>`;
   (jf.junk_addons_to_watch || []).forEach(addon => {
-    const vClass = addon.verdict === 'Skip it' ? 'verdict-skip' :
-                   addon.verdict === 'Wait'    ? 'verdict-wait' : 'verdict-elsewhere';
+    const vClass = addon.verdict === 'Skip it' ? 'verdict-skip' : addon.verdict === 'Wait' ? 'verdict-wait' : 'verdict-elsewhere';
     html += `<div class="junk-addon">
-      <div class="junk-addon-header">
-        <div class="junk-addon-name">${addon.name}</div>
-        <div class="junk-addon-verdict ${vClass}">${addon.verdict}</div>
-      </div>
+      <div class="junk-addon-header"><div class="junk-addon-name">${addon.name}</div><div class="junk-addon-verdict ${vClass}">${addon.verdict}</div></div>
       <div class="junk-addon-cost">${addon.cost}</div>
       <div class="junk-addon-note">${addon.note}</div>
     </div>`;
   });
-
   html += '</div>';
   body.innerHTML = html;
 }
 
-function renderPaymentTrap(d) {
-  const pt      = d.payment_trap;
-  const section = document.getElementById('section-payment');
-
-  if (!pt) {
-    section.classList.add('hidden');
-    return;
-  }
-  section.classList.remove('hidden');
-
-  const body    = document.getElementById('body-payment');
-  const overAmt = pt.overpayment_vs_cash;
-  const overPct = pt.purchase_price ? Math.round((overAmt / pt.purchase_price) * 100) : 0;
-
-  let html = `
-    <div class="payment-stat">
-      <span class="payment-stat-label">Monthly payment</span>
-      <span class="payment-stat-value">$${fmt(pt.monthly_payment)}</span>
-    </div>
-    <div class="payment-stat">
-      <span class="payment-stat-label">Loan term</span>
-      <span class="payment-stat-value">${pt.loan_term_months} months</span>
-    </div>
-    <div class="payment-stat">
-      <span class="payment-stat-label">Total implied cost</span>
-      <span class="payment-stat-value ${overAmt > 3000 ? 'danger' : ''}">$${fmt(pt.total_implied_cost)}</span>
-    </div>
-    <div class="payment-stat">
-      <span class="payment-stat-label">vs. purchase price</span>
-      <span class="payment-stat-value ${overAmt > 0 ? 'danger' : ''}">+$${fmt(overAmt)} (${overPct}% over)</span>
-    </div>
-    <div class="payment-trap-warnings">`;
-
-  (pt.payment_trap_warnings || []).forEach(w => {
-    const isTip = w.startsWith('💡');
-    html += `<div class="trap-warning ${isTip ? 'tip' : ''}">${w}</div>`;
-  });
-
-  html += '</div>';
-  body.innerHTML = html;
-}
+// ── Negotiation script ─────────────────────────────────────
 
 function renderNegotiationScript(d) {
   const ns   = d.negotiation_script;
   const body = document.getElementById('body-script');
-
   if (!ns) {
-    body.innerHTML = '<div style="color:#8fa3b8;font-size:0.88rem;">Enter a dealer offer to generate your negotiation script.</div>';
+    body.innerHTML = '<div style="color:#8fa3b8;font-size:0.88rem;">Analysis complete — see signal and term details above.</div>';
     return;
   }
-
   body.innerHTML = `
     <div class="script-step">
       <div class="script-step-label">Step 1 — Opening line (when you walk in)</div>
@@ -1896,10 +1792,11 @@ function renderNegotiationScript(d) {
   `;
 }
 
+// ── Vehicle details ────────────────────────────────────────
+
 function renderVehicleDetails(d) {
   renderFuelEconomy(d.fuel_economy);
   renderRecalls(d.recalls, d.recall_count);
-  renderTrueCost(d.true_cost);
 }
 
 function renderFuelEconomy(fe) {
@@ -1910,22 +1807,13 @@ function renderFuelEconomy(fe) {
   }
   body.innerHTML = `
     <div class="mpg-row">
-      <div class="mpg-stat">
-        <div class="mpg-value">${fe.city_mpg}</div>
-        <div class="mpg-label">City MPG</div>
-      </div>
-      <div class="mpg-stat">
-        <div class="mpg-value">${fe.highway_mpg}</div>
-        <div class="mpg-label">Hwy MPG</div>
-      </div>
-      <div class="mpg-stat">
-        <div class="mpg-value">${fe.combined_mpg}</div>
-        <div class="mpg-label">Combined</div>
-      </div>
+      <div class="mpg-stat"><div class="mpg-value">${fe.city_mpg}</div><div class="mpg-label">City MPG</div></div>
+      <div class="mpg-stat"><div class="mpg-value">${fe.highway_mpg}</div><div class="mpg-label">Hwy MPG</div></div>
+      <div class="mpg-stat"><div class="mpg-value">${fe.combined_mpg}</div><div class="mpg-label">Combined</div></div>
     </div>
     <div style="font-size:0.82rem;color:#8fa3b8;line-height:1.6;">
       Fuel type: ${fe.fuel_type}${fe.engine ? ' · ' + fe.engine + 'L' : ''}${fe.cylinders ? ' · ' + fe.cylinders + ' cyl' : ''}${fe.transmission ? '<br>' + fe.transmission : ''}
-      ${fe.annual_fuel_cost && fe.annual_fuel_cost !== 'N/A' ? '<br>Est. annual fuel cost: <strong style="color:#e8edf5">$' + fmt(fe.annual_fuel_cost) + '</strong>' : ''}
+      ${fe.annual_fuel_cost && fe.annual_fuel_cost !== 'N/A' ? '<br>Est. annual fuel cost: <strong style="color:#e8edf5">$' + fmt(fe.annual_fuel_cost) + '</strong> (EPA est.)' : ''}
     </div>
   `;
 }
@@ -1933,47 +1821,14 @@ function renderFuelEconomy(fe) {
 function renderRecalls(recalls, count) {
   const body    = document.getElementById('body-recalls');
   const chevron = document.getElementById('chevron-recalls');
-
   if (!recalls || recalls.length === 0) {
     body.innerHTML = `<div class="no-recalls">✓ No open recalls found for this vehicle.</div>`;
-    body.classList.add('hidden');
-    chevron.classList.remove('open');
+    body.classList.add('hidden'); chevron.classList.remove('open');
     return;
   }
-
-  body.classList.remove('hidden');
-  chevron.classList.add('open');
-
-  body.innerHTML = `<div style="color:#ef4444;font-weight:700;font-size:0.88rem;margin-bottom:10px;">
-    ⚠️ ${count} recall${count !== 1 ? 's' : ''} found — check with your dealer about remedy status.
-  </div>` + recalls.slice(0, 5).map(r => `
-    <div class="recall-item">
-      <div class="recall-component">${r.component}</div>
-      <div class="recall-summary">${r.summary}</div>
-    </div>
-  `).join('');
-}
-
-function renderTrueCost(tc) {
-  const body = document.getElementById('body-cost');
-  if (!tc) {
-    body.innerHTML = '<div style="color:#8fa3b8;font-size:0.85rem;">Enter MSRP for a 5-year ownership cost estimate.</div>';
-    return;
-  }
-  body.innerHTML = `
-    <table class="cost-table">
-      <tr><td>Depreciation</td><td>$${fmt(tc.depreciation_5yr)}</td></tr>
-      <tr><td>Fuel (5 yr, ${fmt(tc.annual_miles)} mi/yr)</td><td>$${fmt(tc.fuel_5yr)}</td></tr>
-      <tr><td>Insurance (5 yr)</td><td>$${fmt(tc.insurance_5yr)}</td></tr>
-      <tr><td>Maintenance (5 yr)</td><td>$${fmt(tc.maintenance_5yr)}</td></tr>
-      <tr><td>Financing cost (60mo @ 6.5%)</td><td>$${fmt(tc.financing_cost)}</td></tr>
-      <tr><td>Taxes & fees (est.)</td><td>$${fmt(tc.taxes_fees)}</td></tr>
-      <tr class="cost-total"><td><strong>Total 5-Year Cost</strong></td><td><strong>$${fmt(tc.total_5yr)}</strong></td></tr>
-    </table>
-    <div class="cost-note">
-      ~$${fmt(tc.cost_per_month)}/month all-in · Based on MSRP of $${fmt(tc.msrp)} · Estimates only.
-    </div>
-  `;
+  body.classList.remove('hidden'); chevron.classList.add('open');
+  body.innerHTML = `<div style="color:#ef4444;font-weight:700;font-size:0.88rem;margin-bottom:10px;">⚠️ ${count} recall${count !== 1 ? 's' : ''} found — check with your dealer about remedy status.</div>` +
+    recalls.slice(0, 5).map(r => `<div class="recall-item"><div class="recall-component">${r.component}</div><div class="recall-summary">${r.summary}</div></div>`).join('');
 }
 
 // ══════════════════════════════════════════════════════════
@@ -1995,24 +1850,15 @@ function toggleSection(id) {
 function sendTip() {
   const data = state.reportData || {};
   fetch('/tip-jar', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      make:   data.vehicle?.make  || state.brand,
-      model:  data.vehicle?.model || state.model,
-      signal: data.signal || '',
-    }),
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ make: data.vehicle?.make || state.brand, model: data.vehicle?.model || state.model, signal: data.signal || '' }),
   }).catch(() => {});
   document.getElementById('tipActions').style.display = 'none';
   document.getElementById('tipThankYou').style.display = 'block';
   track('tip_clicked');
 }
 
-function skipTip() {
-  document.getElementById('tipJar').style.display = 'none';
-  track('tip_skipped');
-}
-
+function skipTip() { document.getElementById('tipJar').style.display = 'none'; track('tip_skipped'); }
 function resetTipJar() {
   document.getElementById('tipActions').style.display = '';
   document.getElementById('tipThankYou').style.display = 'none';
@@ -2028,8 +1874,7 @@ function copyEmail() {
   if (!el) return;
   navigator.clipboard.writeText(el.value).then(() => {
     const btn = document.getElementById('copyEmailBtn');
-    btn.textContent = 'Copied!';
-    btn.classList.add('copied');
+    btn.textContent = 'Copied!'; btn.classList.add('copied');
     setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
   }).catch(() => { el.select(); document.execCommand('copy'); });
 }
@@ -2043,9 +1888,7 @@ function fmt(n) {
   return Math.round(parseFloat(n)).toLocaleString('en-US');
 }
 
-function escAttr(s) {
-  return (s || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
-}
+function escAttr(s) { return (s || '').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
 
 // ══════════════════════════════════════════════════════════
 // Init
@@ -2054,8 +1897,9 @@ function escAttr(s) {
 document.addEventListener('DOMContentLoaded', () => {
   renderBrandGrid();
   renderYearToggle();
+  updateMilesMonth();
 
-  // "Other brand" input
+  // Other brand input
   const brandOther = document.getElementById('brandOtherInput');
   brandOther.addEventListener('keydown', function(e) {
     if (e.key === 'Enter' && this.value.trim()) selectBrand(this.value.trim());
@@ -2064,11 +1908,27 @@ document.addEventListener('DOMContentLoaded', () => {
     if (this.value.trim()) selectBrand(this.value.trim());
   });
 
-  // Dealer offer → live signal on input
-  let debounceTimer;
+  // Dealer offer → live signal + glance (debounced)
   document.getElementById('dealerOffer').addEventListener('input', () => {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(updateLiveSignal, 180);
+    debouncedSignal();
+    debouncedGlance();
+  });
+
+  // APR → glance
+  document.getElementById('aprInput').addEventListener('input', () => {
+    debouncedGlance();
+  });
+
+  // Miles → month label + glance
+  document.getElementById('annualMiles').addEventListener('input', () => {
+    updateMilesMonth();
+    debouncedGlance();
+  });
+
+  // Gas price → glance
+  document.getElementById('gasPrice').addEventListener('input', () => {
+    state.gasPrice = parseFloat(document.getElementById('gasPrice').value) || DEFAULTS.gasPrice;
+    debouncedGlance();
   });
 
   // MSRP inline input — save on Enter
@@ -2080,6 +1940,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('zipCode').addEventListener('input', function() {
     if (this.value.length === 5) {
       document.getElementById('zipConfirmMsg').textContent = '📍 Local pricing applied';
+      document.getElementById('gasPriceHelper').textContent = 'Using national average — adjust if your local price differs';
       track('zip_entered', { zip: this.value });
     } else {
       document.getElementById('zipConfirmMsg').textContent = '';
@@ -2091,3 +1952,14 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
+<!--
+DEFAULTS USED:
+- Dealer discount: 5% below MSRP
+- APR: 6.8%
+- Loan term: 72 months
+- Annual mileage: 13,500 miles/year
+- Gas price: $3.45/gallon
+- Monthly insurance estimate: ~$142/mo ($1,700/yr)
+- Monthly maintenance: $0.09/mile
+-->

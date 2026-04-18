@@ -1,18 +1,18 @@
 """
 Cartru — New-Car Deal Defense Tool
-MVP 2.1: Calculator-style UX, fully free, no paywall.
+MVP 2.2.2: Scenario Engine — live financial calculator pass.
 
 Features:
 - Local market range estimation
 - Cartru Signal (LOOKS FAIR / PUSH BACK / HIGH RISK)
 - Top reasons + what to say next
 - Junk fee analysis
-- Payment trap detection
+- Term Trap Detector (proper amortization, 4-term comparison)
 - Negotiation script generator
 - Printable summary
 - Recall & complaint lookup (NHTSA)
 - Fuel economy data (fueleconomy.gov)
-- 5-year True Cost estimate
+- Dynamic N-Year True Cost estimate (loan-term driven)
 - Tip jar endpoint
 """
 
@@ -102,48 +102,152 @@ def get_fuel_economy(make, model, year):
 
 # ── True Cost Calculator ──────────────────────────────────────────────────────
 
-def calculate_true_cost(msrp, fuel_economy, annual_miles=12000, years=5, state="CA"):
+def calculate_true_cost(msrp, fuel_economy, annual_miles=13500, years=None,
+                        gas_price=3.45, apr=0.068, loan_term_months=72):
+    """
+    Calculate true cost of ownership over the loan term.
+    All calculations are driven by loan_term_months, not a hardcoded 5 years.
+    """
     if not msrp:
         return None
 
     msrp = float(msrp)
-    depreciation_5yr = msrp * 0.49
+    years_of_loan = loan_term_months / 12
+    if years is None:
+        years = years_of_loan
 
-    gas_price = 3.50
+    # Depreciation over loan term (49% is typical 5yr; scale proportionally, cap at 70%)
+    depreciation_rate = 0.49 * (years / 5.0)
+    depreciation = round(msrp * min(depreciation_rate, 0.70))
+
+    # Fuel cost
     if fuel_economy and fuel_economy.get("combined_mpg") and fuel_economy["combined_mpg"] != "N/A":
-        mpg = float(fuel_economy["combined_mpg"])
-        annual_fuel = (annual_miles / mpg) * gas_price
+        combined_mpg = float(fuel_economy["combined_mpg"])
     else:
-        annual_fuel = annual_miles / 27 * gas_price
-    fuel_5yr = annual_fuel * years
+        combined_mpg = 27.0
 
-    insurance_annual = 1700
-    insurance_5yr = insurance_annual * years
-    maintenance_5yr = annual_miles * years * 0.09
+    fuel_cost = (annual_miles / combined_mpg) * gas_price * years
+    annual_fuel_cost = fuel_cost / years
+    monthly_fuel_cost = annual_fuel_cost / 12
 
-    loan_amount = msrp * 0.90
-    monthly_rate = 0.065 / 12
-    n_payments = 60
-    monthly_payment = loan_amount * (monthly_rate * (1 + monthly_rate)**n_payments) / ((1 + monthly_rate)**n_payments - 1)
-    financing_cost = (monthly_payment * 60) - loan_amount
+    # Insurance (unchanged: $1,700/yr)
+    insurance = 1700 * years
+    monthly_insurance = 1700 / 12  # ~$141.67
 
+    # Maintenance ($0.09/mile)
+    maintenance = annual_miles * years * 0.09
+    monthly_maintenance = (annual_miles * 0.09) / 12
+
+    # Financing cost — proper amortization
+    principal = msrp * 0.90  # assume 10% down
+    monthly_rate = apr / 12
+    n = int(loan_term_months)
+
+    if monthly_rate > 0:
+        monthly_payment = principal * (monthly_rate * (1 + monthly_rate) ** n) / ((1 + monthly_rate) ** n - 1)
+    else:
+        monthly_payment = principal / n
+
+    total_interest = (monthly_payment * n) - principal
+
+    # Taxes & fees (10% of MSRP)
     taxes_fees = msrp * 0.10
-    total_5yr = depreciation_5yr + fuel_5yr + insurance_5yr + maintenance_5yr + financing_cost + taxes_fees
+
+    # Total cost
+    total_cost = depreciation + fuel_cost + insurance + maintenance + total_interest + taxes_fees
+
+    # Monthly budget
+    total_monthly_budget = monthly_payment + monthly_fuel_cost + monthly_insurance + monthly_maintenance
 
     return {
         "msrp": round(msrp),
-        "depreciation_5yr": round(depreciation_5yr),
-        "fuel_5yr": round(fuel_5yr),
-        "annual_fuel": round(annual_fuel),
-        "insurance_5yr": round(insurance_5yr),
-        "maintenance_5yr": round(maintenance_5yr),
-        "financing_cost": round(financing_cost),
+        # Ownership components
+        "depreciation": depreciation,
+        "fuel_cost": round(fuel_cost),
+        "annual_fuel_cost": round(annual_fuel_cost),
+        "monthly_fuel_cost": round(monthly_fuel_cost),
+        "insurance": round(insurance),
+        "monthly_insurance": round(monthly_insurance),
+        "maintenance": round(maintenance),
+        "monthly_maintenance": round(monthly_maintenance),
+        "total_interest": round(total_interest),
+        "financing_cost": round(total_interest),
         "monthly_payment": round(monthly_payment),
         "taxes_fees": round(taxes_fees),
-        "total_5yr": round(total_5yr),
-        "cost_per_month": round(total_5yr / (years * 12)),
+        "total_cost": round(total_cost),
+        # Term info
+        "years_of_loan": years_of_loan,
+        "loan_term_months": loan_term_months,
         "annual_miles": annual_miles,
         "years": years,
+        "gas_price": gas_price,
+        "apr": apr,
+        "combined_mpg": combined_mpg,
+        # Monthly budget
+        "total_monthly_budget": round(total_monthly_budget),
+        # Legacy field names (backward compat)
+        "depreciation_5yr": depreciation,
+        "fuel_5yr": round(fuel_cost),
+        "annual_fuel": round(annual_fuel_cost),
+        "insurance_5yr": round(insurance),
+        "maintenance_5yr": round(maintenance),
+        "total_5yr": round(total_cost),
+        "cost_per_month": round(total_cost / (years * 12)),
+    }
+
+
+# ── Term Comparison ───────────────────────────────────────────────────────────
+
+def calculate_term_comparison(dealer_price, apr, terms=None):
+    """
+    Compare monthly payment, total interest, and total cost across 4 loan terms.
+    Returns a dict with 'terms' list and 'baseline_term' = 60.
+    """
+    if terms is None:
+        terms = [48, 60, 72, 84]
+
+    dealer_price = float(dealer_price)
+    principal = dealer_price * 0.90  # assume 10% down
+    monthly_rate = apr / 12
+
+    results = []
+    baseline_interest = None
+
+    for term in terms:
+        if monthly_rate > 0:
+            mp = principal * (monthly_rate * (1 + monthly_rate) ** term) / ((1 + monthly_rate) ** term - 1)
+        else:
+            mp = principal / term
+
+        total_interest = (mp * term) - principal
+        total_cost = dealer_price + total_interest
+
+        entry = {
+            "term": term,
+            "monthly_payment": round(mp),
+            "total_interest": round(total_interest),
+            "total_cost": round(total_cost),
+            "extra_interest": 0,
+            "extra_months": 0,
+        }
+        results.append(entry)
+
+        if term == 60:
+            baseline_interest = round(total_interest)
+
+    # vs. 60-month baseline
+    for item in results:
+        if item["term"] == 60:
+            item["extra_interest"] = 0
+            item["extra_months"] = 0
+        else:
+            item["extra_interest"] = item["total_interest"] - (baseline_interest or 0)
+            item["extra_months"] = item["term"] - 60
+
+    return {
+        "terms": results,
+        "baseline_term": 60,
+        "baseline_interest": baseline_interest,
     }
 
 
@@ -326,9 +430,6 @@ def get_negotiation_intel(make, model, year, msrp, dealer_offer=None):
 # ── Junk Fee Analysis ─────────────────────────────────────────────────────────
 
 def get_junk_fee_analysis(dealer_fees, destination_charge, add_ons):
-    """
-    Analyze dealer fees and add-ons for red flags.
-    """
     dealer_fees_f = float(dealer_fees) if dealer_fees else 0
     dest_charge_f = float(destination_charge) if destination_charge else 0
 
@@ -357,7 +458,6 @@ def get_junk_fee_analysis(dealer_fees, destination_charge, add_ons):
         dest_note = f"Destination charge of ${dest_charge_f:,.0f} exceeds the typical factory range of $900–$1,800. Ask why it's higher."
         dest_flag = "high"
 
-    # Common junk add-ons to watch for
     junk_addons = [
         {"name": "Nitrogen tire fill", "cost": "$150–$300", "verdict": "Skip it", "note": "Air is 78% nitrogen already. A complete waste of money."},
         {"name": "Paint protection / clear coat sealant", "cost": "$300–$800", "verdict": "Skip it", "note": "Modern cars have good factory paint. Buy your own wax for $20."},
@@ -369,7 +469,6 @@ def get_junk_fee_analysis(dealer_fees, destination_charge, add_ons):
         {"name": "Credit life / disability insurance", "cost": "varies", "verdict": "Skip it", "note": "Overpriced junk product. You don't need it."},
     ]
 
-    # Check if user mentioned any add-ons
     add_ons_lower = (add_ons or "").lower()
     flagged_addons = []
     if any(kw in add_ons_lower for kw in ["nitrogen", "nitro"]):
@@ -389,7 +488,6 @@ def get_junk_fee_analysis(dealer_fees, destination_charge, add_ons):
 
     total_fees = round(dealer_fees_f + dest_charge_f)
 
-    # Fee verdict
     flags = sum([1 for f in [doc_fee_flag, dest_flag] if f in ("high", "caution")])
     flags += len(flagged_addons)
 
@@ -418,90 +516,29 @@ def get_junk_fee_analysis(dealer_fees, destination_charge, add_ons):
     }
 
 
-# ── Payment Trap Analysis ─────────────────────────────────────────────────────
-
-def get_payment_trap_analysis(dealer_offer, monthly_payment, loan_term_months):
-    """
-    Detect payment manipulation tactics used in F&I offices.
-    """
-    if not monthly_payment or not dealer_offer:
-        return None
-
-    offer = float(dealer_offer)
-    payment = float(monthly_payment)
-    term = int(loan_term_months) if loan_term_months else 60
-
-    total_implied_cost = round(payment * term)
-    overpayment = round(total_implied_cost - offer)
-
-    warnings = []
-
-    # Long loan term trap
-    if term >= 72:
-        warnings.append(f"⚠️ {term}-month loan: You're spreading payments so long you'll likely owe more than the car is worth for years 3–5 (underwater loan).")
-    elif term >= 84:
-        warnings.append(f"🚨 {term}-month loan: At 84 months you will almost certainly be underwater. This is a serious trap.")
-
-    # Implied interest calculation
-    if total_implied_cost > offer * 1.05:
-        implied_interest = total_implied_cost - offer
-        approx_rate = round((implied_interest / offer) / (term / 12) * 100, 1)
-        if approx_rate > 10:
-            warnings.append(f"⚠️ Implied interest rate is ~{approx_rate}% — significantly above current market rates (5–7%). Shop for your own financing before visiting the dealer.")
-        elif approx_rate > 7:
-            warnings.append(f"⚠️ Implied interest rate is ~{approx_rate}% — above market average. Consider getting pre-approved at your bank or credit union.")
-
-    # Check if payment seems low (possible add-ons rolled in)
-    expected_payment_at_7pct = offer * (0.07/12) * (1 + 0.07/12)**term / ((1 + 0.07/12)**term - 1)
-    if payment < expected_payment_at_7pct * 0.85:
-        warnings.append("⚠️ Monthly payment seems unusually low for this purchase price — the dealer may have extended the loan term to hide a higher total cost.")
-    elif payment > expected_payment_at_7pct * 1.20:
-        warnings.append("⚠️ Monthly payment seems high for this purchase price — the dealer may have rolled in add-ons or GAP insurance without disclosing it.")
-
-    # Standard F&I warnings
-    warnings.append("💡 Always negotiate the purchase price FIRST, then discuss financing. Never let the dealer focus the conversation on monthly payment.")
-    warnings.append("💡 Get pre-approved at your bank or credit union before visiting the dealer — it's your strongest financing leverage.")
-
-    return {
-        "monthly_payment": payment,
-        "loan_term_months": term,
-        "total_implied_cost": total_implied_cost,
-        "purchase_price": round(offer),
-        "overpayment_vs_cash": max(0, overpayment),
-        "payment_trap_warnings": warnings,
-    }
-
-
 # ── Negotiation Script ────────────────────────────────────────────────────────
 
 def get_negotiation_script(signal, dealer_offer, local_range, make, model):
-    """
-    Generate a concrete, vehicle-specific 3-step negotiation script.
-    """
     offer = float(dealer_offer) if dealer_offer else 0
     low = local_range["low"]
     high = local_range["high"]
     base = local_range["base_msrp_estimate"]
     vehicle = f"{make} {model}"
 
-    # Opening line varies by signal
     if signal == "LOOKS FAIR":
         opening = f"'I've done my research on {vehicle} pricing and your number looks close to market. I'm ready to buy today if we can get the out-the-door price — including all fees and add-ons — down to ${int(offer * 0.98):,}.'"
     elif signal == "PUSH BACK":
         opening = f"'I've been tracking {vehicle} prices in my area and the market range I'm seeing is ${low:,}–${base:,}. I want to buy today — can we start the conversation at ${low:,} on the vehicle price, before fees?'"
-    else:  # HIGH RISK
+    else:
         opening = f"'I appreciate your time, but the numbers I've seen on the {vehicle} in my area are significantly lower — around ${low:,}–${base:,}. At ${offer:,.0f} I'm not able to move forward. What's the best you can actually do on the vehicle price?'"
 
-    # Counter line
     if signal in ("PUSH BACK", "HIGH RISK"):
         counter = f"'I understand you need to make a profit — I respect that. But I've got quotes from two other dealers and I've done the research. I can do ${int(low * 1.01):,} out the door, today, and we're done. Can you make that work?'"
     else:
         counter = f"'I'm close, but I need you to meet me at ${int(offer * 0.97):,} out the door. I'm ready to sign today. Can your manager do that?'"
 
-    # Walk away line
     walk_away = "'I really appreciate your time — you've been helpful. But I'm not there yet on the numbers. I'm going to check with a couple other dealers. If you can sharpen the pencil to ${:,}, call me and I'll come back today.'.".format(int(low * 1.005))
 
-    # Email template
     email = (
         f"Subject: Quote Request — {make} {model}\n\n"
         f"Hi,\n\n"
@@ -524,9 +561,6 @@ def get_negotiation_script(signal, dealer_offer, local_range, make, model):
 # ── Printable Summary ─────────────────────────────────────────────────────────
 
 def get_printable_summary(vehicle, signal, local_range, dealer_offer, negotiation, top_reasons):
-    """
-    Returns a plain-text summary for printing or sharing.
-    """
     year = vehicle.get("year", "")
     make = vehicle.get("make", "")
     model = vehicle.get("model", "")
@@ -588,18 +622,22 @@ def index():
 @app.route("/report", methods=["POST"])
 def report():
     data = request.json
-    year              = data.get("year", "")
-    make              = data.get("make", "").strip()
-    model             = data.get("model", "").strip()
-    zip_code          = data.get("zip_code", "").strip()
-    msrp              = data.get("msrp", "") or None
-    dealer_offer      = data.get("dealer_offer", "") or None
+    year               = data.get("year", "")
+    make               = data.get("make", "").strip()
+    model              = data.get("model", "").strip()
+    zip_code           = data.get("zip_code", "").strip()
+    msrp               = data.get("msrp", "") or None
+    dealer_offer       = data.get("dealer_offer", "") or None
     destination_charge = data.get("destination_charge", 0)
-    dealer_fees       = data.get("dealer_fees", 0)
-    add_ons           = data.get("add_ons", "")
-    monthly_payment   = data.get("monthly_payment", "") or None
-    loan_term         = data.get("loan_term", 60)
-    annual_miles      = int(data.get("annual_miles", 12000))
+    dealer_fees        = data.get("dealer_fees", 0)
+    add_ons            = data.get("add_ons", "")
+    monthly_payment    = data.get("monthly_payment", "") or None
+
+    # New scenario engine params
+    apr           = float(data.get("apr", 0.068))
+    loan_term     = int(data.get("loan_term", 72))
+    gas_price     = float(data.get("gas_price", 3.45))
+    annual_miles  = int(data.get("annual_miles", 13500))
 
     # Core signal pipeline
     local_range = get_local_market_range(make, model, year, zip_code)
@@ -611,42 +649,64 @@ def report():
     what_to_say = None
     detected_fees = float(dealer_fees) if dealer_fees else 0
 
+    # If dealer_offer not provided, estimate at 95% of MSRP
+    dealer_price_is_estimated = False
     if dealer_offer:
-        dealer_offer_f = float(dealer_offer)
-        signal, signal_color, signal_explanation = get_cartru_signal(
-            dealer_offer_f, local_range, detected_fees
-        )
-        top_reasons = get_top_reasons(dealer_offer_f, local_range, msrp, detected_fees)
-        what_to_say = get_what_to_say(signal, dealer_offer_f, local_range)
+        dealer_price = float(dealer_offer)
+    elif msrp:
+        dealer_price = float(msrp) * 0.95
+        dealer_offer = dealer_price
+        dealer_price_is_estimated = True
     else:
-        signal_explanation = "Enter a dealer offer to see your Cartru Signal."
+        dealer_price = local_range["base_msrp_estimate"] * 0.95
+        dealer_offer = dealer_price
+        dealer_price_is_estimated = True
 
-    # Negotiation intel (only if MSRP provided)
+    dealer_offer_f = float(dealer_price)
+    signal, signal_color, signal_explanation = get_cartru_signal(
+        dealer_offer_f, local_range, detected_fees
+    )
+    top_reasons = get_top_reasons(dealer_offer_f, local_range, msrp, detected_fees)
+    what_to_say = get_what_to_say(signal, dealer_offer_f, local_range)
+
+    # Negotiation intel
     negotiation = None
     if msrp:
-        negotiation = get_negotiation_intel(make, model, year, msrp, dealer_offer)
+        negotiation = get_negotiation_intel(make, model, year, msrp, dealer_offer_f)
 
-    # New MVP 2.1 analyses
+    # Junk fee analysis
     junk_fees = get_junk_fee_analysis(dealer_fees, destination_charge, add_ons)
 
-    payment_trap = None
-    if monthly_payment and dealer_offer:
-        payment_trap = get_payment_trap_analysis(dealer_offer, monthly_payment, loan_term)
-
+    # Negotiation script
     negotiation_script = None
-    if signal and dealer_offer:
-        negotiation_script = get_negotiation_script(signal, dealer_offer, local_range, make, model)
+    if signal:
+        negotiation_script = get_negotiation_script(signal, dealer_offer_f, local_range, make, model)
 
-    # Below-fold data
-    recalls      = get_recalls(make, model, year)
-    complaints   = get_complaints(make, model, year)
+    # Recall & complaint data
+    recalls    = get_recalls(make, model, year)
+    complaints = get_complaints(make, model, year)
+
+    # Fuel economy
     fuel_economy = get_fuel_economy(make, model, year)
-    true_cost    = calculate_true_cost(msrp, fuel_economy, annual_miles) if msrp else None
+
+    # True cost (dynamic, driven by loan_term)
+    true_cost = None
+    if msrp:
+        true_cost = calculate_true_cost(
+            msrp, fuel_economy,
+            annual_miles=annual_miles,
+            gas_price=gas_price,
+            apr=apr,
+            loan_term_months=loan_term
+        )
+
+    # Term comparison
+    term_comparison = calculate_term_comparison(dealer_price, apr)
 
     # Printable summary
     printable_summary = get_printable_summary(
         {"year": year, "make": make, "model": model},
-        signal, local_range, dealer_offer, negotiation, top_reasons
+        signal, local_range, dealer_offer_f, negotiation, top_reasons
     )
 
     # Safety signal
@@ -660,21 +720,28 @@ def report():
         safety_signal = "RED"
 
     # OTD estimate
-    offer_f = float(dealer_offer) if dealer_offer else 0
-    dest_f = float(destination_charge) if destination_charge else 0
-    fees_f = float(dealer_fees) if dealer_fees else 0
-    est_taxes = round(offer_f * 0.08) if offer_f else 0
+    dest_f  = float(destination_charge) if destination_charge else 0
+    fees_f  = float(dealer_fees) if dealer_fees else 0
+    est_taxes       = round(dealer_offer_f * 0.08)
     est_registration = 350
-    otd_estimate = round(offer_f + dest_f + fees_f + est_taxes + est_registration)
+    otd_estimate = round(dealer_offer_f + dest_f + fees_f + est_taxes + est_registration)
+
+    # Years of loan
+    years_of_loan = loan_term / 12
 
     analytics = {
         "event": "report_generated",
-        "has_dealer_offer": dealer_offer is not None,
+        "has_dealer_offer": not dealer_price_is_estimated,
+        "dealer_price_is_estimated": dealer_price_is_estimated,
         "has_zip": zip_code != "",
         "signal": signal,
         "make": make,
         "model": model,
         "year": year,
+        "apr": apr,
+        "loan_term": loan_term,
+        "gas_price": gas_price,
+        "annual_miles": annual_miles,
     }
 
     return jsonify({
@@ -688,7 +755,7 @@ def report():
         "what_to_say": what_to_say,
         "negotiation": negotiation,
         "junk_fees": junk_fees,
-        "payment_trap": payment_trap,
+        "payment_trap": None,  # deprecated — replaced by term_comparison
         "negotiation_script": negotiation_script,
         "printable_summary": printable_summary,
         "recalls": recalls,
@@ -698,9 +765,16 @@ def report():
         "true_cost": true_cost,
         "safety_signal": safety_signal,
         "otd_estimate": otd_estimate,
-        "dealer_offer": float(dealer_offer) if dealer_offer else None,
+        "dealer_offer": dealer_offer_f,
+        "dealer_price_is_estimated": dealer_price_is_estimated,
         "destination_charge": dest_f,
         "dealer_fees": fees_f,
+        "term_comparison": term_comparison,
+        "years_of_loan": years_of_loan,
+        "loan_term": loan_term,
+        "apr": apr,
+        "gas_price": gas_price,
+        "annual_miles": annual_miles,
         "analytics": analytics,
     })
 
