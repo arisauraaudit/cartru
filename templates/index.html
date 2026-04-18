@@ -574,9 +574,9 @@ a:hover { text-decoration: underline; }
   <section class="brand-section" id="brandSection">
     <div class="section-label" id="brandSectionLabel">Choose your brand</div>
     <div class="brand-grid" id="brandGrid"></div>
-    <div class="brand-other">
-      <label>Other brand:</label>
-      <input type="text" id="brandOtherInput" placeholder="e.g. Acura, Buick, Volvo…" autocomplete="off">
+    <div style="margin-top:12px;font-size:0.84rem;color:#7a95af;text-align:center;line-height:1.5;">
+      We support the top 20 best-selling brands in the US.<br>
+      <span style="color:#a8bdd0;">Missing yours? <a href="mailto:hello@cartru.com" style="color:#00d4aa;text-decoration:underline;">Tell us what to add next.</a></span>
     </div>
   </section>
 
@@ -906,22 +906,28 @@ a:hover { text-decoration: underline; }
 // Constants & Config
 // ══════════════════════════════════════════════════════════
 
+// Top 20 US brands by 2025 sales volume — honest, intentional set
 const BRANDS = [
   { name: 'Toyota',     slug: 'toyota',      color: '#eb0a1e' },
-  { name: 'Honda',      slug: 'honda',       color: '#e40521' },
   { name: 'Ford',       slug: 'ford',        color: '#003087' },
   { name: 'Chevrolet',  slug: 'chevrolet',   color: '#d4a017' },
-  { name: 'RAM',        slug: 'ram',         color: '#c41230' },
+  { name: 'Honda',      slug: 'honda',       color: '#e40521' },
   { name: 'Hyundai',    slug: 'hyundai',     color: '#002c5f' },
-  { name: 'Kia',        slug: 'kia',         color: '#05141f' },
   { name: 'Nissan',     slug: 'nissan',      color: '#c3002f' },
-  { name: 'Subaru',     slug: 'subaru',      color: '#00438a' },
-  { name: 'Mazda',      slug: 'mazda',       color: '#1e3869' },
-  { name: 'Volkswagen', slug: 'volkswagen',  color: '#00176f' },
-  { name: 'Jeep',       slug: 'jeep',        color: '#384d48' },
+  { name: 'Kia',        slug: 'kia',         color: '#05141f' },
   { name: 'GMC',        slug: null,          color: '#c8102e' },
+  { name: 'Subaru',     slug: 'subaru',      color: '#00438a' },
+  { name: 'Jeep',       slug: 'jeep',        color: '#384d48' },
   { name: 'Tesla',      slug: 'tesla',       color: '#cc0000' },
-  { name: 'Dodge',      slug: null,          color: '#c8102e' },
+  { name: 'RAM',        slug: 'ram',         color: '#c41230' },
+  { name: 'Mazda',      slug: 'mazda',       color: '#1e3869' },
+  { name: 'BMW',        slug: 'bmw',         color: '#0066b1' },
+  { name: 'Lexus',      slug: 'lexus',       color: '#1a1a1a' },
+  { name: 'Volkswagen', slug: 'volkswagen',  color: '#00176f' },
+  { name: 'Buick',      slug: null,          color: '#8b734a' },
+  { name: 'Cadillac',   slug: null,          color: '#1a1a2e' },
+  { name: 'Audi',       slug: 'audi',        color: '#bb0a21' },
+  { name: 'Acura',      slug: 'acura',       color: '#cc0000' },
 ];
 
 const CDN = 'https://cdn.simpleicons.org';
@@ -1418,7 +1424,7 @@ function startOver() {
   state.apr = 6.8; state.annualMiles = 13500; state.gasPrice = 3.45;
 
   document.querySelectorAll('.brand-card').forEach(c => c.classList.remove('brand-selected', 'dimmed'));
-  document.getElementById('brandOtherInput').value = '';
+
   document.getElementById('siteHeader').classList.remove('compact');
   document.getElementById('brandSectionLabel').textContent = 'Choose your brand';
   renderYearToggle();
@@ -2047,15 +2053,6 @@ document.addEventListener('DOMContentLoaded', () => {
   renderBrandGrid();
   renderYearToggle();
   updateMilesMonth();
-
-  // Other brand input
-  const brandOther = document.getElementById('brandOtherInput');
-  brandOther.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter' && this.value.trim()) selectBrand(this.value.trim());
-  });
-  brandOther.addEventListener('blur', function() {
-    if (this.value.trim()) selectBrand(this.value.trim());
-  });
 
   // Dealer offer → live signal + glance (debounced)
   document.getElementById('dealerOffer').addEventListener('input', () => {
