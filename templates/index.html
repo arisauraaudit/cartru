@@ -368,6 +368,22 @@ a:hover { text-decoration: underline; }
 .msrp-inline-input { padding: 5px 10px; background: #1a2535; border: 1.5px solid #00d4aa; border-radius: 6px; color: #eef2f7; font-size: 1rem; width: 120px; outline: none; display: none; }
 
 /* APR + Loan term */
+/* Credit tier selector */
+.credit-row { margin-bottom: 20px; }
+.credit-row label { display: block; font-size: 0.875rem; font-weight: 600; color: #b8cce0; margin-bottom: 10px; letter-spacing: 0; }
+.credit-tier-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+.credit-pill {
+  background: #0f1724; border: 1.5px solid #2a3a50; border-radius: 8px;
+  padding: 9px 14px; cursor: pointer; font-family: inherit;
+  font-size: 0.875rem; font-weight: 600; color: #b8cce0;
+  transition: border-color 0.18s, color 0.18s, background 0.18s;
+  display: flex; flex-direction: column; align-items: center; gap: 2px; line-height: 1.2;
+}
+.credit-pill:hover { border-color: #00d4aa; color: #eef2f7; }
+.credit-pill.active { border-color: #00d4aa; background: rgba(0,212,170,0.1); color: #00d4aa; }
+.credit-score { font-size: 0.75rem; font-weight: 400; color: #8499b0; }
+.credit-pill.active .credit-score { color: rgba(0,212,170,0.7); }
+
 .apr-term-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
 @media (max-width: 480px) { .apr-term-row { grid-template-columns: 1fr; } }
 
@@ -850,7 +866,18 @@ a:hover { text-decoration: underline; }
       <input type="number" id="msrpInlineInput" class="msrp-inline-input" placeholder="e.g. 32000">
     </div>
 
-    <!-- APR + Loan term -->
+    <!-- Credit tier + APR + Loan term -->
+    <div class="credit-row">
+      <label for="creditTier">Estimated credit score</label>
+      <div class="credit-tier-pills" id="creditTierPills">
+        <button class="credit-pill" data-tier="excellent" data-apr="5.2" onclick="selectCreditTier(this)">Excellent <span class="credit-score">740+</span></button>
+        <button class="credit-pill active" data-tier="good" data-apr="6.8" onclick="selectCreditTier(this)">Good <span class="credit-score">670–739</span></button>
+        <button class="credit-pill" data-tier="fair" data-apr="10.5" onclick="selectCreditTier(this)">Fair <span class="credit-score">580–669</span></button>
+        <button class="credit-pill" data-tier="poor" data-apr="15.0" onclick="selectCreditTier(this)">Poor <span class="credit-score">&lt;580</span></button>
+      </div>
+      <div class="field-helper" style="margin-top:6px;">Used to estimate a realistic APR for your financing</div>
+    </div>
+
     <div class="apr-term-row">
       <div class="apr-group">
         <label for="aprInput">Interest rate (APR)</label>
@@ -858,7 +885,7 @@ a:hover { text-decoration: underline; }
           <input type="number" id="aprInput" class="apr-input" value="6.8" min="0" max="25" step="0.1" autocomplete="off">
           <span class="apr-pct-sign">%</span>
         </div>
-        <div class="field-helper">We used an average new-car APR — edit if you know your rate</div>
+        <div class="field-helper">Auto-set by credit tier — override if you know your rate</div>
       </div>
       <div class="term-group">
         <label>Loan term</label>
@@ -1539,6 +1566,25 @@ function toggleMsrpEdit() {
 // ══════════════════════════════════════════════════════════
 // Loan term selector
 // ══════════════════════════════════════════════════════════
+
+function selectCreditTier(btn) {
+  // Update pill active state
+  document.querySelectorAll('.credit-pill').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  // Set APR input to tier's default rate
+  const apr = parseFloat(btn.dataset.apr);
+  const aprInput = document.getElementById('aprInput');
+  if (aprInput) {
+    aprInput.value = apr;
+    state.apr = apr;
+  }
+
+  // Cascade to live calculations
+  debouncedGlance();
+  debouncedSignal();
+  track('credit_tier_selected', { tier: btn.dataset.tier, apr });
+}
 
 function selectTerm(term) {
   state.loanTerm = term;
@@ -2415,7 +2461,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // APR → glance
   document.getElementById('aprInput').addEventListener('input', () => {
-    state.apr = parseFloat(document.getElementById('aprInput').value) || DEFAULTS.apr;
+    const val = parseFloat(document.getElementById('aprInput').value) || DEFAULTS.apr;
+    state.apr = val;
+    // Check if manual APR matches a tier — if so, keep that tier active; if not, clear active state
+    const matchingTier = [...document.querySelectorAll('.credit-pill')].find(b => parseFloat(b.dataset.apr) === val);
+    document.querySelectorAll('.credit-pill').forEach(b => b.classList.remove('active'));
+    if (matchingTier) matchingTier.classList.add('active');
     debouncedGlance();
   });
 
