@@ -620,7 +620,14 @@ def index():
 
 
 @app.route("/report", methods=["POST"])
-def report():
+def report():  # noqa: C901
+    try:
+        return _report_inner()
+    except Exception as e:
+        logger.error(f"Report endpoint error: {e}", exc_info=True)
+        return jsonify({"error": "Analysis failed — please try again.", "detail": str(e)}), 500
+
+def _report_inner():
     data = request.json
     year               = data.get("year", "")
     make               = data.get("make", "").strip()
