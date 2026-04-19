@@ -1649,18 +1649,31 @@ function checkDeal() {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   })
-    .then(r => r.json())
+    .then(r => {
+      if (!r.ok) throw new Error(`Server error: ${r.status}`);
+      return r.json();
+    })
     .then(data => {
+      if (data.error) throw new Error(data.error);
       state.reportData = data;
-      renderResult(data);
+      try {
+        renderResult(data);
+      } catch (renderErr) {
+        console.error('renderResult error:', renderErr);
+        throw renderErr;
+      }
       document.getElementById('resultLoading').style.display = 'none';
       document.getElementById('resultContent').classList.remove('hidden');
       showFeedbackFloat();
       track('signal_shown', { signal: data.signal });
     })
-    .catch(() => {
+    .catch(err => {
+      console.error('checkDeal error:', err);
       document.getElementById('resultLoading').innerHTML =
-        '<div style="color:#ef4444;text-align:center;padding:40px 0;font-size:1rem;">Failed to analyze deal. Please try again.</div>';
+        `<div style="color:#ef4444;text-align:center;padding:40px 0;font-size:1rem;">
+          Could not load analysis — please try again.<br>
+          <span style="font-size:0.8rem;color:#8499b0;margin-top:8px;display:block;">${err.message || 'Unknown error'}</span>
+        </div>`;
     });
 }
 
@@ -1747,7 +1760,6 @@ function renderResult(d) {
   renderFees(d);
   renderNegotiationScript(d);
   renderVehicleDetails(d);
-  resetTipJar();
 }
 
 function renderSignal(d) {
