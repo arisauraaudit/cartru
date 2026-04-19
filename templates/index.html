@@ -41,12 +41,26 @@ a:hover { text-decoration: underline; }
   padding: 52px 0 40px;
   text-align: center;
 }
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.wordmark-text {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
 .site-header h1 {
   font-size: 2.25rem;
   font-weight: 800;
   letter-spacing: -0.5px;
   line-height: 1.2;
   color: #fff;
+  margin-bottom: 0;
 }
 .site-header h1 em { font-style: normal; color: #00d4aa; }
 .site-header p {
@@ -71,7 +85,7 @@ a:hover { text-decoration: underline; }
   letter-spacing: 0;
 }
 
-/* ── Reveal panels (for deal + result only) ── */
+/* ── Reveal panels ── */
 .reveal-panel {
   overflow: hidden;
   max-height: 0;
@@ -96,6 +110,7 @@ a:hover { text-decoration: underline; }
   margin-bottom: 36px;
 }
 
+/* Year toggle */
 .year-toggle {
   display: flex;
   gap: 8px;
@@ -117,7 +132,7 @@ a:hover { text-decoration: underline; }
 .year-btn:hover { border-color: #00d4aa; color: #00d4aa; }
 .year-btn.active { border-color: #00d4aa; background: rgba(0,212,170,0.12); color: #00d4aa; }
 
-/* Brand logo grid */
+/* Brand text grid */
 .brand-section-label {
   font-size: 0.875rem;
   font-weight: 600;
@@ -125,93 +140,155 @@ a:hover { text-decoration: underline; }
   margin-bottom: 14px;
   letter-spacing: 0;
 }
-.brand-grid {
+.brand-text-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 10px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
   margin-bottom: 8px;
 }
-@media (max-width: 560px) { .brand-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 560px) { .brand-text-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 380px) { .brand-text-grid { grid-template-columns: repeat(2, 1fr); } }
 
-.brand-card {
-  background: #0f1724;
-  border: 1.5px solid #2a3a50;
-  border-radius: 10px;
-  padding: 12px 8px 10px;
-  text-align: center;
-  cursor: pointer;
-  transition: border-color 0.2s, transform 0.15s, opacity 0.25s, filter 0.25s;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  min-height: 72px;
-  justify-content: center;
-}
-.brand-card:hover { border-color: #00d4aa; transform: scale(1.03); }
-.brand-card.brand-selected { border-color: #00d4aa !important; background: rgba(0,212,170,0.08) !important; opacity: 1 !important; filter: none !important; }
-.brand-card.brand-inactive { opacity: 0.3; filter: grayscale(60%); transform: scale(0.96); }
-.brand-logo-img { width: 32px; height: 32px; object-fit: contain; }
-.brand-logo-text { font-size: 0.875rem; font-weight: 900; color: #fff; letter-spacing: 0.5px; }
-.brand-name-label { font-size: 0.875rem; font-weight: 600; color: #b8cce0; line-height: 1.2; }
-.brand-card.brand-selected .brand-name-label { color: #00d4aa; }
-
-/* Model row */
-.model-row {
-  margin-top: 20px;
-}
-
-.brand-model-row {
-  display: flex;
-  gap: 16px;
-  align-items: flex-end;
-}
-@media (max-width: 560px) { .brand-model-row { flex-direction: column; } }
-
-.select-group {
-  flex: 1;
-  min-width: 0;
-  margin-bottom: 0;
-}
-
-.select-group label {
-  display: block;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #b8cce0;
-  margin-bottom: 8px;
-  letter-spacing: 0;
-}
-
-.brand-model-select {
-  width: 100%;
-  padding: 12px 40px 12px 16px;
+.brand-text-btn {
   background: #0f1724;
   border: 1.5px solid #2a3a50;
   border-radius: 8px;
-  color: #f0f4f8;
+  padding: 11px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s, opacity 0.25s, transform 0.15s;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #b8cce0;
+  font-family: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.brand-text-btn:hover { border-color: #00d4aa; color: #00d4aa; transform: scale(1.02); }
+.brand-text-btn.brand-selected {
+  border-color: #00d4aa !important;
+  background: rgba(0,212,170,0.1) !important;
+  color: #00d4aa !important;
+  opacity: 1 !important;
+}
+.brand-text-btn.brand-inactive { opacity: 0.5; }
+
+/* ── Model accordion ── */
+.model-row {
+  margin-top: 24px;
+}
+.model-search-wrap {
+  margin-bottom: 14px;
+}
+.model-search-input {
+  width: 100%;
+  padding: 11px 16px;
+  background: #0f1724;
+  border: 1.5px solid #2a3a50;
+  border-radius: 8px;
+  color: #eef2f7;
   font-size: 1rem;
   font-family: inherit;
-  font-weight: 500;
-  cursor: pointer;
-  transition: border-color 0.2s, box-shadow 0.2s;
   outline: none;
-  appearance: none;
-  -webkit-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238499b0' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 14px center;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
-.brand-model-select:focus { border-color: #00d4aa; box-shadow: 0 0 0 3px rgba(0,212,170,0.12); }
-.brand-model-select:disabled { opacity: 0.45; cursor: not-allowed; }
-.brand-model-select option { background: #1a2535; color: #f0f4f8; }
+.model-search-input::placeholder { color: #4a6070; }
+.model-search-input:focus { border-color: #00d4aa; box-shadow: 0 0 0 3px rgba(0,212,170,0.12); }
 
-.model-loading-msg {
+/* Accordion families */
+.accordion-list { display: flex; flex-direction: column; gap: 6px; }
+
+.accordion-family {
+  background: #0f1724;
+  border: 1.5px solid #2a3a50;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.accordion-family.accordion-open { border-color: rgba(0,212,170,0.45); }
+.accordion-family.accordion-hidden { display: none; }
+
+.accordion-family-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+}
+.accordion-family-header:hover { background: rgba(0,212,170,0.04); }
+
+.accordion-family-left { display: flex; align-items: center; gap: 10px; }
+.accordion-family-name { font-size: 1rem; font-weight: 700; color: #eef2f7; }
+.accordion-trim-badge {
+  font-size: 0.775rem;
+  font-weight: 700;
+  background: #1a2535;
+  color: #8499b0;
+  border-radius: 99px;
+  padding: 2px 10px;
+  white-space: nowrap;
+}
+.accordion-family.accordion-open .accordion-trim-badge { background: rgba(0,212,170,0.1); color: #00d4aa; }
+
+.accordion-chevron {
   font-size: 0.875rem;
   color: #8499b0;
-  margin-top: 8px;
-  min-height: 20px;
+  transition: transform 0.22s;
+  flex-shrink: 0;
 }
+.accordion-family.accordion-open .accordion-chevron { transform: rotate(180deg); color: #00d4aa; }
+
+.accordion-trim-area {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+  padding: 0 14px;
+}
+.accordion-family.accordion-open .accordion-trim-area {
+  max-height: 600px;
+  padding: 0 14px 14px;
+}
+
+.accordion-trim-chips { display: flex; flex-wrap: wrap; gap: 7px; }
+
+.accordion-trim-chip {
+  background: #1a2535;
+  border: 1.5px solid #2a3a50;
+  border-radius: 7px;
+  padding: 7px 13px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #b8cce0;
+  cursor: pointer;
+  transition: border-color 0.18s, color 0.18s, background 0.18s;
+  font-family: inherit;
+  white-space: nowrap;
+}
+.accordion-trim-chip:hover { border-color: #00d4aa; color: #eef2f7; }
+.accordion-trim-chip.trim-selected { border-color: #00d4aa; background: rgba(0,212,170,0.1); color: #00d4aa; }
+
+/* Flat chips mode (≤8 total trims) */
+.flat-chips-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
+.flat-trim-chip {
+  background: #0f1724;
+  border: 1.5px solid #2a3a50;
+  border-radius: 8px;
+  padding: 9px 14px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #b8cce0;
+  cursor: pointer;
+  transition: border-color 0.18s, color 0.18s, background 0.18s;
+  font-family: inherit;
+  white-space: nowrap;
+}
+.flat-trim-chip:hover { border-color: #00d4aa; color: #eef2f7; }
+.flat-trim-chip.trim-selected { border-color: #00d4aa; background: rgba(0,212,170,0.1); color: #00d4aa; }
+
+.model-loading-msg { font-size: 0.875rem; color: #8499b0; margin-top: 8px; min-height: 20px; }
 
 /* ── Section chrome ── */
 .section-label {
@@ -237,10 +314,10 @@ a:hover { text-decoration: underline; }
 .vehicle-crumb-label { font-size: 1rem; font-weight: 700; color: #00d4aa; }
 .vehicle-crumb-year { font-size: 0.9375rem; color: #b8cce0; font-weight: 600; }
 
-/* Dealer price input (large) */
+/* Dealer price input */
 .offer-wrap { margin-bottom: 24px; }
 .offer-label { display: block; font-size: 0.875rem; font-weight: 600; color: #b8cce0; margin-bottom: 8px; letter-spacing: 0; }
-.offer-sublabel { font-size: 0.8rem; color: #6a8599; margin-bottom: 10px; }
+.offer-sublabel { font-size: 0.875rem; color: #6a8599; margin-bottom: 10px; }
 .offer-input-row {
   display: flex; align-items: center; background: #1a2535; border: 1.5px solid #2a3a50;
   border-radius: 12px; overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s;
@@ -292,7 +369,7 @@ a:hover { text-decoration: underline; }
 }
 .apr-input:focus { border-color: #00d4aa; box-shadow: 0 0 0 3px rgba(0,212,170,0.12); }
 .apr-pct-sign { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #8499b0; font-weight: 700; pointer-events: none; }
-.field-helper { font-size: 0.8rem; color: #6a8599; margin-top: 5px; line-height: 1.5; }
+.field-helper { font-size: 0.875rem; color: #6a8599; margin-top: 5px; line-height: 1.5; }
 
 /* Pill toggle for loan term */
 .term-pills { display: flex; gap: 6px; flex-wrap: wrap; }
@@ -323,7 +400,7 @@ a:hover { text-decoration: underline; }
 }
 .glance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px; }
 @media (min-width: 520px) { .glance-grid { grid-template-columns: 1fr 1fr 1fr 1fr; } }
-.glance-label { font-size: 0.79rem; color: #6a8599; margin-bottom: 2px; letter-spacing: 0; }
+.glance-label { font-size: 0.875rem; color: #6a8599; margin-bottom: 2px; letter-spacing: 0; }
 .glance-value { font-size: 1.5rem; font-weight: 800; color: #00d4aa; }
 
 /* ZIP section */
@@ -387,7 +464,7 @@ a:hover { text-decoration: underline; }
 .btn-check:active { transform: scale(0.98); }
 .form-disclaimer { font-size: 0.875rem; color: #8499b0; text-align: center; margin-bottom: 10px; line-height: 1.55; }
 
-/* Loading + error in model select */
+/* Loading + error */
 .loading-msg { color: #b8cce0; font-size: 0.9375rem; text-align: center; padding: 24px 0; }
 .error-msg { color: #ef4444; font-size: 0.9375rem; text-align: center; padding: 20px 0; }
 
@@ -398,7 +475,7 @@ a:hover { text-decoration: underline; }
 .result-vehicle-label { font-size: 0.9375rem; color: #b8cce0; }
 .result-vehicle-label strong { color: #eef2f7; font-weight: 700; }
 .change-btn {
-  background: none; border: none; color: #6a8599; font-size: 0.8rem; font-weight: 500;
+  background: none; border: none; color: #6a8599; font-size: 0.875rem; font-weight: 500;
   cursor: pointer; padding: 0; display: inline-flex; align-items: center; gap: 4px;
   transition: color 0.2s; font-family: inherit; text-decoration: underline; text-underline-offset: 3px;
 }
@@ -529,7 +606,6 @@ a:hover { text-decoration: underline; }
 }
 .term-table tr:first-child .selected-col-header { border-top: 2px solid rgba(0,212,170,0.3); }
 .term-table tr:last-child .selected-col-header { border-bottom: 2px solid rgba(0,212,170,0.3); }
-
 .term-trap-summary { font-size: 1rem; color: #b8cce0; line-height: 1.65; margin-bottom: 18px; padding: 14px 16px; background: rgba(239,68,68,0.06); border-left: 3px solid rgba(239,68,68,0.4); border-radius: 0 6px 6px 0; }
 .term-trap-summary.safe { background: rgba(0,212,170,0.06); border-left-color: rgba(0,212,170,0.4); }
 
@@ -549,7 +625,6 @@ a:hover { text-decoration: underline; }
 .ownership-section { background: #1a2535; border-radius: 14px; padding: 24px; margin-bottom: 16px; }
 .ownership-title { font-size: 1.05rem; font-weight: 800; color: #eef2f7; margin-bottom: 6px; }
 .ownership-context { font-size: 0.875rem; color: #8499b0; margin-bottom: 20px; line-height: 1.55; }
-
 .monthly-breakdown { background: #0f1724; border-radius: 10px; padding: 18px; margin-bottom: 18px; }
 .monthly-breakdown-title { font-size: 0.875rem; font-weight: 700; color: #8499b0; margin-bottom: 14px; letter-spacing: 0; }
 .monthly-line { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; font-size: 1rem; color: #b8cce0; border-bottom: 1px solid rgba(255,255,255,0.04); }
@@ -558,12 +633,10 @@ a:hover { text-decoration: underline; }
 .monthly-divider { border: none; border-top: 1px solid #243044; margin: 10px 0; }
 .monthly-total-line { display: flex; justify-content: space-between; align-items: center; padding-top: 10px; font-weight: 800; font-size: 1rem; color: #eef2f7; }
 .monthly-total-line .ml-value { color: #00d4aa; font-size: 1.1rem; }
-
 .ownership-annuals { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
 .ownership-stat { background: #0f1724; border-radius: 8px; padding: 14px; }
 .ownership-stat-value { font-size: 1.2rem; font-weight: 800; color: #00d4aa; }
 .ownership-stat-label { font-size: 0.875rem; color: #8499b0; margin-top: 4px; }
-
 .cost-breakdown-table { width: 100%; border-collapse: collapse; margin-top: 14px; }
 .cost-breakdown-table td { padding: 8px 0; border-bottom: 1px solid #243044; font-size: 0.9375rem; color: #b8cce0; }
 .cost-breakdown-table td:last-child { text-align: right; font-weight: 600; color: #eef2f7; }
@@ -607,33 +680,7 @@ a:hover { text-decoration: underline; }
 .btn-skip:hover { border-color: #b8cce0; color: #eef2f7; }
 .tip-thank-you { color: #00d4aa; font-weight: 700; font-size: 1rem; display: none; }
 
-/* ── Utility ── */
-.hidden { display: none !important; }
-/* Model chips */
-.model-chips-label {
-  font-size: 0.8rem; font-weight: 500; color: #6a8599;
-  margin-bottom: 12px; letter-spacing: 0;
-}
-.model-chips-grid {
-  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 4px;
-}
-.model-chip {
-  background: #0f1724; border: 1.5px solid #2a3a50; border-radius: 8px;
-  padding: 8px 14px; font-size: 0.9rem; font-weight: 600; color: #b8cce0;
-  cursor: pointer; transition: border-color 0.18s, color 0.18s, background 0.18s;
-  white-space: nowrap; font-family: inherit;
-}
-.model-chip:hover { border-color: #00d4aa; color: #eef2f7; }
-.model-chip.model-selected { border-color: #00d4aa; background: rgba(0,212,170,0.1); color: #00d4aa; }
-.model-chip.model-hidden { display: none; }
-.model-show-more-btn {
-  background: none; border: none; color: #6a8599; font-size: 0.8rem;
-  cursor: pointer; padding: 6px 0; font-family: inherit;
-  text-decoration: underline; text-underline-offset: 3px;
-}
-.model-show-more-btn:hover { color: #b8cce0; }
-
-/* Footer */
+/* ── Footer ── */
 .site-footer {
   border-top: 1px solid #1e2d3d; margin-top: 64px; padding: 28px 0 40px;
   text-align: center;
@@ -641,19 +688,29 @@ a:hover { text-decoration: underline; }
 .footer-love {
   font-size: 0.9rem; color: #6a8599; margin-bottom: 16px; line-height: 1.6;
 }
-.footer-love span { color: #ef4444; }
 .footer-links {
   display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;
   margin-bottom: 12px;
 }
 .footer-link {
-  font-size: 0.825rem; color: #6a8599; text-decoration: none;
+  font-size: 0.875rem; color: #6a8599; text-decoration: none;
   transition: color 0.2s;
 }
 .footer-link:hover { color: #b8cce0; }
+.footer-legal {
+  font-size: 0.775rem;
+  color: #4a6070;
+  max-width: 560px;
+  margin: 0 auto 12px;
+  line-height: 1.6;
+  text-align: center;
+}
 .footer-copy {
   font-size: 0.775rem; color: #4a6070; margin-top: 8px;
 }
+
+/* ── Utility ── */
+.hidden { display: none !important; }
 </style>
 </head>
 <body>
@@ -661,32 +718,52 @@ a:hover { text-decoration: underline; }
 
   <!-- ── Header ── -->
   <header class="site-header" id="siteHeader">
+    <div class="wordmark">
+      <!-- Steering wheel SVG — 3-spoke, all teal, inline -->
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="16" cy="16" r="13" stroke="#00d4aa" stroke-width="2.5" fill="none"/>
+        <circle cx="16" cy="16" r="4" fill="#00d4aa"/>
+        <!-- Spoke: top (12 o'clock) -->
+        <line x1="16" y1="12" x2="16" y2="3" stroke="#00d4aa" stroke-width="2.2" stroke-linecap="round"/>
+        <!-- Spoke: bottom-left (7–8 o'clock) -->
+        <line x1="12.5" y1="18.5" x2="5.2" y2="23" stroke="#00d4aa" stroke-width="2.2" stroke-linecap="round"/>
+        <!-- Spoke: bottom-right (4–5 o'clock) -->
+        <line x1="19.5" y1="18.5" x2="26.8" y2="23" stroke="#00d4aa" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+      <span class="wordmark-text">WheelTheDeal</span>
+    </div>
     <h1>Don't sign a <em>bad new-car deal.</em></h1>
     <p>Check if your dealer's offer is fair — free, on your side.</p>
     <div class="trust-badge">100% buyer-funded · No dealer leads · No ads</div>
   </header>
 
   <!-- ══════════════════════════════════════════ -->
-  <!-- Selection: Year + Brand (logos) + Model    -->
+  <!-- Selection: Year + Brand + Model           -->
   <!-- ══════════════════════════════════════════ -->
   <section class="selection-section">
     <!-- Year pills -->
     <div class="year-toggle" id="yearToggle"></div>
 
-    <!-- Brand logo grid -->
-    <div class="brand-section-label" style="font-size:0.8rem;color:#6a8599;font-weight:500;">Top 20 brands by US sales</div>
-    <div class="brand-grid" id="brandGrid"></div>
+    <!-- Brand text grid -->
+    <div class="brand-section-label" style="font-size:0.875rem;color:#6a8599;font-weight:500;">Top 20 brands by US sales</div>
+    <div class="brand-text-grid" id="brandGrid"></div>
     <div style="margin-top:10px;font-size:0.875rem;color:#8499b0;text-align:center;">
       Missing a brand? <a href="mailto:hello@wheelthedeal.com" style="color:#00d4aa;">Contact us and we'll prioritize it.</a>
     </div>
 
-    <!-- Model chips (appears after brand selected) -->
+    <!-- Model accordion (appears after brand selected) -->
     <div class="model-row reveal-panel" id="modelRow">
-      <div class="model-chips-label">Select your model</div>
-      <div class="model-chips-grid" id="modelChipsGrid"></div>
-      <div class="model-show-more" id="modelShowMore" style="display:none;">
-        <button class="model-show-more-btn" onclick="showAllModels()">Show all models ↓</button>
+      <div class="model-search-wrap">
+        <input
+          type="text"
+          id="modelSearch"
+          class="model-search-input"
+          placeholder="Search models…"
+          oninput="filterModelAccordion(this.value)"
+          autocomplete="off"
+        >
       </div>
+      <div id="modelAccordion"></div>
     </div>
     <div class="model-loading-msg" id="modelLoadingMsg"></div>
   </section>
@@ -1016,28 +1093,28 @@ a:hover { text-decoration: underline; }
 // Constants & Config
 // ══════════════════════════════════════════════════════════
 
-// Top 20 US brands by 2025 sales volume — honest, intentional set
+// Top 20 US brands by 2025 sales volume
 const BRANDS = [
-  { name: 'Toyota',     slug: 'toyota',      color: '#eb0a1e' },
-  { name: 'Ford',       slug: 'ford',        color: '#003087' },
-  { name: 'Chevrolet',  slug: 'chevrolet',   color: '#d4a017' },
-  { name: 'Honda',      slug: 'honda',       color: '#e40521' },
-  { name: 'Hyundai',    slug: 'hyundai',     color: '#002c5f' },
-  { name: 'Nissan',     slug: 'nissan',      color: '#c3002f' },
-  { name: 'Kia',        slug: 'kia',         color: '#05141f' },
-  { name: 'GMC',        slug: null,          color: '#c8102e' },
-  { name: 'Subaru',     slug: 'subaru',      color: '#00438a' },
-  { name: 'Jeep',       slug: 'jeep',        color: '#384d48' },
-  { name: 'Tesla',      slug: 'tesla',       color: '#cc0000' },
-  { name: 'RAM',        slug: 'ram',         color: '#c41230' },
-  { name: 'Mazda',      slug: 'mazda',       color: '#1e3869' },
-  { name: 'BMW',        slug: 'bmw',         color: '#0066b1' },
-  { name: 'Lexus',      slug: 'lexus',       color: '#1a1a1a' },
-  { name: 'Volkswagen', slug: 'volkswagen',  color: '#00176f' },
-  { name: 'Buick',      slug: null,          color: '#8b734a' },
-  { name: 'Cadillac',   slug: null,          color: '#1a1a2e' },
-  { name: 'Audi',       slug: 'audi',        color: '#bb0a21' },
-  { name: 'Acura',      slug: 'acura',       color: '#cc0000' },
+  { name: 'Toyota' },
+  { name: 'Ford' },
+  { name: 'Chevrolet' },
+  { name: 'Honda' },
+  { name: 'Hyundai' },
+  { name: 'Nissan' },
+  { name: 'Kia' },
+  { name: 'GMC' },
+  { name: 'Subaru' },
+  { name: 'Jeep' },
+  { name: 'Tesla' },
+  { name: 'RAM' },
+  { name: 'Mazda' },
+  { name: 'BMW' },
+  { name: 'Lexus' },
+  { name: 'Volkswagen' },
+  { name: 'Buick' },
+  { name: 'Cadillac' },
+  { name: 'Audi' },
+  { name: 'Acura' },
 ];
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -1070,12 +1147,16 @@ const state = {
   _fuelMpg:      27,
 };
 
+// Grouped model data for accordion
+let groupedModels = [];
+let openFamilyIndex = -1;
+
 // ══════════════════════════════════════════════════════════
 // Analytics
 // ══════════════════════════════════════════════════════════
 
 function track(event, data = {}) {
-  console.log('[Cartru]', event, data);
+  console.log('[WheelTheDeal]', event, data);
 }
 
 // ══════════════════════════════════════════════════════════
@@ -1151,110 +1232,171 @@ function debounce(fn, delay) {
 }
 
 // ══════════════════════════════════════════════════════════
-// Brand & Model dropdowns
+// Brand text grid
 // ══════════════════════════════════════════════════════════
-
-const CDN = 'https://cdn.simpleicons.org';
 
 function renderBrandGrid() {
   const grid = document.getElementById('brandGrid');
   if (!grid) return;
-  grid.innerHTML = BRANDS.map(b => {
-    const logoHtml = b.slug
-      ? `<img class="brand-logo-img" src="${CDN}/${b.slug}/FFFFFF" alt="${b.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-         <span class="brand-logo-text" style="display:none">${b.name.substring(0,3).toUpperCase()}</span>`
-      : `<span class="brand-logo-text">${b.name.substring(0,3).toUpperCase()}</span>`;
-    return `<div class="brand-card" onclick="selectBrand('${escAttr(b.name)}')" id="brand-${escAttr(b.name.toLowerCase().replace(/\s/g,'-'))}">
-      ${logoHtml}
-      <div class="brand-name-label">${b.name}</div>
-    </div>`;
-  }).join('');
+  grid.innerHTML = BRANDS.map(b =>
+    `<button class="brand-text-btn" onclick="selectBrand('${escAttr(b.name)}')" id="brand-${escAttr(b.name.toLowerCase().replace(/\s+/g,'-'))}">${b.name}</button>`
+  ).join('');
 }
 
 function selectBrand(brand) {
   state.brand = brand;
   state.model = null;
 
-  // Update card states
-  document.querySelectorAll('.brand-card').forEach(card => {
-    card.classList.remove('brand-selected', 'brand-inactive');
-    card.classList.add('brand-inactive');
+  // Update button states
+  document.querySelectorAll('.brand-text-btn').forEach(btn => {
+    btn.classList.remove('brand-selected', 'brand-inactive');
+    btn.classList.add('brand-inactive');
   });
-  const selectedCard = document.getElementById('brand-' + brand.toLowerCase().replace(/\s/g, '-'));
-  if (selectedCard) {
-    selectedCard.classList.remove('brand-inactive');
-    selectedCard.classList.add('brand-selected');
+  const selectedBtn = document.getElementById('brand-' + brand.toLowerCase().replace(/\s+/g, '-'));
+  if (selectedBtn) {
+    selectedBtn.classList.remove('brand-inactive');
+    selectedBtn.classList.add('brand-selected');
   }
 
   // Show model row
   const modelRow = document.getElementById('modelRow');
-  if (modelRow) { modelRow.classList.add('open'); }
+  if (modelRow) modelRow.classList.add('open');
 
-  resetModelSelect();
+  // Clear search
+  const searchEl = document.getElementById('modelSearch');
+  if (searchEl) searchEl.value = '';
+
+  resetModelAccordion();
   hideDealSection();
   hideResultSection();
-  loadModelsForSelect();
+  loadGroupedModels();
   track('brand_selected', { brand });
 }
 
-function onBrandChange() {
-  // Kept for compatibility — actual selection via selectBrand()
-}
+// ══════════════════════════════════════════════════════════
+// Grouped model accordion
+// ══════════════════════════════════════════════════════════
 
-const MODEL_CHIP_LIMIT = 16; // show first N chips, "show all" for longer lists
-let allModels = [];
-
-function loadModelsForSelect() {
+function loadGroupedModels() {
   if (!state.brand) return;
-  const grid = document.getElementById('modelChipsGrid');
-  const msg  = document.getElementById('modelLoadingMsg');
-  const more = document.getElementById('modelShowMore');
-  grid.innerHTML = '<span style="color:#6a8599;font-size:0.875rem;">Loading models…</span>';
-  if (more) more.style.display = 'none';
-  msg.textContent = '';
-  allModels = [];
+  const container = document.getElementById('modelAccordion');
+  const msg = document.getElementById('modelLoadingMsg');
+  if (container) container.innerHTML = '<div style="color:#6a8599;font-size:0.875rem;padding:12px 0;">Loading models…</div>';
+  if (msg) msg.textContent = '';
+  groupedModels = [];
+  openFamilyIndex = -1;
 
-  fetch(`/models-for-brand?make=${encodeURIComponent(state.brand)}&year=${state.year}`)
+  fetch(`/grouped-models?make=${encodeURIComponent(state.brand)}&year=${state.year}`)
     .then(r => r.json())
     .then(data => {
-      allModels = (data.models || []).sort();
-      if (!allModels.length) {
-        grid.innerHTML = '<span style="color:#6a8599;font-size:0.875rem;">No models found — try a different year</span>';
+      groupedModels = data.grouped || [];
+      if (!groupedModels.length) {
+        if (container) container.innerHTML = '<div style="color:#6a8599;font-size:0.875rem;padding:12px 0;">No models found — try a different year</div>';
         return;
       }
-      renderModelChips(false);
-      track('models_loaded', { brand: state.brand, year: state.year, count: allModels.length });
+      renderGroupedModels(groupedModels);
+      track('grouped_models_loaded', { brand: state.brand, year: state.year, families: groupedModels.length });
     })
     .catch(() => {
-      grid.innerHTML = '<span style="color:#ef4444;font-size:0.875rem;">Error loading models — check your connection</span>';
+      if (container) container.innerHTML = '<div style="color:#ef4444;font-size:0.875rem;padding:12px 0;">Error loading models — check your connection</div>';
     });
 }
 
-function renderModelChips(showAll) {
-  const grid = document.getElementById('modelChipsGrid');
-  const more = document.getElementById('modelShowMore');
-  const visible = showAll ? allModels : allModels.slice(0, MODEL_CHIP_LIMIT);
-  grid.innerHTML = visible.map(m =>
-    `<button class="model-chip ${m === state.model ? 'model-selected' : ''}" onclick="selectModelChip('${escAttr(m)}')">${m}</button>`
-  ).join('');
-  if (more) {
-    if (!showAll && allModels.length > MODEL_CHIP_LIMIT) {
-      more.style.display = 'block';
-      more.querySelector('button').textContent = `Show all ${allModels.length} models ↓`;
-    } else {
-      more.style.display = 'none';
+function renderGroupedModels(grouped, query) {
+  const container = document.getElementById('modelAccordion');
+  if (!container) return;
+
+  // Count total unique trims
+  const totalTrims = grouped.reduce((sum, g) => sum + g.trims.length, 0);
+  const useFlat = totalTrims <= 8;
+
+  if (useFlat) {
+    // Flat chips — just list all trims directly
+    const allTrims = grouped.flatMap(g => g.trims);
+    const filtered = query ? allTrims.filter(t => t.toLowerCase().includes(query.toLowerCase())) : allTrims;
+    if (!filtered.length) {
+      container.innerHTML = '<div style="color:#6a8599;font-size:0.875rem;padding:8px 0;">No models match your search</div>';
+      return;
     }
+    container.innerHTML = `<div class="flat-chips-wrap">${
+      filtered.map(trim =>
+        `<button class="flat-trim-chip ${trim === state.model ? 'trim-selected' : ''}" onclick="selectModelTrim('${escAttr(trim)}')">${trim}</button>`
+      ).join('')
+    }</div>`;
+    return;
   }
+
+  // Accordion mode
+  const lq = (query || '').toLowerCase();
+  let html = '<div class="accordion-list">';
+  grouped.forEach((family, idx) => {
+    const matchingTrims = lq
+      ? family.trims.filter(t => t.toLowerCase().includes(lq) || family.family.toLowerCase().includes(lq))
+      : family.trims;
+
+    if (lq && matchingTrims.length === 0) return; // skip hidden families
+
+    const isOpen = openFamilyIndex === idx || (lq && matchingTrims.length > 0) || family.trims.length === 1;
+    const trimCount = family.trims.length;
+
+    html += `<div class="accordion-family ${isOpen ? 'accordion-open' : ''}" id="accordion-family-${idx}">`;
+    if (family.trims.length > 1) {
+      html += `<div class="accordion-family-header" onclick="toggleAccordionFamily(${idx})">
+        <div class="accordion-family-left">
+          <span class="accordion-family-name">${family.family}</span>
+          <span class="accordion-trim-badge">${trimCount} trim${trimCount !== 1 ? 's' : ''}</span>
+        </div>
+        <span class="accordion-chevron">▼</span>
+      </div>`;
+    } else {
+      // Single trim — show header but non-interactive (auto-open)
+      html += `<div class="accordion-family-header" style="cursor:default;">
+        <div class="accordion-family-left">
+          <span class="accordion-family-name">${family.family}</span>
+        </div>
+      </div>`;
+    }
+
+    html += `<div class="accordion-trim-area">
+      <div class="accordion-trim-chips">${
+        matchingTrims.map(trim =>
+          `<button class="accordion-trim-chip ${trim === state.model ? 'trim-selected' : ''}" onclick="selectModelTrim('${escAttr(trim)}')">${trim}</button>`
+        ).join('')
+      }</div>
+    </div>`;
+
+    html += `</div>`; // /accordion-family
+  });
+  html += '</div>';
+  container.innerHTML = html;
 }
 
-function showAllModels() { renderModelChips(true); }
+function toggleAccordionFamily(idx) {
+  if (openFamilyIndex === idx) {
+    openFamilyIndex = -1;
+  } else {
+    openFamilyIndex = idx;
+  }
+  // Re-render with current search query
+  const query = (document.getElementById('modelSearch') || {}).value || '';
+  renderGroupedModels(groupedModels, query);
+}
 
-function selectModelChip(model) {
+function filterModelAccordion(query) {
+  if (!groupedModels.length) return;
+  // When searching, auto-open all matching families
+  openFamilyIndex = -1;
+  renderGroupedModels(groupedModels, query);
+}
+
+function selectModelTrim(model) {
   state.model = model;
-  // Update chip states
-  document.querySelectorAll('.model-chip').forEach(c => {
-    c.classList.toggle('model-selected', c.textContent === model);
+
+  // Update chip highlight across accordion/flat views
+  document.querySelectorAll('.accordion-trim-chip, .flat-trim-chip').forEach(c => {
+    c.classList.toggle('trim-selected', c.textContent === model);
   });
+
   state.msrpEstimate = estimateMsrp(state.brand, model);
   state.rangeEstimate = msrpToRange(state.msrpEstimate);
   populateDealSection();
@@ -1264,16 +1406,13 @@ function selectModelChip(model) {
   track('model_selected', { brand: state.brand, model, year: state.year });
 }
 
-function onModelChange() { /* legacy — chips used instead */ }
-
-function resetModelSelect() {
-  const grid = document.getElementById('modelChipsGrid');
-  const more = document.getElementById('modelShowMore');
-  const msg  = document.getElementById('modelLoadingMsg');
-  if (grid) grid.innerHTML = '';
-  if (more) more.style.display = 'none';
-  if (msg)  msg.textContent = '';
-  allModels = [];
+function resetModelAccordion() {
+  const container = document.getElementById('modelAccordion');
+  const msg = document.getElementById('modelLoadingMsg');
+  if (container) container.innerHTML = '';
+  if (msg) msg.textContent = '';
+  groupedModels = [];
+  openFamilyIndex = -1;
 }
 
 // ══════════════════════════════════════════════════════════
@@ -1291,14 +1430,14 @@ function selectYear(year) {
   state.year = year;
   document.querySelectorAll('.year-btn').forEach(b => b.classList.toggle('active', parseInt(b.dataset.year) === year));
   if (state.brand) {
-    // If a model was selected, hide deal form (models may differ by year)
     if (state.model) {
       state.model = null;
-      document.getElementById('modelSelect').value = '';
       hideDealSection();
       hideResultSection();
     }
-    loadModelsForSelect();
+    const searchEl = document.getElementById('modelSearch');
+    if (searchEl) searchEl.value = '';
+    loadGroupedModels();
   }
 }
 
@@ -1307,19 +1446,14 @@ function selectYear(year) {
 // ══════════════════════════════════════════════════════════
 
 function populateDealSection() {
-  // Vehicle crumb
   document.getElementById('crumbModel').textContent = `${state.brand} ${state.model}`;
   document.getElementById('crumbYear').textContent = state.year;
 
-  // Pre-fill dealer offer at 5% below MSRP
   const estimatedDealerPrice = Math.round(state.msrpEstimate * 0.95);
   document.getElementById('dealerOffer').value = estimatedDealerPrice;
-
-  // MSRP display
   document.getElementById('msrpDisplay').textContent = `~$${fmt(state.msrpEstimate)}`;
   document.getElementById('msrpInlineInput').value = state.msrpEstimate;
 
-  // Update live signal and glance with pre-fill
   updateLiveSignal();
   updateGlancePanel();
 }
@@ -1522,11 +1656,17 @@ function startOver() {
   state.msrpEstimate = 32000; state.reportData = null; state.loanTerm = 72;
   state.apr = 6.8; state.annualMiles = 13500; state.gasPrice = 3.45;
 
-  // Reset brand grid + model
-  document.querySelectorAll('.brand-card').forEach(c => c.classList.remove('brand-selected','brand-inactive'));
+  // Reset brand buttons
+  document.querySelectorAll('.brand-text-btn').forEach(b => b.classList.remove('brand-selected', 'brand-inactive'));
+
+  // Hide & reset model row
   const modelRow = document.getElementById('modelRow');
   if (modelRow) modelRow.classList.remove('open');
-  resetModelSelect();
+  resetModelAccordion();
+
+  // Clear search
+  const searchEl = document.getElementById('modelSearch');
+  if (searchEl) searchEl.value = '';
 
   renderYearToggle();
 
@@ -1669,7 +1809,6 @@ function renderTermTrap(d) {
 
   if (!tc || !tc.terms || tc.terms.length === 0) return;
 
-  // Prefer client-side fresh calculation over stale server data
   const price  = d.dealer_offer || (d.negotiation && d.negotiation.estimated_invoice) || 0;
   const aprPct = state.apr || DEFAULTS.apr;
   if (price > 0) {
@@ -2110,7 +2249,6 @@ function submitLeaseEmail() {
   document.getElementById('leaseActions').style.display = 'none';
   document.getElementById('leaseThanks').style.display = 'block';
   track('lease_email_submitted', { email });
-  // Wire to real email collection (Mailchimp, ConvertKit, etc.) later
 }
 
 function sendTip() {
@@ -2197,12 +2335,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <footer class="site-footer">
   <div class="page">
-    <div class="footer-love">Built with love <span>❤️</span> for buyers, not dealers.<br><span style="font-size:0.82rem;color:#4a6070;">— Max &amp; Aris</span></div>
+    <div class="footer-love">Built with love ❤️ for buyers, not dealers.<br>
+      <span style="font-size:0.82rem;color:#4a6070;">— Max &amp; Aris</span>
+    </div>
     <div class="footer-links">
       <a href="mailto:hello@wheelthedeal.com" class="footer-link">Contact</a>
       <a href="#" class="footer-link">X / Twitter</a>
       <a href="#" class="footer-link">Instagram</a>
-      <a href="#" class="footer-link">LinkedIn</a>
+    </div>
+    <div class="footer-legal">
+      WheelTheDeal is an independent service and is not affiliated with, sponsored by, or endorsed by any automobile manufacturer, dealer group, or third-party marketplace. All product names, brands, and trademarks are property of their respective owners and are used for identification purposes only.
     </div>
     <div class="footer-copy">© 2026 WheelTheDeal · 100% buyer-funded · No dealer leads</div>
   </div>

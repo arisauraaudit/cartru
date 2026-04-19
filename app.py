@@ -805,6 +805,64 @@ def models_for_brand():
         return jsonify({"make": make, "year": year, "models": []})
 
 
+@app.route("/grouped-models")
+def grouped_models():
+    """Return model strings grouped into families for a given make and year."""
+    make = request.args.get("make", "").strip()
+    year = request.args.get("year", "2025").strip()
+
+    if not make:
+        return jsonify({"error": "make is required"}), 400
+
+    try:
+        r = requests.get(
+            f"https://www.fueleconomy.gov/ws/rest/vehicle/menu/model?year={year}&make={make}",
+            headers={"Accept": "application/json"},
+            timeout=10
+        )
+        data = r.json()
+        items = data.get("menuItem", [])
+        if isinstance(items, dict):
+            items = [items]
+
+        all_models = sorted(set(item["value"] for item in items if item.get("value")))
+
+        # Group by family: extract first word(s) as the family name
+        # Strategy: group by longest common prefix that ends at a space
+        from collections import defaultdict
+        families = defaultdict(list)
+
+        for model in all_models:
+            parts = model.split()
+            first = parts[0]
+            # BMW-style pure numeric prefix (e.g. "330i", "540i") → group by series number
+            if first[0].isdigit() and any(c.isdigit() for c in first):
+                # Extract leading digits for series grouping (330i → "3 Series", 540i → "5 Series")
+                leading = ''.join(c for c in first if c.isdigit())
+                if len(leading) >= 3:
+                    series_num = leading[0]  # First digit = series (3xx → 3 Series)
+                    family = f"{series_num} Series"
+                else:
+                    family = first
+            else:
+                # Use first word as family (handles RAV4, GR86, 4Runner correctly)
+                family = first
+
+            families[family].append(model)
+
+        # Sort families, sort trims within each family
+        grouped = [
+            {"family": fam, "trims": sorted(trims)}
+            for fam, trims in sorted(families.items())
+        ]
+
+        return jsonify({"make": make, "year": year, "grouped": grouped, "total": len(all_models)})
+
+    except Exception as e:
+        logger.error(f"grouped-models error: {e}")
+        return jsonify({"make": make, "year": year, "grouped": [], "total": 0})
+
+
 @app.route("/tip-jar", methods=["POST"])
 def tip_jar():
     """Log tip intent and return thank-you response."""
