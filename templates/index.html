@@ -368,6 +368,14 @@ a:hover { text-decoration: underline; }
 .msrp-inline-input { padding: 5px 10px; background: #1a2535; border: 1.5px solid #00d4aa; border-radius: 6px; color: #eef2f7; font-size: 1rem; width: 120px; outline: none; display: none; }
 
 /* APR + Loan term */
+/* Down payment */
+.down-payment-row { margin-bottom: 20px; }
+.down-payment-row label { display: block; font-size: 0.875rem; font-weight: 600; color: #b8cce0; margin-bottom: 8px; letter-spacing: 0; }
+.down-input-wrap { display: flex; align-items: center; gap: 0; background: #1a2535; border: 1.5px solid #2a3a50; border-radius: 10px; overflow: hidden; transition: border-color 0.2s; }
+.down-input-wrap:focus-within { border-color: #00d4aa; }
+.down-input { flex: 1; background: transparent; border: none; outline: none; padding: 12px 10px; color: #eef2f7; font-size: 1rem; font-family: inherit; -webkit-text-fill-color: #eef2f7; }
+.down-pct-badge { padding: 0 14px; font-size: 0.8rem; font-weight: 600; color: #8499b0; white-space: nowrap; }
+
 /* Credit tier selector */
 .credit-row { margin-bottom: 20px; }
 .credit-row label { display: block; font-size: 0.875rem; font-weight: 600; color: #b8cce0; margin-bottom: 10px; letter-spacing: 0; }
@@ -866,6 +874,17 @@ a:hover { text-decoration: underline; }
       <input type="number" id="msrpInlineInput" class="msrp-inline-input" placeholder="e.g. 32000">
     </div>
 
+    <!-- Down payment -->
+    <div class="down-payment-row">
+      <label for="downPayment">Down payment</label>
+      <div class="down-input-wrap">
+        <span class="offer-dollar">$</span>
+        <input type="number" id="downPayment" class="down-input" placeholder="0" min="0" max="200000" step="500" autocomplete="off">
+        <span class="down-pct-badge" id="downPctBadge">15%</span>
+      </div>
+      <div class="field-helper" id="downPaymentHelper">~15% of price — edit to match your actual down payment</div>
+    </div>
+
     <!-- Credit tier + APR + Loan term -->
     <div class="credit-row">
       <label for="creditTier">Estimated credit score</label>
@@ -1240,7 +1259,7 @@ function calcMonthlyPayment(principal, aprPct, termMonths) {
 }
 
 function calcTermComparison(dealerPrice, aprPct, terms = [48, 60, 72, 84]) {
-  const principal = dealerPrice * 0.90;
+  const principal = Math.max(0, dealerPrice - (window._downPayment || dealerPrice * 0.15));
   const results = [];
   let baseline60Interest = null;
 
@@ -1529,6 +1548,7 @@ function populateDealSection() {
 
   const estimatedDealerPrice = Math.round(state.msrpEstimate * 0.95);
   document.getElementById('dealerOffer').value = estimatedDealerPrice;
+  prefillDownPayment(estimatedDealerPrice);
   document.getElementById('msrpDisplay').textContent = `~$${fmt(state.msrpEstimate)}`;
   document.getElementById('msrpInlineInput').value = state.msrpEstimate;
 
@@ -1566,6 +1586,48 @@ function toggleMsrpEdit() {
 // ══════════════════════════════════════════════════════════
 // Loan term selector
 // ══════════════════════════════════════════════════════════
+
+// ── Down payment helpers ──────────────────────────────────
+function getDownPayment(price) {
+  const dpEl = document.getElementById('downPayment');
+  if (!dpEl) return (price || 0) * 0.15;
+  const entered = parseFloat(dpEl.value);
+  if (!isNaN(entered) && entered >= 0) return Math.min(entered, price || entered);
+  return (price || 0) * 0.15;
+}
+
+function updateDownPaymentBadge() {
+  const price  = parseFloat(document.getElementById('dealerOffer').value) || state.msrpEstimate * 0.95 || 0;
+  const dp     = getDownPayment(price);
+  const badge  = document.getElementById('downPctBadge');
+  const helper = document.getElementById('downPaymentHelper');
+  if (!badge || !price) return;
+
+  const pct = Math.round((dp / price) * 100);
+  badge.textContent = price > 0 ? `${pct}%` : '';
+
+  if (dp >= price && price > 0) {
+    badge.style.color = '#f59e0b';
+    if (helper) helper.textContent = 'Down payment capped at vehicle price — financing would be $0';
+  } else {
+    badge.style.color = '#8499b0';
+    if (helper) helper.textContent = `~${pct}% of price — edit to match your actual down payment`;
+  }
+
+  // Sync to global for calcTermComparison
+  window._downPayment = dp;
+
+  debouncedGlance();
+}
+
+function prefillDownPayment(price) {
+  const dpEl = document.getElementById('downPayment');
+  if (!dpEl || dpEl.dataset.userEdited === 'true') return;
+  const suggested = Math.round(price * 0.15 / 500) * 500; // round to nearest $500
+  dpEl.value = suggested;
+  window._downPayment = suggested;
+  updateDownPaymentBadge();
+}
 
 function selectCreditTier(btn) {
   // Update pill active state
@@ -1698,6 +1760,7 @@ function checkDeal() {
     make:               state.brand,
     model:              state.model,
     dealer_offer:       offer,
+    down_payment:       getDownPayment(offer || state.msrpEstimate * 0.95),
     zip_code:           document.getElementById('zipCode').value.trim(),
     msrp:               msrpVal || null,
     destination_charge: document.getElementById('destinationCharge').value || 0,
@@ -2455,8 +2518,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Dealer offer → live signal + glance (debounced)
   document.getElementById('dealerOffer').addEventListener('input', () => {
+    const price = parseFloat(document.getElementById('dealerOffer').value);
+    if (price > 1000) prefillDownPayment(price);
     debouncedSignal();
     debouncedGlance();
+  });
+
+  // Down payment → recalculate
+  document.getElementById('downPayment').addEventListener('input', () => {
+    document.getElementById('downPayment').dataset.userEdited = 'true';
+    updateDownPaymentBadge();
   });
 
   // APR → glance

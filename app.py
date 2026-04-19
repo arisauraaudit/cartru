@@ -207,7 +207,8 @@ def calculate_term_comparison(dealer_price, apr, terms=None):
         terms = [48, 60, 72, 84]
 
     dealer_price = float(dealer_price)
-    principal = dealer_price * 0.90  # assume 10% down
+    # dealer_price here is already financed_amount (price - down_payment) when called from /report
+    principal = dealer_price
     monthly_rate = apr / 12
 
     results = []
@@ -653,6 +654,7 @@ def _report_inner():
     loan_term     = int(data.get("loan_term", 72))
     gas_price     = float(data.get("gas_price", 3.45))
     annual_miles  = int(data.get("annual_miles", 13500))
+    down_payment  = float(data.get("down_payment", 0)) if data.get("down_payment") else None
 
     # Core signal pipeline
     local_range = get_local_market_range(make, model, year, zip_code)
@@ -715,8 +717,14 @@ def _report_inner():
             loan_term_months=loan_term
         )
 
-    # Term comparison
-    term_comparison = calculate_term_comparison(dealer_price, apr)
+    # Down payment — default 15% if not provided
+    if down_payment is None:
+        down_payment = dealer_price * 0.15
+    down_payment = min(down_payment, dealer_price)  # cap at price
+    financed_amount = max(0, dealer_price - down_payment)
+
+    # Term comparison (uses financed amount, not full price)
+    term_comparison = calculate_term_comparison(financed_amount, apr)
 
     # Printable summary
     printable_summary = get_printable_summary(
@@ -781,6 +789,8 @@ def _report_inner():
         "safety_signal": safety_signal,
         "otd_estimate": otd_estimate,
         "dealer_offer": dealer_offer_f,
+        "down_payment": round(down_payment),
+        "financed_amount": round(financed_amount),
         "dealer_price_is_estimated": dealer_price_is_estimated,
         "destination_charge": dest_f,
         "dealer_fees": fees_f,
