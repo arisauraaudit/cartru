@@ -125,7 +125,10 @@ a:hover { text-decoration: underline; }
 @media (max-width: 600px) { .hiw-divider { display: none; } .hiw-step { min-width: 100%; } }
 
 /* FAQ */
-.faq-section { margin-bottom: 12px; }
+.faq-section { margin-bottom: 12px; margin-top: 40px; border-top: 1px solid #1e2d3d; padding-top: 40px; }
+.faq-heading { font-size: 1.1rem; font-weight: 800; color: #eef2f7; margin-bottom: 20px; }
+.faq-jump-link { font-size: 0.875rem; color: #8499b0; text-decoration: none; transition: color 0.2s; }
+.faq-jump-link:hover { color: #00d4aa; }
 .faq-item { border-bottom: 1px solid #1e2d3d; }
 .faq-item:last-child { border-bottom: none; }
 .faq-q { width: 100%; background: none; border: none; padding: 14px 0; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-family: inherit; font-size: 0.9375rem; font-weight: 600; color: #eef2f7; text-align: left; gap: 12px; }
@@ -860,52 +863,9 @@ a:hover { text-decoration: underline; }
       </div>
     </div>
   </section>
-
-  <!-- ══════════════════════════════════════════ -->
-  <!-- FAQ                                        -->
-  <!-- ══════════════════════════════════════════ -->
-  <section class="faq-section">
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        Is this really free? <span class="faq-arrow">↓</span>
-      </button>
-      <div class="faq-a">
-        Yes, completely. No signup, no credit card, no trial period. We built this because we got burned at dealerships and wanted a tool that actually worked for buyers. You pay nothing.
-      </div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        Are you selling my info to dealers? <span class="faq-arrow">↓</span>
-      </button>
-      <div class="faq-a">
-        No. We don't sell leads. We don't take dealer money. We don't run dealer ads. The vehicle info you enter is used only to generate your report — it's not stored, shared, or sold. Ever.
-      </div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        How do you make money? <span class="faq-arrow">↓</span>
-      </button>
-      <div class="faq-a">
-        Right now, we don't. We're proving the tool is useful before thinking about monetization. If we ever charge for anything, it'll be a buyer-side upgrade — never dealer-funded. No ads, no sponsored results, no lead fees. That's a promise.
-      </div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        Where does the data come from? <span class="faq-arrow">↓</span>
-      </button>
-      <div class="faq-a">
-        Fuel economy and vehicle data: US Department of Energy (fueleconomy.gov). Recall and safety data: NHTSA (nhtsa.gov). Pricing estimates: industry averages and regional market signals — clearly labeled as estimates, not exact transaction data.
-      </div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        Who built WheelTheDeal? <span class="faq-arrow">↓</span>
-      </button>
-      <div class="faq-a">
-        Two people who got tired of watching buyers get outmaneuvered at dealerships. One human, one AI — working together to level the playing field. Questions or feedback: <a href="mailto:hello@wheelthedeal.com">hello@wheelthedeal.com</a>
-      </div>
-    </div>
-  </section>
+  <div style="text-align:center;margin-bottom:28px;">
+    <a href="#faq" class="faq-jump-link" onclick="document.getElementById('faq').scrollIntoView({behavior:'smooth'});return false;">Questions? See FAQ ↓</a>
+  </div>
 
   <!-- ══════════════════════════════════════════ -->
   <!-- Selection: Year + Brand + Model           -->
@@ -2673,6 +2633,54 @@ document.addEventListener('DOMContentLoaded', () => {
   track('page_loaded');
 });
 </script>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- FAQ (pre-footer)                          -->
+  <!-- ══════════════════════════════════════════ -->
+  <section class="faq-section" id="faq">
+    <h2 class="faq-heading">Common questions</h2>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Is this really free? <span class="faq-arrow">↓</span>
+      </button>
+      <div class="faq-a">
+        Yes, completely. No signup, no credit card, no trial period. We built this because we got burned at dealerships and wanted a tool that actually worked for buyers. You pay nothing.
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Are you selling my info to dealers? <span class="faq-arrow">↓</span>
+      </button>
+      <div class="faq-a">
+        No. We don't sell leads. We don't take dealer money. We don't run dealer ads. The vehicle info you enter is used only to generate your report — it's not stored, shared, or sold. Ever.
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        How do you make money? <span class="faq-arrow">↓</span>
+      </button>
+      <div class="faq-a">
+        Right now, we don't. We're proving the tool is useful before thinking about monetization. If we ever charge for anything, it'll be a buyer-side upgrade — never dealer-funded. No ads, no sponsored results, no lead fees. That's a promise.
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Where does the data come from? <span class="faq-arrow">↓</span>
+      </button>
+      <div class="faq-a">
+        Fuel economy and vehicle data: US Department of Energy (fueleconomy.gov). Recall and safety data: NHTSA (nhtsa.gov). Pricing estimates: industry averages and regional market signals — clearly labeled as estimates, not exact transaction data.
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Who built WheelTheDeal? <span class="faq-arrow">↓</span>
+      </button>
+      <div class="faq-a">
+        Two people who got tired of watching buyers get outmaneuvered at dealerships. One human, one AI — working together to level the playing field. Questions or feedback: <a href="mailto:hello@wheelthedeal.com">hello@wheelthedeal.com</a>
+      </div>
+    </div>
+  </section>
+
 
 <footer class="site-footer">
   <div class="page">
