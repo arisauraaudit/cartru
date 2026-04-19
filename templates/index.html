@@ -2346,9 +2346,20 @@ function submitFeedback() {
   const email = (document.getElementById('feedbackEmail').value || '').trim();
   if (!feedbackRating && !text) { openFeedback(); return; }
 
-  // Log feedback (wire to backend/email later)
   track('feedback_submitted', { rating: feedbackRating, hasText: !!text, hasEmail: !!email });
-  console.log('FEEDBACK:', { rating: feedbackRating, text, email });
+
+  // Send to Formspree
+  fetch('https://formspree.io/f/mqewbrkp', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({
+      rating:  feedbackRating,
+      message: text || '(no message)',
+      email:   email || '(not provided)',
+      page:    window.location.href,
+      vehicle: state.brand && state.model ? `${state.year} ${state.brand} ${state.model}` : 'not selected',
+    }),
+  }).catch(err => console.error('Formspree error:', err));
 
   document.getElementById('feedbackForm').style.display = 'none';
   document.getElementById('feedbackThanks').style.display = '';
