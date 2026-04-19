@@ -670,10 +670,40 @@ a:hover { text-decoration: underline; }
 .no-recalls { display: flex; align-items: center; gap: 8px; color: #00d4aa; font-weight: 600; font-size: 1rem; }
 
 /* ── Tip jar ── */
-.tip-jar { background: #1a2535; border-radius: 14px; padding: 32px; margin-top: 28px; text-align: center; }
-.tip-jar-title { font-size: 1.05rem; font-weight: 700; color: #eef2f7; margin-bottom: 10px; }
-.tip-jar-text { font-size: 0.9375rem; color: #b8cce0; line-height: 1.65; margin-bottom: 22px; max-width: 380px; margin-left: auto; margin-right: auto; }
-.tip-jar-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+/* Feedback */
+.feedback-block { background: #1a2535; border-radius: 14px; padding: 28px; margin-top: 28px; text-align: center; }
+.feedback-block-title { font-size: 1rem; font-weight: 700; color: #eef2f7; margin-bottom: 8px; }
+.feedback-block-sub { font-size: 0.9rem; color: #b8cce0; margin-bottom: 20px; line-height: 1.6; }
+.btn-feedback-open { background: #00d4aa; color: #0f1724; border: none; border-radius: 8px; padding: 11px 28px; font-size: 0.9375rem; font-weight: 700; cursor: pointer; font-family: inherit; transition: opacity 0.2s; }
+.btn-feedback-open:hover { opacity: 0.88; }
+
+/* Floating feedback button */
+.feedback-float { position: fixed; bottom: 24px; right: 24px; z-index: 200; }
+.feedback-float-btn { background: #1a2535; border: 1.5px solid #2a3a50; color: #b8cce0; border-radius: 99px; padding: 10px 18px; font-size: 0.875rem; font-weight: 600; cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 8px; transition: border-color 0.2s, color 0.2s; box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
+.feedback-float-btn:hover { border-color: #00d4aa; color: #eef2f7; }
+
+/* Feedback modal */
+.feedback-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 300; align-items: center; justify-content: center; padding: 20px; }
+.feedback-overlay.open { display: flex; }
+.feedback-modal { background: #1a2535; border-radius: 16px; padding: 32px; max-width: 440px; width: 100%; border: 1.5px solid #2a3a50; }
+.feedback-modal h3 { font-size: 1.1rem; font-weight: 800; color: #eef2f7; margin-bottom: 6px; }
+.feedback-modal p { font-size: 0.9rem; color: #b8cce0; margin-bottom: 24px; line-height: 1.6; }
+.feedback-question { margin-bottom: 20px; }
+.feedback-question label { display: block; font-size: 0.875rem; font-weight: 600; color: #b8cce0; margin-bottom: 8px; }
+.feedback-rating { display: flex; gap: 8px; }
+.rating-btn { background: #0f1724; border: 1.5px solid #2a3a50; border-radius: 8px; padding: 8px 14px; font-size: 1rem; cursor: pointer; transition: border-color 0.15s; }
+.rating-btn:hover, .rating-btn.active { border-color: #00d4aa; }
+.feedback-textarea { width: 100%; background: #0f1724; border: 1.5px solid #2a3a50; border-radius: 8px; padding: 10px 14px; color: #eef2f7; font-size: 0.9rem; font-family: inherit; resize: vertical; min-height: 80px; }
+.feedback-textarea:focus { outline: none; border-color: #00d4aa; }
+.feedback-email-input { width: 100%; background: #0f1724; border: 1.5px solid #2a3a50; border-radius: 8px; padding: 10px 14px; color: #eef2f7; font-size: 0.9rem; font-family: inherit; }
+.feedback-email-input:focus { outline: none; border-color: #00d4aa; }
+.feedback-modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
+.btn-feedback-submit { background: #00d4aa; color: #0f1724; border: none; border-radius: 8px; padding: 10px 24px; font-size: 0.9375rem; font-weight: 700; cursor: pointer; font-family: inherit; }
+.btn-feedback-cancel { background: none; border: 1.5px solid #2a3a50; color: #b8cce0; border-radius: 8px; padding: 10px 20px; font-size: 0.9375rem; cursor: pointer; font-family: inherit; }
+.feedback-thanks { text-align: center; padding: 20px 0; }
+.feedback-thanks-icon { font-size: 2.5rem; margin-bottom: 12px; }
+.feedback-thanks h4 { font-size: 1.1rem; font-weight: 700; color: #eef2f7; margin-bottom: 8px; }
+.feedback-thanks p { font-size: 0.9rem; color: #b8cce0; }
 .btn-tip { padding: 13px 30px; background: #00d4aa; color: #0f1724; border: none; border-radius: 9px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: background 0.2s; font-family: inherit; }
 .btn-tip:hover { background: #00bfa0; }
 .btn-skip { padding: 13px 22px; background: transparent; color: #b8cce0; border: 1.5px solid #2a3a50; border-radius: 9px; font-size: 0.9375rem; font-weight: 600; cursor: pointer; transition: border-color 0.2s, color 0.2s; font-family: inherit; }
@@ -1069,18 +1099,10 @@ a:hover { text-decoration: underline; }
       </div>
 
       <!-- Tip jar -->
-      <div class="tip-jar" id="tipJar">
-        <div class="tip-jar-title">☕ If WheelTheDeal helped you save money…</div>
-        <div class="tip-jar-text">
-          You can leave a tip to keep it free and independent.<br>No dealers. No ads. Just you.
-        </div>
-        <div class="tip-jar-actions" id="tipActions">
-          <button class="btn-tip" onclick="sendTip()">☕ Leave a tip</button>
-          <button class="btn-skip" onclick="skipTip()">Skip</button>
-        </div>
-        <div class="tip-thank-you" id="tipThankYou">
-          🙏 Thank you — you're keeping this tool alive and independent.
-        </div>
+      <div class="feedback-block" id="feedbackBlock">
+        <div class="feedback-block-title">Help us improve WheelTheDeal</div>
+        <div class="feedback-block-sub">Tell us what worked, what didn't, or what's missing.<br>Takes 30 seconds.</div>
+        <button class="btn-feedback-open" onclick="openFeedback()">Send feedback</button>
       </div>
 
     </div><!-- /resultContent -->
@@ -1633,6 +1655,7 @@ function checkDeal() {
       renderResult(data);
       document.getElementById('resultLoading').style.display = 'none';
       document.getElementById('resultContent').classList.remove('hidden');
+      showFeedbackFloat();
       track('signal_shown', { signal: data.signal });
     })
     .catch(() => {
@@ -2251,22 +2274,52 @@ function submitLeaseEmail() {
   track('lease_email_submitted', { email });
 }
 
-function sendTip() {
-  const data = state.reportData || {};
-  fetch('/tip-jar', {
-    method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ make: data.vehicle?.make || state.brand, model: data.vehicle?.model || state.model, signal: data.signal || '' }),
-  }).catch(() => {});
-  document.getElementById('tipActions').style.display = 'none';
-  document.getElementById('tipThankYou').style.display = 'block';
-  track('tip_clicked');
+// ── Feedback system ──────────────────────────────────────
+let feedbackRating = '';
+
+function openFeedback() {
+  document.getElementById('feedbackOverlay').classList.add('open');
+  document.getElementById('feedbackForm').style.display = '';
+  document.getElementById('feedbackThanks').style.display = 'none';
+  feedbackRating = '';
+  document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('active'));
+  track('feedback_opened');
 }
 
-function skipTip()  { document.getElementById('tipJar').style.display = 'none'; track('tip_skipped'); }
-function resetTipJar() {
-  document.getElementById('tipActions').style.display = '';
-  document.getElementById('tipThankYou').style.display = 'none';
-  document.getElementById('tipJar').style.display = '';
+function closeFeedback() {
+  document.getElementById('feedbackOverlay').classList.remove('open');
+}
+
+function closeFeedbackIfOutside(e) {
+  if (e.target === document.getElementById('feedbackOverlay')) closeFeedback();
+}
+
+function setRating(btn, val) {
+  feedbackRating = val;
+  document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function submitFeedback() {
+  const text  = (document.getElementById('feedbackText').value || '').trim();
+  const email = (document.getElementById('feedbackEmail').value || '').trim();
+  if (!feedbackRating && !text) { openFeedback(); return; }
+
+  // Log feedback (wire to backend/email later)
+  track('feedback_submitted', { rating: feedbackRating, hasText: !!text, hasEmail: !!email });
+  console.log('FEEDBACK:', { rating: feedbackRating, text, email });
+
+  document.getElementById('feedbackForm').style.display = 'none';
+  document.getElementById('feedbackThanks').style.display = '';
+  setTimeout(closeFeedback, 3000);
+}
+
+// Show floating button after result is shown
+function showFeedbackFloat() {
+  setTimeout(() => {
+    const el = document.getElementById('feedbackFloat');
+    if (el) el.style.display = '';
+  }, 4000); // show 4s after result
 }
 
 // ══════════════════════════════════════════════════════════
@@ -2349,6 +2402,53 @@ document.addEventListener('DOMContentLoaded', () => {
     <div class="footer-copy">© 2026 WheelTheDeal · 100% buyer-funded · No dealer leads</div>
   </div>
 </footer>
+
+<!-- Floating feedback button -->
+<div class="feedback-float" id="feedbackFloat" style="display:none;">
+  <button class="feedback-float-btn" onclick="openFeedback()">
+    <span>💬</span> Tell us what's missing
+  </button>
+</div>
+
+<!-- Feedback modal -->
+<div class="feedback-overlay" id="feedbackOverlay" onclick="closeFeedbackIfOutside(event)">
+  <div class="feedback-modal" id="feedbackModal">
+    <div id="feedbackForm">
+      <h3>Help us improve WheelTheDeal</h3>
+      <p>3 quick questions — your input shapes what we build next.</p>
+
+      <div class="feedback-question">
+        <label>Did this help you? *</label>
+        <div class="feedback-rating" id="ratingGroup">
+          <button class="rating-btn" onclick="setRating(this,'👍')">👍 Yes</button>
+          <button class="rating-btn" onclick="setRating(this,'👎')">👎 Not really</button>
+          <button class="rating-btn" onclick="setRating(this,'🤔')">🤔 Not sure yet</button>
+        </div>
+      </div>
+
+      <div class="feedback-question">
+        <label>What felt confusing or missing?</label>
+        <textarea class="feedback-textarea" id="feedbackText" placeholder="Anything that didn't make sense, felt unclear, or you wished was there…"></textarea>
+      </div>
+
+      <div class="feedback-question">
+        <label>Email (optional — if you'd like a reply)</label>
+        <input type="email" class="feedback-email-input" id="feedbackEmail" placeholder="your@email.com">
+      </div>
+
+      <div class="feedback-modal-actions">
+        <button class="btn-feedback-cancel" onclick="closeFeedback()">Cancel</button>
+        <button class="btn-feedback-submit" onclick="submitFeedback()">Send feedback →</button>
+      </div>
+    </div>
+
+    <div class="feedback-thanks" id="feedbackThanks" style="display:none;">
+      <div class="feedback-thanks-icon">🙏</div>
+      <h4>Thank you — genuinely.</h4>
+      <p>This is exactly what helps us build something people actually need.</p>
+    </div>
+  </div>
+</div>
 </body>
 </html>
 
