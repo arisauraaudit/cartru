@@ -152,6 +152,10 @@ a:hover { text-decoration: underline; }
   margin-bottom: 14px;
   letter-spacing: 0;
 }
+/* Brand logo */
+.brand-logo-img { width: 36px; height: 36px; object-fit: contain; display: block; }
+.brand-logo-fallback { font-size: 0.8rem; font-weight: 900; color: #fff; letter-spacing: 0.5px; }
+
 .brand-text-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -164,27 +168,30 @@ a:hover { text-decoration: underline; }
 .brand-text-btn {
   background: #0f1724;
   border: 1.5px solid #2a3a50;
-  border-radius: 8px;
-  padding: 11px 8px;
+  border-radius: 10px;
+  padding: 14px 8px 10px;
   text-align: center;
   cursor: pointer;
   transition: border-color 0.2s, color 0.2s, background 0.2s, opacity 0.25s, transform 0.15s;
-  font-size: 0.9375rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: #b8cce0;
   font-family: inherit;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  min-height: 80px;
+  justify-content: center;
 }
-.brand-text-btn:hover { border-color: #00d4aa; color: #00d4aa; transform: scale(1.02); }
+.brand-text-btn:hover { border-color: #00d4aa; color: #00d4aa; transform: scale(1.03); }
 .brand-text-btn.brand-selected {
   border-color: #00d4aa !important;
-  background: rgba(0,212,170,0.1) !important;
+  background: rgba(0,212,170,0.08) !important;
   color: #00d4aa !important;
   opacity: 1 !important;
 }
-.brand-text-btn.brand-inactive { opacity: 0.5; }
+.brand-text-btn.brand-inactive { opacity: 0.3; filter: grayscale(40%); }
 
 /* ── Model accordion ── */
 .model-row {
@@ -1125,27 +1132,30 @@ a:hover { text-decoration: underline; }
 // ══════════════════════════════════════════════════════════
 
 // Top 20 US brands by 2025 sales volume
+// Top 20 US brands by 2025 sales volume
+// Logos used nominatively for identification only — property of respective owners
+const CDN = 'https://cdn.simpleicons.org';
 const BRANDS = [
-  { name: 'Toyota' },
-  { name: 'Ford' },
-  { name: 'Chevrolet' },
-  { name: 'Honda' },
-  { name: 'Hyundai' },
-  { name: 'Nissan' },
-  { name: 'Kia' },
-  { name: 'GMC' },
-  { name: 'Subaru' },
-  { name: 'Jeep' },
-  { name: 'Tesla' },
-  { name: 'RAM' },
-  { name: 'Mazda' },
-  { name: 'BMW' },
-  { name: 'Lexus' },
-  { name: 'Volkswagen' },
-  { name: 'Buick' },
-  { name: 'Cadillac' },
-  { name: 'Audi' },
-  { name: 'Acura' },
+  { name: 'Toyota',     slug: 'toyota' },
+  { name: 'Ford',       slug: 'ford' },
+  { name: 'Chevrolet',  slug: 'chevrolet' },
+  { name: 'Honda',      slug: 'honda' },
+  { name: 'Hyundai',    slug: 'hyundai' },
+  { name: 'Nissan',     slug: 'nissan' },
+  { name: 'Kia',        slug: 'kia' },
+  { name: 'GMC',        slug: null },
+  { name: 'Subaru',     slug: 'subaru' },
+  { name: 'Jeep',       slug: 'jeep' },
+  { name: 'Tesla',      slug: 'tesla' },
+  { name: 'RAM',        slug: 'ram' },
+  { name: 'Mazda',      slug: 'mazda' },
+  { name: 'BMW',        slug: 'bmw' },
+  { name: 'Lexus',      slug: 'lexus' },
+  { name: 'Volkswagen', slug: 'volkswagen' },
+  { name: 'Buick',      slug: null },
+  { name: 'Cadillac',   slug: null },
+  { name: 'Audi',       slug: 'audi' },
+  { name: 'Acura',      slug: 'acura' },
 ];
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -1269,9 +1279,18 @@ function debounce(fn, delay) {
 function renderBrandGrid() {
   const grid = document.getElementById('brandGrid');
   if (!grid) return;
-  grid.innerHTML = BRANDS.map(b =>
-    `<button class="brand-text-btn" onclick="selectBrand('${escAttr(b.name)}')" id="brand-${escAttr(b.name.toLowerCase().replace(/\s+/g,'-'))}">${b.name}</button>`
-  ).join('');
+  grid.innerHTML = BRANDS.map(b => {
+    const id = 'brand-' + escAttr(b.name.toLowerCase().replace(/\s+/g, '-'));
+    const logoHtml = b.slug
+      ? `<img class="brand-logo-img" src="${CDN}/${b.slug}/FFFFFF" alt="${b.name}" loading="lazy"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+         <span class="brand-logo-fallback" style="display:none">${b.name.substring(0,3).toUpperCase()}</span>`
+      : `<span class="brand-logo-fallback">${b.name.substring(0,3).toUpperCase()}</span>`;
+    return `<button class="brand-text-btn" onclick="selectBrand('${escAttr(b.name)}')" id="${id}">
+      ${logoHtml}
+      <span>${b.name}</span>
+    </button>`;
+  }).join('');
 }
 
 function selectBrand(brand) {
