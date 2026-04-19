@@ -548,6 +548,14 @@ a:hover { text-decoration: underline; }
   transition: color 0.2s; font-family: inherit; text-decoration: underline; text-underline-offset: 3px;
 }
 .change-btn:hover { color: #b8cce0; }
+.copy-link-btn {
+  background: #1a2535; border: 1.5px solid #2a3a50; color: #b8cce0;
+  border-radius: 8px; padding: 8px 14px; font-size: 0.8rem; font-weight: 600;
+  cursor: pointer; font-family: inherit; transition: border-color 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+.copy-link-btn:hover { border-color: #00d4aa; color: #00d4aa; }
+.copy-link-btn.copied { border-color: #00d4aa; color: #00d4aa; }
 .edit-offer-btn {
   background: #1a2535; border: 1.5px solid #2a3a50; border-radius: 8px; padding: 8px 18px;
   color: #b8cce0; font-size: 0.875rem; font-weight: 600; cursor: pointer;
@@ -1058,7 +1066,10 @@ a:hover { text-decoration: underline; }
         <button class="change-btn" onclick="startOver()">← Start over</button>
         <div class="result-vehicle-label" id="resultVehicleLabel"></div>
       </div>
-      <button class="edit-offer-btn" onclick="editOffer()">✎ Edit deal</button>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button class="copy-link-btn" id="copyLinkBtn" onclick="copyShareLink()" title="Copy shareable link">🔗 Copy link</button>
+        <button class="edit-offer-btn" onclick="editOffer()">✎ Edit deal</button>
+      </div>
     </div>
 
     <!-- Loading -->
@@ -1688,6 +1699,131 @@ function prefillDownPayment(price) {
   updateDownPaymentBadge();
 }
 
+// ── Shareable URLs ────────────────────────────────────────
+function buildShareUrl() {
+  const params = new URLSearchParams();
+  if (state.brand)  params.set('make',  state.brand);
+  if (state.model)  params.set('model', state.model);
+  if (state.year)   params.set('year',  state.year);
+
+  const offer = document.getElementById('dealerOffer')?.value;
+  if (offer)        params.set('offer', offer);
+
+  const zip = document.getElementById('zipCode')?.value;
+  if (zip)          params.set('zip',   zip);
+
+  const apr = document.getElementById('aprInput')?.value;
+  if (apr)          params.set('apr',   apr);
+
+  params.set('term', state.loanTerm || DEFAULTS.loanTerm);
+
+  const down = document.getElementById('downPayment')?.value;
+  if (down)         params.set('down',  down);
+
+  return `${window.location.origin}/?${params.toString()}`;
+}
+
+function updateShareableUrl() {
+  const url = buildShareUrl();
+  window.history.replaceState({}, '', url);
+}
+
+function copyShareLink() {
+  const url = buildShareUrl();
+  const btn = document.getElementById('copyLinkBtn');
+  navigator.clipboard.writeText(url).then(() => {
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = '🔗 Copy link';
+      btn.classList.remove('copied');
+    }, 2000);
+    track('share_link_copied');
+  }).catch(() => {
+    // Fallback for older browsers
+    const ta = document.createElement('textarea');
+    ta.value = url; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => { btn.textContent = '🔗 Copy link'; }, 2000);
+  });
+}
+
+function loadFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const make  = params.get('make');
+  const model = params.get('model');
+  const year  = parseInt(params.get('year')) || (CURRENT_YEAR - 1);
+  const offer = params.get('offer');
+  const zip   = params.get('zip');
+  const apr   = params.get('apr');
+  const term  = parseInt(params.get('term'));
+  const down  = params.get('down');
+
+  if (!make || !model) return; // nothing to load
+
+  // Set state
+  state.brand = make;
+  state.model = model;
+  state.year  = year;
+  if (term)  state.loanTerm = term;
+  if (apr)   state.apr = parseFloat(apr);
+
+  // Set year toggle UI
+  document.querySelectorAll('.year-btn').forEach(b => {
+    b.classList.toggle('active', parseInt(b.dataset.year) === year);
+  });
+
+  // Highlight brand (select the matching brand button if visible)
+  renderBrandGrid();
+  const brandId = 'brand-' + make.toLowerCase().replace(/\s+/g, '-');
+  const brandBtn = document.getElementById(brandId);
+  if (brandBtn) {
+    brandBtn.classList.add('brand-selected');
+    document.querySelectorAll('.brand-text-btn').forEach(b => {
+      if (b !== brandBtn) b.classList.add('brand-inactive');
+    });
+  }
+
+  // Show model row
+  const modelRow = document.getElementById('modelRow');
+  if (modelRow) modelRow.classList.add('open');
+
+  // Load models and select the right one
+  state.msrpEstimate = estimateMsrp(make, model);
+  state.rangeEstimate = msrpToRange(state.msrpEstimate);
+
+  // Show deal section
+  populateDealSection();
+  openSection('dealSection');
+
+  // Fill in values
+  if (offer) document.getElementById('dealerOffer').value = offer;
+  if (zip)   document.getElementById('zipCode').value = zip;
+  if (down)  { document.getElementById('downPayment').value = down; window._downPayment = parseFloat(down); }
+  if (apr) {
+    document.getElementById('aprInput').value = apr;
+    // Set matching credit tier
+    const aprF = parseFloat(apr);
+    document.querySelectorAll('.credit-pill').forEach(b => {
+      b.classList.toggle('active', parseFloat(b.dataset.apr) === aprF);
+    });
+  }
+  if (term) {
+    document.querySelectorAll('.term-pill').forEach(b => {
+      b.classList.toggle('selected', parseInt(b.dataset.term) === term);
+    });
+  }
+
+  // Auto-run the report
+  setTimeout(() => {
+    checkDeal();
+    track('loaded_from_url', { make, model, year });
+  }, 200);
+}
+
 // ── FAQ toggle ────────────────────────────────────────────
 function toggleFaq(btn) {
   const answer = btn.nextElementSibling;
@@ -1876,6 +2012,7 @@ function checkDeal() {
       }
       document.getElementById('resultLoading').style.display = 'none';
       document.getElementById('resultContent').classList.remove('hidden');
+      updateShareableUrl();
       showFeedbackFloat();
       track('signal_shown', { signal: data.signal });
     })
@@ -2589,6 +2726,9 @@ function escAttr(s) { return (s || '').replace(/'/g, "\\'").replace(/"/g, '&quot
 document.addEventListener('DOMContentLoaded', () => {
   renderBrandGrid();
   renderYearToggle();
+
+  // Load from URL params if present (shareable link)
+  if (window.location.search) loadFromUrl();
 
   // Dealer offer → live signal + glance (debounced)
   document.getElementById('dealerOffer').addEventListener('input', () => {
