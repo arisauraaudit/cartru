@@ -42,17 +42,29 @@ a:hover { text-decoration: underline; }
   text-align: center;
 }
 .wordmark {
-  display: inline-flex;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 18px;
+  gap: 8px;
+  margin-bottom: 20px;
+  position: relative;
+}
+.wordmark-icon {
+  opacity: 0.18;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
 }
 .wordmark-text {
-  font-size: 1.6rem;
-  font-weight: 800;
+  font-size: 2.2rem;
+  font-weight: 900;
   color: #fff;
-  letter-spacing: -0.5px;
+  letter-spacing: -1px;
   line-height: 1;
+  position: relative;
+  z-index: 1;
 }
 .site-header h1 {
   font-size: 2.25rem;
@@ -749,15 +761,12 @@ a:hover { text-decoration: underline; }
   <!-- ── Header ── -->
   <header class="site-header" id="siteHeader">
     <div class="wordmark">
-      <!-- Steering wheel SVG — 3-spoke, all teal, inline -->
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <!-- Large wheel icon, ghosted behind the text -->
+      <svg class="wordmark-icon" width="120" height="120" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <circle cx="16" cy="16" r="13" stroke="#00d4aa" stroke-width="2.5" fill="none"/>
         <circle cx="16" cy="16" r="4" fill="#00d4aa"/>
-        <!-- Spoke: top (12 o'clock) -->
         <line x1="16" y1="12" x2="16" y2="3" stroke="#00d4aa" stroke-width="2.2" stroke-linecap="round"/>
-        <!-- Spoke: bottom-left (7–8 o'clock) -->
         <line x1="12.5" y1="18.5" x2="5.2" y2="23" stroke="#00d4aa" stroke-width="2.2" stroke-linecap="round"/>
-        <!-- Spoke: bottom-right (4–5 o'clock) -->
         <line x1="19.5" y1="18.5" x2="26.8" y2="23" stroke="#00d4aa" stroke-width="2.2" stroke-linecap="round"/>
       </svg>
       <span class="wordmark-text">WheelTheDeal</span>
@@ -2400,13 +2409,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <footer class="site-footer">
   <div class="page">
-    <div class="footer-love">Built with love ❤️ for buyers, not dealers.<br>
-      <span style="font-size:0.82rem;color:#4a6070;">— Max &amp; Aris</span>
+    <div class="footer-love">Built ❤️ for buyers, not dealers.<br>
+      <span style="font-size:0.82rem;color:#4a6070;">— A &amp; M</span>
     </div>
     <div class="footer-links">
       <a href="mailto:hello@wheelthedeal.com" class="footer-link">Contact</a>
-      <a href="#" class="footer-link">X / Twitter</a>
-      <a href="#" class="footer-link">Instagram</a>
     </div>
     <div class="footer-legal">
       WheelTheDeal is an independent service and is not affiliated with, sponsored by, or endorsed by any automobile manufacturer, dealer group, or third-party marketplace. All product names, brands, and trademarks are property of their respective owners and are used for identification purposes only.
@@ -2440,7 +2447,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       <div class="feedback-question">
         <label>What felt confusing or missing?</label>
-        <textarea class="feedback-textarea" id="feedbackText" placeholder="Anything that didn't make sense, felt unclear, or you wished was there…"></textarea>
+        <textarea class="feedback-textarea" id="feedbackText" style="color:#eef2f7;" placeholder="Anything that didn't make sense, felt unclear, or you wished was there…"></textarea>
       </div>
 
       <div class="feedback-question">
