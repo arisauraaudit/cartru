@@ -704,13 +704,13 @@ a:hover { text-decoration: underline; }
 /* Feedback modal */
 .feedback-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 300; align-items: center; justify-content: center; padding: 20px; }
 .feedback-overlay.open { display: flex; }
-.feedback-modal { background: #1a2535; border-radius: 16px; padding: 32px; max-width: 440px; width: 100%; border: 1.5px solid #2a3a50; }
+.feedback-modal { background: #1a2535; border-radius: 16px; padding: 32px; max-width: 440px; width: 100%; border: 1.5px solid #2a3a50; color: #eef2f7; }
 .feedback-modal h3 { font-size: 1.1rem; font-weight: 800; color: #eef2f7; margin-bottom: 6px; }
 .feedback-modal p { font-size: 0.9rem; color: #eef2f7; margin-bottom: 24px; line-height: 1.6; }
 .feedback-question { margin-bottom: 20px; }
 .feedback-question label { display: block; font-size: 0.875rem; font-weight: 600; color: #eef2f7; margin-bottom: 8px; }
 .feedback-rating { display: flex; gap: 8px; }
-.rating-btn { background: #0f1724; border: 1.5px solid #2a3a50; border-radius: 8px; padding: 8px 14px; font-size: 1rem; cursor: pointer; transition: border-color 0.15s; }
+.rating-btn { background: #1a2535; border: 1.5px solid #2a3a50; border-radius: 8px; padding: 8px 14px; font-size: 1rem; cursor: pointer; transition: border-color 0.15s; color: #eef2f7; font-family: inherit; }
 .rating-btn:hover, .rating-btn.active { border-color: #00d4aa; }
 .feedback-textarea { width: 100%; background: #1a2535; border: 1.5px solid #2a3a50; border-radius: 8px; padding: 10px 14px; color: #eef2f7; -webkit-text-fill-color: #eef2f7; font-size: 0.9rem; font-family: inherit; resize: vertical; min-height: 80px; }
 .feedback-textarea:focus { outline: none; border-color: #00d4aa; }
@@ -2488,7 +2488,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       <div class="feedback-question">
         <label>What felt confusing or missing?</label>
-        <textarea class="feedback-textarea" id="feedbackText" style="color:#eef2f7;" placeholder="Anything that didn't make sense, felt unclear, or you wished was there…"></textarea>
+        <textarea class="feedback-textarea" id="feedbackText" style="color:#eef2f7 !important;-webkit-text-fill-color:#eef2f7 !important;background:#1a2535 !important;" placeholder="Anything that didn't make sense, felt unclear, or you wished was there…"></textarea>
       </div>
 
       <div class="feedback-question">
