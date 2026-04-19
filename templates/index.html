@@ -712,10 +712,17 @@ a:hover { text-decoration: underline; }
 .feedback-rating { display: flex; gap: 8px; }
 .rating-btn { background: #0f1724; border: 1.5px solid #2a3a50; border-radius: 8px; padding: 8px 14px; font-size: 1rem; cursor: pointer; transition: border-color 0.15s; }
 .rating-btn:hover, .rating-btn.active { border-color: #00d4aa; }
-.feedback-textarea { width: 100%; background: #0f1724; border: 1.5px solid #2a3a50; border-radius: 8px; padding: 10px 14px; color: #eef2f7; font-size: 0.9rem; font-family: inherit; resize: vertical; min-height: 80px; }
+.feedback-textarea { width: 100%; background: #1a2535; border: 1.5px solid #2a3a50; border-radius: 8px; padding: 10px 14px; color: #eef2f7; -webkit-text-fill-color: #eef2f7; font-size: 0.9rem; font-family: inherit; resize: vertical; min-height: 80px; }
 .feedback-textarea:focus { outline: none; border-color: #00d4aa; }
-.feedback-email-input { width: 100%; background: #0f1724; border: 1.5px solid #2a3a50; border-radius: 8px; padding: 10px 14px; color: #eef2f7; font-size: 0.9rem; font-family: inherit; }
+.feedback-email-input { width: 100%; background: #1a2535; border: 1.5px solid #2a3a50; border-radius: 8px; padding: 10px 14px; color: #eef2f7; -webkit-text-fill-color: #eef2f7; font-size: 0.9rem; font-family: inherit; }
 .feedback-email-input:focus { outline: none; border-color: #00d4aa; }
+.feedback-email-input:-webkit-autofill,
+.feedback-email-input:-webkit-autofill:hover,
+.feedback-email-input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px #1a2535 inset;
+  -webkit-text-fill-color: #eef2f7;
+  border-color: #2a3a50;
+}
 .feedback-modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
 .btn-feedback-submit { background: #00d4aa; color: #0f1724; border: none; border-radius: 8px; padding: 10px 24px; font-size: 0.9375rem; font-weight: 700; cursor: pointer; font-family: inherit; }
 .btn-feedback-cancel { background: none; border: 1.5px solid #2a3a50; color: #b8cce0; border-radius: 8px; padding: 10px 20px; font-size: 0.9375rem; cursor: pointer; font-family: inherit; }
