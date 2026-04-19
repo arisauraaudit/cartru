@@ -114,6 +114,28 @@ a:hover { text-decoration: underline; }
 }
 
 /* ── Selection section ── */
+/* How it works */
+.how-it-works { margin-bottom: 12px; }
+.hiw-steps { display: flex; align-items: flex-start; gap: 8px; flex-wrap: wrap; }
+.hiw-step { flex: 1; min-width: 160px; display: flex; gap: 12px; align-items: flex-start; background: #1a2535; border-radius: 10px; padding: 16px 14px; }
+.hiw-num { width: 28px; height: 28px; border-radius: 50%; background: rgba(0,212,170,0.15); color: #00d4aa; font-size: 0.875rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.hiw-text { font-size: 0.875rem; color: #b8cce0; line-height: 1.55; }
+.hiw-text strong { display: block; color: #eef2f7; font-weight: 700; margin-bottom: 3px; font-size: 0.9rem; }
+.hiw-divider { color: #2a3a50; font-size: 1.2rem; align-self: center; flex-shrink: 0; padding-top: 2px; }
+@media (max-width: 600px) { .hiw-divider { display: none; } .hiw-step { min-width: 100%; } }
+
+/* FAQ */
+.faq-section { margin-bottom: 12px; }
+.faq-item { border-bottom: 1px solid #1e2d3d; }
+.faq-item:last-child { border-bottom: none; }
+.faq-q { width: 100%; background: none; border: none; padding: 14px 0; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-family: inherit; font-size: 0.9375rem; font-weight: 600; color: #eef2f7; text-align: left; gap: 12px; }
+.faq-q:hover { color: #00d4aa; }
+.faq-arrow { color: #8499b0; font-size: 0.875rem; transition: transform 0.2s; flex-shrink: 0; }
+.faq-q.open .faq-arrow { transform: rotate(180deg); color: #00d4aa; }
+.faq-a { display: none; padding: 0 0 16px; font-size: 0.9rem; color: #b8cce0; line-height: 1.65; }
+.faq-a a { color: #00d4aa; }
+.faq-a.open { display: block; }
+
 .selection-section {
   background: #1a2535;
   border: 1.5px solid #2a3a50;
@@ -807,6 +829,83 @@ a:hover { text-decoration: underline; }
     <p>Check if your dealer's offer is fair — free, on your side.</p>
     <div class="trust-badge">100% buyer-funded · No dealer leads · No ads</div>
   </header>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- How it works                              -->
+  <!-- ══════════════════════════════════════════ -->
+  <section class="how-it-works">
+    <div class="hiw-steps">
+      <div class="hiw-step">
+        <div class="hiw-num">1</div>
+        <div class="hiw-text">
+          <strong>Enter your vehicle + deal</strong>
+          Pick brand, model, and what the dealer is asking.
+        </div>
+      </div>
+      <div class="hiw-divider">→</div>
+      <div class="hiw-step">
+        <div class="hiw-num">2</div>
+        <div class="hiw-text">
+          <strong>We run the numbers</strong>
+          Finance math + NHTSA recall data + regional market signals.
+        </div>
+      </div>
+      <div class="hiw-divider">→</div>
+      <div class="hiw-step">
+        <div class="hiw-num">3</div>
+        <div class="hiw-text">
+          <strong>Get your verdict</strong>
+          Looks Fair, Push Back, or High Risk — with a breakdown and what to say.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- FAQ                                        -->
+  <!-- ══════════════════════════════════════════ -->
+  <section class="faq-section">
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Is this really free? <span class="faq-arrow">↓</span>
+      </button>
+      <div class="faq-a">
+        Yes, completely. No signup, no credit card, no trial period. We built this because we got burned at dealerships and wanted a tool that actually worked for buyers. You pay nothing.
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Are you selling my info to dealers? <span class="faq-arrow">↓</span>
+      </button>
+      <div class="faq-a">
+        No. We don't sell leads. We don't take dealer money. We don't run dealer ads. The vehicle info you enter is used only to generate your report — it's not stored, shared, or sold. Ever.
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        How do you make money? <span class="faq-arrow">↓</span>
+      </button>
+      <div class="faq-a">
+        Right now, we don't. We're proving the tool is useful before thinking about monetization. If we ever charge for anything, it'll be a buyer-side upgrade — never dealer-funded. No ads, no sponsored results, no lead fees. That's a promise.
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Where does the data come from? <span class="faq-arrow">↓</span>
+      </button>
+      <div class="faq-a">
+        Fuel economy and vehicle data: US Department of Energy (fueleconomy.gov). Recall and safety data: NHTSA (nhtsa.gov). Pricing estimates: industry averages and regional market signals — clearly labeled as estimates, not exact transaction data.
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Who built WheelTheDeal? <span class="faq-arrow">↓</span>
+      </button>
+      <div class="faq-a">
+        Two people who got tired of watching buyers get outmaneuvered at dealerships. One human, one AI — working together to level the playing field. Questions or feedback: <a href="mailto:hello@wheelthedeal.com">hello@wheelthedeal.com</a>
+      </div>
+    </div>
+  </section>
 
   <!-- ══════════════════════════════════════════ -->
   <!-- Selection: Year + Brand + Model           -->
@@ -1627,6 +1726,21 @@ function prefillDownPayment(price) {
   dpEl.value = suggested;
   window._downPayment = suggested;
   updateDownPaymentBadge();
+}
+
+// ── FAQ toggle ────────────────────────────────────────────
+function toggleFaq(btn) {
+  const answer = btn.nextElementSibling;
+  const isOpen = answer.classList.contains('open');
+  // Close all
+  document.querySelectorAll('.faq-a').forEach(a => a.classList.remove('open'));
+  document.querySelectorAll('.faq-q').forEach(q => q.classList.remove('open'));
+  // Open clicked if it was closed
+  if (!isOpen) {
+    answer.classList.add('open');
+    btn.classList.add('open');
+  }
+  track('faq_toggled', { question: btn.textContent.trim().substring(0, 40) });
 }
 
 function selectCreditTier(btn) {
