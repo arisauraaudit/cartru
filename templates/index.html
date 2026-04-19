@@ -829,6 +829,337 @@ a:hover { text-decoration: underline; }
 
 /* ── Utility ── */
 .hidden { display: none !important; }
+
+/* ══════════════════════════════════════════════
+   NEW: Verdict-first card-based result layout
+   ══════════════════════════════════════════════ */
+
+/* ── Hero verdict card ── */
+.hero-verdict-card {
+  background: #1a2535;
+  border: 1.5px solid #2a3a50;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.hero-verdict-card.signal-green {
+  background: rgba(0,212,170,0.04);
+  border-color: rgba(0,212,170,0.4);
+}
+.hero-verdict-card.signal-yellow {
+  background: rgba(245,158,11,0.04);
+  border-color: rgba(245,158,11,0.4);
+}
+.hero-verdict-card.signal-red {
+  background: rgba(239,68,68,0.04);
+  border-color: rgba(239,68,68,0.4);
+}
+
+/* Override signal-block when inside hero card */
+#heroVerdictCard .signal-block {
+  border: none !important;
+  background: none !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  padding: 28px 24px 20px !important;
+  gap: 14px;
+}
+#heroVerdictCard .signal-name {
+  font-size: 2.5rem !important;
+  font-weight: 900 !important;
+  letter-spacing: -1px !important;
+  line-height: 1 !important;
+  margin-bottom: 8px !important;
+}
+#heroVerdictCard .signal-icon {
+  font-size: 2.2rem !important;
+  line-height: 1 !important;
+}
+#heroVerdictCard #signalExplanation {
+  display: none !important;
+}
+
+.hero-monthly-cost {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #b8cce0;
+  margin-top: 2px;
+  line-height: 1.5;
+}
+
+.hero-first-reason {
+  padding: 14px 24px;
+  font-size: 0.95rem;
+  color: #b8cce0;
+  line-height: 1.65;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.hero-first-reason .hfr-arrow {
+  color: #00d4aa;
+  font-weight: 900;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.hero-first-reason.hidden { display: none !important; }
+
+.hero-say-block {
+  padding: 16px 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.hero-say-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: rgba(0,212,170,0.7);
+  margin-bottom: 7px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+#heroVerdictCard #whatToSayText {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #eef2f7;
+  line-height: 1.6;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 24px;
+  flex-wrap: wrap;
+}
+
+/* ── Dimension cards grid ── */
+.dimension-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+@media (max-width: 600px) {
+  .dimension-cards-grid { grid-template-columns: 1fr; }
+}
+
+.dim-card {
+  background: #1a2535;
+  border: 1.5px solid #2a3a50;
+  border-radius: 14px;
+  padding: 22px 24px;
+}
+
+.dim-card-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #8499b0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 16px;
+}
+
+.dim-big-number {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #eef2f7;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.dim-card-sub {
+  font-size: 0.8rem;
+  color: #8499b0;
+  margin-bottom: 14px;
+}
+
+/* Market position card */
+.dim-range-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.dim-range-numbers {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #eef2f7;
+}
+.dim-source-note {
+  font-size: 0.775rem;
+  color: #8499b0;
+  margin-top: 10px;
+  line-height: 1.5;
+}
+
+/* Financing reality card */
+.dim-finance-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  font-size: 0.875rem;
+  color: #b8cce0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.dim-finance-row:last-child { border-bottom: none; }
+.dim-finance-val {
+  font-weight: 700;
+  color: #eef2f7;
+}
+
+/* Safety record card */
+.dim-recall-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 99px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.dim-recall-badge.recall-clean { background: rgba(0,212,170,0.15); color: #00d4aa; }
+.dim-recall-badge.recall-warn  { background: rgba(245,158,11,0.15); color: #f59e0b; }
+.dim-recall-badge.recall-risk  { background: rgba(239,68,68,0.15);  color: #ef4444; }
+
+.dim-recall-item {
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  line-height: 1.4;
+}
+.dim-recall-item:last-child { border-bottom: none; }
+.dim-recall-item-component {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #ef4444;
+}
+
+/* Ownership cost card */
+.dim-ownership-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  font-size: 0.875rem;
+  color: #b8cce0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.dim-ownership-row:last-child { border-bottom: none; }
+.dim-ownership-val {
+  font-weight: 700;
+  color: #eef2f7;
+}
+
+/* ── Term trap warning block ── */
+.term-trap-warning {
+  background: rgba(245,158,11,0.05);
+  border: 1.5px solid rgba(245,158,11,0.35);
+  border-radius: 14px;
+  padding: 22px 24px;
+  margin-bottom: 20px;
+}
+
+.ttw-header {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #f59e0b;
+  margin-bottom: 8px;
+}
+
+.ttw-summary {
+  font-size: 0.9rem;
+  color: #b8cce0;
+  line-height: 1.65;
+  margin-bottom: 16px;
+}
+
+.ttw-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.ttw-col {
+  background: rgba(0,0,0,0.15);
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.ttw-col-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #8499b0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.ttw-col-val {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #eef2f7;
+  margin-bottom: 4px;
+}
+
+.ttw-col-sub {
+  font-size: 0.8rem;
+  color: #8499b0;
+  line-height: 1.4;
+}
+
+.ttw-expand-btn {
+  background: none;
+  border: none;
+  color: #f59e0b;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  opacity: 0.85;
+  transition: opacity 0.2s;
+}
+.ttw-expand-btn:hover { opacity: 1; }
+
+/* ── Full breakdown toggle ── */
+.full-breakdown-toggle {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.view-breakdown-btn {
+  background: #1a2535;
+  border: 1.5px solid #2a3a50;
+  color: #8499b0;
+  border-radius: 10px;
+  padding: 12px 32px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.2s, color 0.2s;
+}
+.view-breakdown-btn:hover { border-color: #00d4aa; color: #b8cce0; }
+.view-breakdown-btn.open { color: #8499b0; border-color: #2a3a50; }
+
+/* ── Full breakdown collapsible panel ── */
+.full-breakdown-panel {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.65s ease-out, opacity 0.45s ease-out;
+}
+.full-breakdown-panel.open {
+  max-height: 30000px;
+  opacity: 1;
+}
 </style>
 </head>
 <body>
@@ -1066,10 +1397,6 @@ a:hover { text-decoration: underline; }
         <button class="change-btn" onclick="startOver()">← Start over</button>
         <div class="result-vehicle-label" id="resultVehicleLabel"></div>
       </div>
-      <div style="display:flex;gap:8px;align-items:center;">
-        <button class="copy-link-btn" id="copyLinkBtn" onclick="copyShareLink()" title="Copy shareable link">🔗 Copy link</button>
-        <button class="edit-offer-btn" onclick="editOffer()">✎ Edit deal</button>
-      </div>
     </div>
 
     <!-- Loading -->
@@ -1078,165 +1405,280 @@ a:hover { text-decoration: underline; }
     <!-- Result content -->
     <div id="resultContent" class="hidden">
 
-      <!-- Signal badge -->
-      <div id="signalBlock" class="signal-block green">
-        <div class="signal-icon" id="signalIcon">🟢</div>
-        <div class="signal-body">
-          <div class="signal-name" id="signalName">LOOKS FAIR</div>
-          <div class="signal-explanation" id="signalExplanation"></div>
-        </div>
-      </div>
+      <!-- ─────────────────────────────────────── -->
+      <!-- 1. HERO VERDICT CARD                    -->
+      <!-- ─────────────────────────────────────── -->
+      <div class="hero-verdict-card" id="heroVerdictCard">
 
-      <!-- Market range bar -->
-      <div class="range-block">
-        <div class="range-block-title" id="rangeTitle">Market range</div>
-        <div class="range-numbers-row">
-          <div class="range-numbers" id="rangeNumbers"></div>
-          <div class="offer-delta-pill" id="offerDelta"></div>
-        </div>
-        <div class="range-bar-wrap">
-          <div class="range-bar-fill" id="rangeBarFill"></div>
-          <div class="range-bar-marker" id="rangeBarMarker"></div>
-        </div>
-        <div class="range-bar-labels" id="rangeBarLabels"></div>
-        <div class="range-disclaimer" id="rangeDisclaimer"></div>
-      </div>
-
-      <!-- Top reasons -->
-      <div class="reasons-block">
-        <div class="block-title">Why this signal</div>
-        <div id="reasonsList"></div>
-      </div>
-
-      <!-- What to say -->
-      <div class="say-block">
-        <div class="say-label">💬 What to say next</div>
-        <div class="say-text" id="whatToSayText"></div>
-      </div>
-
-      <!-- OTD breakdown -->
-      <div class="section">
-        <div class="section-header" onclick="toggleSection('otd')">
-          <div class="section-title"><span class="section-icon">📋</span> Full Out-the-Door Breakdown</div>
-          <div class="section-chevron open" id="chevron-otd">▼</div>
-        </div>
-        <div class="section-body" id="body-otd">
-          <table class="otd-table" id="otdTable"></table>
-          <div class="otd-note">* Taxes and registration vary by state — estimate only.</div>
-        </div>
-      </div>
-
-      <!-- Term Trap Detector -->
-      <div class="term-trap-block" id="termTrapBlock">
-        <div class="term-trap-title">🪤 The Term Trap — See What Dealers Hide</div>
-        <div class="term-trap-subtitle">Dealers extend loan terms to lower monthly payments — hiding thousands in extra interest.</div>
-        <div class="term-table-scroll">
-          <table class="term-table" id="termTable"></table>
-        </div>
-        <div class="term-trap-summary" id="termTrapSummary"></div>
-        <div class="interest-bars">
-          <div class="interest-bars-title">Total interest paid by term</div>
-          <div id="interestBars"></div>
-        </div>
-      </div>
-
-      <!-- Ownership cost section -->
-      <div class="ownership-section" id="ownershipSection">
-        <div class="ownership-title" id="ownershipTitle">N-Year Cost of Ownership</div>
-        <div class="ownership-context" id="ownershipContext"></div>
-
-        <div class="monthly-breakdown">
-          <div class="monthly-breakdown-title">Monthly budget</div>
-          <div class="monthly-line"><span class="ml-label">Loan payment</span><span class="ml-value" id="own-monthly-payment">—</span></div>
-          <div class="monthly-line"><span class="ml-label" id="own-fuel-label">Monthly fuel</span><span class="ml-value" id="own-monthly-fuel">—</span></div>
-          <div class="monthly-line"><span class="ml-label">Insurance (est.)</span><span class="ml-value" id="own-monthly-ins">~$142</span></div>
-          <div class="monthly-line"><span class="ml-label">Maintenance (est.)</span><span class="ml-value" id="own-monthly-maint">—</span></div>
-          <hr class="monthly-divider">
-          <div class="monthly-total-line"><span>Total monthly all-in</span><span class="ml-value" id="own-monthly-total">—</span></div>
-        </div>
-
-        <div class="ownership-annuals">
-          <div class="ownership-stat">
-            <div class="ownership-stat-value" id="own-annual-total">—</div>
-            <div class="ownership-stat-label">Annual total cost</div>
-          </div>
-          <div class="ownership-stat">
-            <div class="ownership-stat-value" id="own-term-total">—</div>
-            <div class="ownership-stat-label" id="own-term-total-label">Total over loan term</div>
+        <!-- Signal block sits inside hero card -->
+        <div id="signalBlock" class="signal-block green">
+          <div class="signal-icon" id="signalIcon">🟢</div>
+          <div class="signal-body">
+            <div class="signal-name" id="signalName">LOOKS FAIR</div>
+            <div class="signal-explanation" id="signalExplanation"></div>
+            <!-- Monthly cost line rendered by JS -->
+            <div class="hero-monthly-cost" id="heroMonthlyCost"></div>
           </div>
         </div>
 
-        <table class="cost-breakdown-table" id="costBreakdownTable"></table>
-        <div class="cost-note" id="costNote"></div>
+        <!-- First reason (populated by renderHeroExtras) -->
+        <div class="hero-first-reason hidden" id="heroFirstReason">
+          <span class="hfr-arrow">→</span>
+          <span id="heroFirstReasonText"></span>
+        </div>
+
+        <!-- What to say block inside hero -->
+        <div class="hero-say-block" id="whatToSayBox">
+          <div class="hero-say-label">💬 What to say next</div>
+          <!-- whatToSayText populated by renderWhatToSay -->
+          <div class="say-text" id="whatToSayText"></div>
+        </div>
+
+        <!-- Hero actions row -->
+        <div class="hero-actions">
+          <button class="copy-link-btn" id="copyLinkBtn" onclick="copyShareLink()" title="Copy shareable link">🔗 Copy link</button>
+          <button class="edit-offer-btn" onclick="editOffer()">✎ Edit deal</button>
+        </div>
       </div>
 
-      <!-- Fee & add-on review -->
-      <div class="section">
-        <div class="section-header" onclick="toggleSection('fees')">
-          <div class="section-title"><span class="section-icon">🔍</span> Fee &amp; Add-On Review</div>
-          <div class="section-chevron open" id="chevron-fees">▼</div>
-        </div>
-        <div class="section-body" id="body-fees"></div>
-      </div>
+      <!-- ─────────────────────────────────────── -->
+      <!-- 2. DIMENSION CARDS (2-column grid)      -->
+      <!-- ─────────────────────────────────────── -->
+      <div class="dimension-cards-grid">
 
-      <!-- Negotiation script -->
-      <div class="section">
-        <div class="section-header" onclick="toggleSection('script')">
-          <div class="section-title"><span class="section-icon">🗣️</span> Negotiation Script</div>
-          <div class="section-chevron open" id="chevron-script">▼</div>
-        </div>
-        <div class="section-body" id="body-script"></div>
-      </div>
+        <!-- Card 1: Market Position -->
+        <div class="dim-card">
+          <div class="dim-card-title">📍 Market Position</div>
 
-      <!-- Vehicle details (nested) -->
-      <div class="section">
-        <div class="section-header" onclick="toggleSection('vehicle')">
-          <div class="section-title"><span class="section-icon">🚗</span> Vehicle Details</div>
-          <div class="section-chevron open" id="chevron-vehicle">▼</div>
-        </div>
-        <div class="section-body" id="body-vehicle">
-
-          <!-- Fuel economy -->
-          <div class="section" style="background:#0f1724;margin-bottom:10px;">
-            <div class="section-header" onclick="toggleSection('fuel')" style="padding:14px 18px;">
-              <div class="section-title" style="font-size:1rem;">⛽ Fuel Economy</div>
-              <div class="section-chevron" id="chevron-fuel">▼</div>
+          <!-- Range numbers (populated by renderRange) -->
+          <div class="dim-range-display">
+            <div>
+              <div class="dim-big-number" id="dimOfferDeltaNumber"></div>
+              <div class="dim-card-sub" id="dimOfferDeltaSub"></div>
             </div>
-            <div class="section-body hidden" id="body-fuel" style="padding:0 18px 18px;"></div>
+            <div class="offer-delta-pill" id="offerDelta"></div>
           </div>
 
-          <!-- NHTSA Recalls -->
-          <div class="section" style="background:#0f1724;margin-bottom:10px;">
-            <div class="section-header" onclick="toggleSection('recalls')" style="padding:14px 18px;">
-              <div class="section-title" style="font-size:1rem;">🔔 NHTSA Recalls</div>
-              <div class="section-chevron" id="chevron-recalls">▼</div>
+          <!-- Range bar (reuse existing IDs) -->
+          <div class="range-bar-wrap" style="margin: 12px 0 10px;">
+            <div class="range-bar-fill" id="rangeBarFill"></div>
+            <div class="range-bar-marker" id="rangeBarMarker"></div>
+          </div>
+          <div class="range-bar-labels" id="rangeBarLabels"></div>
+
+          <!-- Hidden IDs renderRange still writes to (kept for compatibility, not shown) -->
+          <div style="display:none">
+            <div id="rangeTitle"></div>
+            <div id="rangeNumbers"></div>
+            <div id="rangeDisclaimer"></div>
+          </div>
+
+          <div class="dim-source-note" id="dimSourceNote">Regional estimate</div>
+        </div>
+
+        <!-- Card 2: Financing Reality -->
+        <div class="dim-card">
+          <div class="dim-card-title">💰 Financing Reality</div>
+          <div class="dim-big-number" id="dimMonthlyPayment">—</div>
+          <div class="dim-card-sub">monthly payment</div>
+          <div class="dim-finance-row">
+            <span>Total interest</span>
+            <span class="dim-finance-val" id="dimTotalInterest">—</span>
+          </div>
+          <div class="dim-finance-row">
+            <span>Amount financed</span>
+            <span class="dim-finance-val" id="dimFinancedAmount">—</span>
+          </div>
+          <div class="dim-finance-row">
+            <span>APR · Credit tier</span>
+            <span class="dim-finance-val" id="dimAprTier">—</span>
+          </div>
+        </div>
+
+        <!-- Card 3: Safety Record -->
+        <div class="dim-card">
+          <div class="dim-card-title">🔔 Safety Record</div>
+          <div id="dimRecallBadge" class="dim-recall-badge recall-clean">✓ No open recalls</div>
+          <div id="dimRecallList"></div>
+          <!-- body-recalls kept accessible for renderRecalls (hidden detail) -->
+          <div style="display:none" id="body-recalls"></div>
+          <!-- hidden chevron stub (renderRecalls writes to it) -->
+          <div style="display:none" id="chevron-recalls"></div>
+        </div>
+
+        <!-- Card 4: Ownership Cost -->
+        <div class="dim-card">
+          <div class="dim-card-title" id="dimOwnershipTitle">📆 True Cost</div>
+          <div class="dim-big-number" id="dimMonthlyAllIn">—</div>
+          <div class="dim-card-sub">/mo all-in (payment + fuel + insurance + maint.)</div>
+          <div class="dim-ownership-row">
+            <span>Annual fuel cost</span>
+            <span class="dim-ownership-val" id="dimAnnualFuel">—</span>
+          </div>
+          <div class="dim-ownership-row">
+            <span>Depreciation est.</span>
+            <span class="dim-ownership-val" id="dimDepreciation">—</span>
+          </div>
+          <div class="dim-ownership-row">
+            <span id="dimTermTotalLabel">Total over loan term</span>
+            <span class="dim-ownership-val" id="dimTermTotal">—</span>
+          </div>
+        </div>
+
+      </div><!-- /dimension-cards-grid -->
+
+      <!-- ─────────────────────────────────────── -->
+      <!-- 3. TERM TRAP WARNING (conditional)      -->
+      <!-- ─────────────────────────────────────── -->
+      <div class="term-trap-warning hidden" id="termTrapWarningBlock">
+        <div class="ttw-header">⚠️ Long-term loan alert</div>
+        <div class="ttw-summary" id="ttwSummaryText"></div>
+        <div class="ttw-comparison" id="ttwComparison"></div>
+        <button class="ttw-expand-btn" onclick="openFullBreakdown()">See all term options ↓</button>
+      </div>
+
+      <!-- ─────────────────────────────────────── -->
+      <!-- 4. VIEW FULL BREAKDOWN toggle           -->
+      <!-- ─────────────────────────────────────── -->
+      <div class="full-breakdown-toggle">
+        <button class="view-breakdown-btn" id="viewBreakdownBtn" onclick="toggleFullBreakdown()">
+          View full breakdown ↓
+        </button>
+      </div>
+
+      <!-- ─────────────────────────────────────── -->
+      <!-- Full breakdown panel (starts collapsed) -->
+      <!-- ─────────────────────────────────────── -->
+      <div class="full-breakdown-panel" id="fullBreakdownPanel">
+
+        <!-- Full term trap table -->
+        <div class="term-trap-block" id="termTrapBlock" style="margin-bottom:20px;">
+          <div class="term-trap-title">🪤 The Term Trap — See What Dealers Hide</div>
+          <div class="term-trap-subtitle">Dealers extend loan terms to lower monthly payments — hiding thousands in extra interest.</div>
+          <div class="term-table-scroll">
+            <table class="term-table" id="termTable"></table>
+          </div>
+          <div class="term-trap-summary" id="termTrapSummary"></div>
+          <div class="interest-bars">
+            <div class="interest-bars-title">Total interest paid by term</div>
+            <div id="interestBars"></div>
+          </div>
+        </div>
+
+        <!-- OTD breakdown -->
+        <div class="section" style="margin-bottom:16px;" id="otdSection">
+          <div class="section-header" onclick="toggleSection('otd')">
+            <div class="section-title"><span class="section-icon">📋</span> Full Out-the-Door Breakdown</div>
+            <div class="section-chevron open" id="chevron-otd">▼</div>
+          </div>
+          <div class="section-body" id="body-otd">
+            <table class="otd-table" id="otdTable"></table>
+            <div class="otd-note">* Taxes and registration vary by state — estimate only.</div>
+          </div>
+        </div>
+
+        <!-- Ownership cost section (full detail) -->
+        <div class="ownership-section" id="ownershipSection" style="margin-bottom:20px;">
+          <div class="ownership-title" id="ownershipTitle">N-Year Cost of Ownership</div>
+          <div class="ownership-context" id="ownershipContext"></div>
+
+          <div class="monthly-breakdown">
+            <div class="monthly-breakdown-title">Monthly budget</div>
+            <div class="monthly-line"><span class="ml-label">Loan payment</span><span class="ml-value" id="own-monthly-payment">—</span></div>
+            <div class="monthly-line"><span class="ml-label" id="own-fuel-label">Monthly fuel</span><span class="ml-value" id="own-monthly-fuel">—</span></div>
+            <div class="monthly-line"><span class="ml-label">Insurance (est.)</span><span class="ml-value" id="own-monthly-ins">~$142</span></div>
+            <div class="monthly-line"><span class="ml-label">Maintenance (est.)</span><span class="ml-value" id="own-monthly-maint">—</span></div>
+            <hr class="monthly-divider">
+            <div class="monthly-total-line"><span>Total monthly all-in</span><span class="ml-value" id="own-monthly-total">—</span></div>
+          </div>
+
+          <div class="ownership-annuals">
+            <div class="ownership-stat">
+              <div class="ownership-stat-value" id="own-annual-total">—</div>
+              <div class="ownership-stat-label">Annual total cost</div>
             </div>
-            <div class="section-body hidden" id="body-recalls" style="padding:0 18px 18px;"></div>
+            <div class="ownership-stat">
+              <div class="ownership-stat-value" id="own-term-total">—</div>
+              <div class="ownership-stat-label" id="own-term-total-label">Total over loan term</div>
+            </div>
           </div>
 
+          <table class="cost-breakdown-table" id="costBreakdownTable"></table>
+          <div class="cost-note" id="costNote"></div>
         </div>
-      </div>
 
-      <!-- Lease teaser -->
-      <div style="background:#1a2535;border-radius:14px;padding:28px;margin-bottom:16px;text-align:center;" id="leaseTeaser">
-        <div style="font-size:1rem;font-weight:700;color:#eef2f7;margin-bottom:8px;">🚘 Considering a lease instead?</div>
-        <div style="font-size:0.9375rem;color:#b8cce0;line-height:1.65;margin-bottom:20px;max-width:380px;margin-left:auto;margin-right:auto;">
-          Lower monthly payment, nothing owned at the end, and mileage limits that add up fast.<br>
-          Lease calculator coming soon — leave your email and we'll notify you.
+        <!-- Fee & add-on review -->
+        <div class="section" style="margin-bottom:16px;" id="feeSection">
+          <div class="section-header" onclick="toggleSection('fees')">
+            <div class="section-title"><span class="section-icon">🔍</span> Fee &amp; Add-On Review</div>
+            <div class="section-chevron open" id="chevron-fees">▼</div>
+          </div>
+          <div class="section-body" id="body-fees"></div>
         </div>
-        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;" id="leaseActions">
-          <input type="email" id="leaseEmail" placeholder="your@email.com" style="background:#0f1724;border:1.5px solid #2a3a50;border-radius:8px;padding:10px 16px;color:#eef2f7;font-size:0.9375rem;font-family:inherit;width:220px;" onkeydown="if(event.key==='Enter')submitLeaseEmail()">
-          <button onclick="submitLeaseEmail()" style="background:#00d4aa;color:#0f1724;border:none;border-radius:8px;padding:10px 20px;font-size:0.9375rem;font-weight:700;cursor:pointer;font-family:inherit;">Notify me</button>
-        </div>
-        <div id="leaseThanks" style="display:none;color:#00d4aa;font-size:0.9375rem;font-weight:600;margin-top:10px;">✓ Got it — we'll let you know when lease comparison launches.</div>
-      </div>
 
-      <!-- Tip jar -->
-      <div class="feedback-block" id="feedbackBlock">
-        <div class="feedback-block-title">Help us improve WheelTheDeal</div>
-        <div class="feedback-block-sub">Tell us what worked, what didn't, or what's missing.<br>Takes 30 seconds.</div>
-        <button class="btn-feedback-open" onclick="openFeedback()">Send feedback</button>
-      </div>
+        <!-- Negotiation script -->
+        <div class="section" style="margin-bottom:16px;" id="negotiationSection">
+          <div class="section-header" onclick="toggleSection('script')">
+            <div class="section-title"><span class="section-icon">🗣️</span> Negotiation Script</div>
+            <div class="section-chevron open" id="chevron-script">▼</div>
+          </div>
+          <div class="section-body" id="body-script"></div>
+        </div>
+
+        <!-- Vehicle details (nested) -->
+        <div class="section" style="margin-bottom:16px;">
+          <div class="section-header" onclick="toggleSection('vehicle')">
+            <div class="section-title"><span class="section-icon">🚗</span> Vehicle Details</div>
+            <div class="section-chevron open" id="chevron-vehicle">▼</div>
+          </div>
+          <div class="section-body" id="body-vehicle">
+
+            <!-- Fuel economy -->
+            <div class="section" style="background:#0f1724;margin-bottom:10px;">
+              <div class="section-header" onclick="toggleSection('fuel')" style="padding:14px 18px;">
+                <div class="section-title" style="font-size:1rem;">⛽ Fuel Economy</div>
+                <div class="section-chevron" id="chevron-fuel">▼</div>
+              </div>
+              <div class="section-body hidden" id="body-fuel" style="padding:0 18px 18px;"></div>
+            </div>
+
+            <!-- NHTSA Recalls (full detail, links to dim card data) -->
+            <div class="section" style="background:#0f1724;margin-bottom:10px;">
+              <div class="section-header" onclick="toggleSection('recalls-full')" style="padding:14px 18px;">
+                <div class="section-title" style="font-size:1rem;">🔔 NHTSA Recalls (full detail)</div>
+                <div class="section-chevron" id="chevron-recalls-full">▼</div>
+              </div>
+              <div class="section-body hidden" id="body-recalls-full" style="padding:0 18px 18px;"></div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Lease teaser -->
+        <div style="background:#1a2535;border-radius:14px;padding:28px;margin-bottom:16px;text-align:center;" id="leaseTeaser">
+          <div style="font-size:1rem;font-weight:700;color:#eef2f7;margin-bottom:8px;">🚘 Considering a lease instead?</div>
+          <div style="font-size:0.9375rem;color:#b8cce0;line-height:1.65;margin-bottom:20px;max-width:380px;margin-left:auto;margin-right:auto;">
+            Lower monthly payment, nothing owned at the end, and mileage limits that add up fast.<br>
+            Lease calculator coming soon — leave your email and we'll notify you.
+          </div>
+          <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;" id="leaseActions">
+            <input type="email" id="leaseEmail" placeholder="your@email.com" style="background:#0f1724;border:1.5px solid #2a3a50;border-radius:8px;padding:10px 16px;color:#eef2f7;font-size:0.9375rem;font-family:inherit;width:220px;" onkeydown="if(event.key==='Enter')submitLeaseEmail()">
+            <button onclick="submitLeaseEmail()" style="background:#00d4aa;color:#0f1724;border:none;border-radius:8px;padding:10px 20px;font-size:0.9375rem;font-weight:700;cursor:pointer;font-family:inherit;">Notify me</button>
+          </div>
+          <div id="leaseThanks" style="display:none;color:#00d4aa;font-size:0.9375rem;font-weight:600;margin-top:10px;">✓ Got it — we'll let you know when lease comparison launches.</div>
+        </div>
+
+        <!-- Feedback block -->
+        <div class="feedback-block" id="feedbackBlock">
+          <div class="feedback-block-title">Help us improve WheelTheDeal</div>
+          <div class="feedback-block-sub">Tell us what worked, what didn't, or what's missing.<br>Takes 30 seconds.</div>
+          <button class="btn-feedback-open" onclick="openFeedback()">Send feedback</button>
+        </div>
+
+        <!-- Also keep reasons list accessible for renderReasons -->
+        <div style="display:none" id="reasonsList"></div>
+
+      </div><!-- /fullBreakdownPanel -->
 
     </div><!-- /resultContent -->
   </section>
@@ -2098,11 +2540,269 @@ function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
 // Result rendering
 // ══════════════════════════════════════════════════════════
 
+// ══════════════════════════════════════════════════════════
+// Full breakdown toggle
+// ══════════════════════════════════════════════════════════
+
+let fullBreakdownOpen = false;
+
+function toggleFullBreakdown() {
+  fullBreakdownOpen = !fullBreakdownOpen;
+  const panel = document.getElementById('fullBreakdownPanel');
+  const btn   = document.getElementById('viewBreakdownBtn');
+  if (panel) panel.classList.toggle('open', fullBreakdownOpen);
+  if (btn) {
+    btn.textContent = fullBreakdownOpen ? 'Hide breakdown ↑' : 'View full breakdown ↓';
+    btn.classList.toggle('open', fullBreakdownOpen);
+  }
+  track('full_breakdown_toggled', { open: fullBreakdownOpen });
+}
+
+function openFullBreakdown() {
+  if (!fullBreakdownOpen) toggleFullBreakdown();
+  setTimeout(() => scrollToEl('termTrapBlock'), 80);
+}
+
+// ══════════════════════════════════════════════════════════
+// Hero signal card styling
+// ══════════════════════════════════════════════════════════
+
+function applyHeroCardColor(color) {
+  const card = document.getElementById('heroVerdictCard');
+  if (!card) return;
+  card.classList.remove('signal-green','signal-yellow','signal-red');
+  if (color === 'green')  card.classList.add('signal-green');
+  if (color === 'yellow') card.classList.add('signal-yellow');
+  if (color === 'red')    card.classList.add('signal-red');
+}
+
+// ══════════════════════════════════════════════════════════
+// Hero extras: monthly cost line + first reason
+// ══════════════════════════════════════════════════════════
+
+function renderHeroExtras(d) {
+  // Monthly cost line
+  const tc = d.true_cost;
+  const selTerm = d.loan_term || state.loanTerm;
+  const years = selTerm / 12;
+  const costEl = document.getElementById('heroMonthlyCost');
+  if (costEl && tc && tc.monthly_payment) {
+    const totalCost = tc.total_cost || 0;
+    costEl.textContent = `$${fmt(tc.monthly_payment)}/mo · $${fmt(totalCost)} total over ${years} years`;
+  }
+
+  // First reason
+  const reasons = d.top_reasons || [];
+  const frEl  = document.getElementById('heroFirstReason');
+  const frTxt = document.getElementById('heroFirstReasonText');
+  if (frEl && frTxt && reasons.length > 0) {
+    frTxt.textContent = reasons[0];
+    frEl.classList.remove('hidden');
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// Dimension cards population
+// ══════════════════════════════════════════════════════════
+
+function renderDimensionCards(d) {
+  renderDimMarketPosition(d);
+  renderDimFinancing(d);
+  renderDimSafety(d);
+  renderDimOwnership(d);
+}
+
+function renderDimMarketPosition(d) {
+  const lr    = d.local_range || {};
+  const offer = d.dealer_offer;
+
+  // Big number: offer delta
+  const numEl  = document.getElementById('dimOfferDeltaNumber');
+  const subEl  = document.getElementById('dimOfferDeltaSub');
+  const srcEl  = document.getElementById('dimSourceNote');
+
+  if (numEl && offer) {
+    if (offer < lr.low) {
+      numEl.textContent = `-$${fmt(lr.low - offer)}`;
+      numEl.style.color = '#00d4aa';
+      if (subEl) subEl.textContent = 'below range — great position';
+    } else if (offer > lr.high) {
+      numEl.textContent = `+$${fmt(offer - lr.high)}`;
+      numEl.style.color = '#ef4444';
+      if (subEl) subEl.textContent = 'above range — push back';
+    } else {
+      numEl.textContent = 'Within range';
+      numEl.style.color = '#f59e0b';
+      if (subEl) subEl.textContent = 'negotiate toward the low end';
+    }
+  }
+
+  if (srcEl) {
+    srcEl.textContent = (lr.area_label && lr.area_label !== 'National')
+      ? `${lr.area_label} estimate`
+      : 'Regional estimate';
+    if (lr.source_note) srcEl.textContent = lr.source_note;
+  }
+}
+
+function renderDimFinancing(d) {
+  const tc      = d.true_cost;
+  const selTerm = d.loan_term || state.loanTerm;
+  const offer   = d.dealer_offer || 0;
+  const down    = d.down_payment || getDownPayment(offer);
+  const aprPct  = (d.apr || state.apr || DEFAULTS.apr / 100) * 100;
+
+  const financed = Math.max(0, offer - down);
+  const mp       = calcMonthlyPayment(financed, (d.apr || 0.068) * 100, selTerm);
+  const interest = (mp * selTerm) - financed;
+
+  const mpEl  = document.getElementById('dimMonthlyPayment');
+  const tiEl  = document.getElementById('dimTotalInterest');
+  const faEl  = document.getElementById('dimFinancedAmount');
+  const atEl  = document.getElementById('dimAprTier');
+
+  if (mpEl) mpEl.textContent = `$${fmt(mp)}/mo`;
+  if (tiEl) tiEl.textContent = `$${fmt(interest)}`;
+  if (faEl) faEl.textContent = `$${fmt(financed)}`;
+
+  if (atEl) {
+    const aprDisplay = ((d.apr || 0.068) * 100).toFixed(1);
+    // Determine credit tier label
+    const activeCredit = document.querySelector('.credit-pill.active');
+    const tierLabel = activeCredit ? activeCredit.childNodes[0].textContent.trim() : 'Est.';
+    atEl.textContent = `${aprDisplay}% · ${tierLabel}`;
+  }
+}
+
+function renderDimSafety(d) {
+  const recalls = d.recalls || [];
+  const count   = d.recall_count || recalls.length;
+
+  const badgeEl = document.getElementById('dimRecallBadge');
+  const listEl  = document.getElementById('dimRecallList');
+
+  if (!badgeEl || !listEl) return;
+
+  if (count === 0) {
+    badgeEl.className = 'dim-recall-badge recall-clean';
+    badgeEl.textContent = '✓ No open recalls';
+    listEl.innerHTML = '';
+  } else {
+    if (count <= 2) {
+      badgeEl.className = 'dim-recall-badge recall-warn';
+    } else {
+      badgeEl.className = 'dim-recall-badge recall-risk';
+    }
+    badgeEl.textContent = `⚠️ ${count} recall${count !== 1 ? 's' : ''} found`;
+
+    // Show first 2 recalls, component name only
+    listEl.innerHTML = recalls.slice(0, 2).map(r =>
+      `<div class="dim-recall-item"><div class="dim-recall-item-component">${r.component}</div></div>`
+    ).join('');
+  }
+
+  // Also populate full recall body in full breakdown
+  const fullBody = document.getElementById('body-recalls-full');
+  const fullChev = document.getElementById('chevron-recalls-full');
+  if (fullBody) {
+    if (count === 0) {
+      fullBody.innerHTML = `<div class="no-recalls">✓ No open recalls found for this vehicle.</div>`;
+      fullBody.classList.add('hidden');
+      if (fullChev) fullChev.classList.remove('open');
+    } else {
+      fullBody.classList.remove('hidden');
+      if (fullChev) fullChev.classList.add('open');
+      fullBody.innerHTML =
+        `<div style="color:#ef4444;font-weight:700;font-size:1rem;margin-bottom:12px;">⚠️ ${count} recall${count !== 1 ? 's' : ''} found — check with your dealer about remedy status.</div>` +
+        recalls.slice(0, 5).map(r =>
+          `<div class="recall-item"><div class="recall-component">${r.component}</div><div class="recall-summary">${r.summary}</div></div>`
+        ).join('');
+    }
+  }
+}
+
+function renderDimOwnership(d) {
+  const tc      = d.true_cost;
+  const selTerm = d.loan_term || state.loanTerm;
+  const years   = selTerm / 12;
+
+  const titleEl    = document.getElementById('dimOwnershipTitle');
+  const allInEl    = document.getElementById('dimMonthlyAllIn');
+  const fuelEl     = document.getElementById('dimAnnualFuel');
+  const deprEl     = document.getElementById('dimDepreciation');
+  const termTotEl  = document.getElementById('dimTermTotal');
+  const termLblEl  = document.getElementById('dimTermTotalLabel');
+
+  if (titleEl) titleEl.textContent = `📆 ${years}-Year True Cost`;
+  if (termLblEl) termLblEl.textContent = `Total over ${years} years`;
+
+  if (!tc) return;
+
+  if (allInEl) allInEl.textContent = `$${fmt(tc.total_monthly_budget)}/mo`;
+  if (fuelEl && tc.fuel_cost)  fuelEl.textContent  = `$${fmt(Math.round(tc.fuel_cost / years))}/yr`;
+  if (deprEl && tc.depreciation) deprEl.textContent = `$${fmt(tc.depreciation)} est.`;
+  if (termTotEl && tc.total_cost) termTotEl.textContent = `$${fmt(tc.total_cost)}`;
+}
+
+// ══════════════════════════════════════════════════════════
+// Term trap warning block
+// ══════════════════════════════════════════════════════════
+
+function renderTermTrapWarning(d) {
+  const selTerm = d.loan_term || state.loanTerm;
+  const warnEl  = document.getElementById('termTrapWarningBlock');
+  if (!warnEl) return;
+
+  if (selTerm <= 60) {
+    warnEl.classList.add('hidden');
+    return;
+  }
+
+  warnEl.classList.remove('hidden');
+
+  const offer  = d.dealer_offer || 0;
+  const aprPct = (d.apr || 0.068) * 100;
+  const down   = d.down_payment || getDownPayment(offer);
+  const financed = Math.max(0, offer - down);
+
+  const mp60   = calcMonthlyPayment(financed, aprPct, 60);
+  const int60  = (mp60 * 60) - financed;
+  const mpSel  = calcMonthlyPayment(financed, aprPct, selTerm);
+  const intSel = (mpSel * selTerm) - financed;
+  const extra  = intSel - int60;
+
+  const summaryEl = document.getElementById('ttwSummaryText');
+  const cmpEl     = document.getElementById('ttwComparison');
+
+  if (summaryEl) {
+    summaryEl.textContent = `At ${selTerm} months, you pay $${fmt(extra)} more in interest than a 60-month loan and stay in debt ${selTerm - 60} extra months.`;
+  }
+
+  if (cmpEl) {
+    cmpEl.innerHTML = `
+      <div class="ttw-col">
+        <div class="ttw-col-label">60-Month Loan</div>
+        <div class="ttw-col-val">$${fmt(mp60)}/mo</div>
+        <div class="ttw-col-sub">$${fmt(int60)} total interest</div>
+      </div>
+      <div class="ttw-col" style="border: 1.5px solid rgba(245,158,11,0.3);">
+        <div class="ttw-col-label">Your ${selTerm}-Month Loan</div>
+        <div class="ttw-col-val" style="color:#f59e0b;">$${fmt(mpSel)}/mo</div>
+        <div class="ttw-col-sub">$${fmt(intSel)} total interest (+$${fmt(extra)})</div>
+      </div>
+    `;
+  }
+}
+
 function renderResult(d) {
   renderSignal(d);
+  applyHeroCardColor(d.signal_color || 'green');
+  renderHeroExtras(d);
   renderRange(d);
   renderReasons(d);
   renderWhatToSay(d);
+  renderDimensionCards(d);
+  renderTermTrapWarning(d);
   renderOTD(d);
   renderTermTrap(d);
   renderOwnershipCost(d);
@@ -2597,18 +3297,19 @@ function updateFuelCalc() {
 }
 
 function renderRecalls(recalls, count) {
-  const body    = document.getElementById('body-recalls');
-  const chevron = document.getElementById('chevron-recalls');
+  // renderDimSafety handles the visible recall display and body-recalls-full
+  // This stub is kept for API compatibility — actual rendering done in renderDimSafety
+  const body = document.getElementById('body-recalls');
+  if (!body) return;
+  // Keep hidden placeholder up to date
   if (!recalls || recalls.length === 0) {
     body.innerHTML = `<div class="no-recalls">✓ No open recalls found for this vehicle.</div>`;
-    body.classList.add('hidden'); chevron.classList.remove('open');
-    return;
+  } else {
+    body.innerHTML = `<div style="color:#ef4444;font-weight:700;font-size:1rem;margin-bottom:12px;">⚠️ ${count} recall${count !== 1 ? 's' : ''} found.</div>` +
+      recalls.slice(0, 5).map(r =>
+        `<div class="recall-item"><div class="recall-component">${r.component}</div><div class="recall-summary">${r.summary}</div></div>`
+      ).join('');
   }
-  body.classList.remove('hidden'); chevron.classList.add('open');
-  body.innerHTML = `<div style="color:#ef4444;font-weight:700;font-size:1rem;margin-bottom:12px;">⚠️ ${count} recall${count !== 1 ? 's' : ''} found — check with your dealer about remedy status.</div>` +
-    recalls.slice(0, 5).map(r =>
-      `<div class="recall-item"><div class="recall-component">${r.component}</div><div class="recall-summary">${r.summary}</div></div>`
-    ).join('');
 }
 
 // ══════════════════════════════════════════════════════════
