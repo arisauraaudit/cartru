@@ -1900,14 +1900,14 @@ function loadGroupedModels() {
     .then(data => {
       groupedModels = data.grouped || [];
       if (!groupedModels.length) {
-        if (container) container.innerHTML = '<div style="color:#6a8599;font-size:0.875rem;padding:12px 0;">No models found — try a different year</div>';
+        if (container) container.innerHTML = '<div style="color:#8499b0;font-size:0.875rem;padding:12px 0;">No models found for this year — try 2024 or 2025.<br><button onclick="loadGroupedModels()" style="margin-top:8px;background:none;border:1px solid #2a3a50;border-radius:6px;padding:5px 12px;color:#b8cce0;cursor:pointer;font-family:inherit;font-size:0.8rem;">↺ Retry</button></div>';
         return;
       }
       renderGroupedModels(groupedModels);
       track('grouped_models_loaded', { brand: state.brand, year: state.year, families: groupedModels.length });
     })
     .catch(() => {
-      if (container) container.innerHTML = '<div style="color:#ef4444;font-size:0.875rem;padding:12px 0;">Error loading models — check your connection</div>';
+      if (container) container.innerHTML = '<div style="color:#8499b0;font-size:0.875rem;padding:14px 0;">Couldn\'t load models right now — our data source may be temporarily unavailable.<br><button onclick="loadGroupedModels()" style="margin-top:10px;background:none;border:1px solid #2a3a50;border-radius:6px;padding:6px 14px;color:#b8cce0;cursor:pointer;font-family:inherit;font-size:0.875rem;">↺ Try again</button></div>';
     });
 }
 
