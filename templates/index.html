@@ -2379,8 +2379,10 @@ function updateGlancePanel() {
     return;
   }
 
-  const mp            = calcMonthlyPayment(price * 0.90, aprPct, term);
-  const totalInterest = (mp * term) - (price * 0.90);
+  const dp0           = getDownPayment(price);
+  const principal0    = Math.max(0, price - dp0);
+  const mp            = calcMonthlyPayment(principal0, aprPct, term);
+  const totalInterest = (mp * term) - principal0;
   const totalCost     = price + totalInterest;
   const years         = term / 12;
 
@@ -3509,7 +3511,7 @@ document.addEventListener('DOMContentLoaded', () => {
         Where does the data come from? <span class="faq-arrow">↓</span>
       </button>
       <div class="faq-a">
-        Fuel economy and vehicle data: US Department of Energy (fueleconomy.gov). Recall and safety data: NHTSA (nhtsa.gov). Pricing estimates: industry averages and regional market signals — clearly labeled as estimates, not exact transaction data.
+        We use US government data — the same agencies that regulate the industry. fueleconomy.gov (Dept of Energy) for vehicle specs and fuel costs. NHTSA for recalls. Not a data company's proprietary black box.
       </div>
     </div>
     <div class="faq-item">
@@ -3517,7 +3519,7 @@ document.addEventListener('DOMContentLoaded', () => {
         How accurate is this? <span class="faq-arrow">↓</span>
       </button>
       <div class="faq-a">
-        It's designed to help you spot bad deals fast using current finance math, public data, and the numbers the dealer gives you. It's not a legal or lending document, but it will quickly show you where an offer starts to go sideways.
+        It's designed to help you spot bad deals fast using current finance math, public data, and the numbers the dealer gives you. It's not a legal or lending document, but it will quickly show you where an offer starts to go sideways. This tool has flagged six-figure lifetime overcharges on $30K deals. The math doesn't lie — the question is whether you're looking at it.
       </div>
     </div>
   </section>
@@ -3536,7 +3538,11 @@ document.addEventListener('DOMContentLoaded', () => {
       </svg>
       <span>WheelTheDeal</span>
     </div>
-    <div class="footer-love">Built ❤️ for buyers, not dealers. — A &amp; M
+    <div class="footer-origin" style="font-size:0.875rem;color:#b8cce0;line-height:1.65;max-width:480px;margin:0 auto 16px;text-align:center;">
+      We got burned at the F&amp;I desk — twice. So we built the tool we wish we'd had.
+      WheelTheDeal is 100% buyer-funded. No dealer money, ever. — Max &amp; Aris
+    </div>
+    <div class="footer-love">Built ❤️ for buyers, not dealers.
     </div>
     <div class="footer-links">
       <a href="mailto:hello@wheelthedeal.com" class="footer-link">hello@wheelthedeal.com</a>
