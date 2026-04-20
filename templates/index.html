@@ -139,6 +139,33 @@ a:hover { text-decoration: underline; }
 .faq-a a { color: #00d4aa; }
 .faq-a.open { display: block; }
 
+/* Wizard progress indicator */
+.wizard-progress {
+  display: flex; align-items: center; gap: 0;
+  margin-bottom: 20px; padding: 0 4px;
+}
+.wp-step {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  flex-shrink: 0; opacity: 0.35; transition: opacity 0.2s;
+}
+.wp-step.active, .wp-step.done { opacity: 1; }
+.wp-num {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: #2a3a50; color: #8499b0; font-size: 0.75rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s, color 0.2s;
+}
+.wp-step.active .wp-num { background: #00d4aa; color: #0f1724; }
+.wp-step.done .wp-num { background: rgba(0,212,170,0.2); color: #00d4aa; }
+.wp-label { font-size: 0.72rem; color: #8499b0; font-weight: 600; white-space: nowrap; }
+.wp-step.active .wp-label { color: #00d4aa; }
+.wp-step.done .wp-label { color: #00d4aa; }
+.wp-line {
+  flex: 1; height: 1.5px; background: #2a3a50; margin: 0 4px; margin-bottom: 16px;
+  transition: background 0.3s;
+}
+.wp-line.done { background: rgba(0,212,170,0.4); }
+
 .selection-section {
   background: #1a2535;
   border: 1.5px solid #2a3a50;
@@ -1210,6 +1237,25 @@ a:hover { text-decoration: underline; }
   <!-- Selection: Year + Brand + Model           -->
   <!-- ══════════════════════════════════════════ -->
   <section class="selection-section">
+    <!-- Progress indicator -->
+    <div class="wizard-progress" id="wizardProgress">
+      <div class="wp-step active" id="wp1">
+        <span class="wp-num">1</span><span class="wp-label">Year</span>
+      </div>
+      <div class="wp-line" id="wl1"></div>
+      <div class="wp-step" id="wp2">
+        <span class="wp-num">2</span><span class="wp-label">Brand</span>
+      </div>
+      <div class="wp-line" id="wl2"></div>
+      <div class="wp-step" id="wp3">
+        <span class="wp-num">3</span><span class="wp-label">Model</span>
+      </div>
+      <div class="wp-line" id="wl3"></div>
+      <div class="wp-step" id="wp4">
+        <span class="wp-num">4</span><span class="wp-label">Deal</span>
+      </div>
+    </div>
+
     <!-- Year pills -->
     <div class="year-toggle" id="yearToggle"></div>
 
@@ -1852,8 +1898,23 @@ function renderBrandGrid() {
   }).join('');
 }
 
+// ── Wizard progress indicator ─────────────────────────────
+function updateWizardProgress(step) {
+  // step: 1=year, 2=brand, 3=model, 4=deal
+  for (let i = 1; i <= 4; i++) {
+    const s = document.getElementById('wp' + i);
+    const l = document.getElementById('wl' + i);
+    if (!s) continue;
+    s.classList.remove('active', 'done');
+    if (i < step) s.classList.add('done');
+    else if (i === step) s.classList.add('active');
+    if (l) l.classList.toggle('done', i < step);
+  }
+}
+
 function selectBrand(brand) {
   state.brand = brand;
+  updateWizardProgress(3);
   state.model = null;
 
   // Update button states
@@ -1869,7 +1930,7 @@ function selectBrand(brand) {
 
   // Show model row
   const modelRow = document.getElementById('modelRow');
-  if (modelRow) modelRow.classList.add('open');
+  if (modelRow) { modelRow.classList.add('open'); setTimeout(() => { const s = document.getElementById('modelSearch'); if (s) s.focus(); }, 300); }
 
   // Clear search
   const searchEl = document.getElementById('modelSearch');
@@ -2000,6 +2061,7 @@ function filterModelAccordion(query) {
 
 function selectModelTrim(model) {
   state.model = model;
+  updateWizardProgress(4);
 
   // Update chip highlight across accordion/flat views
   document.querySelectorAll('.accordion-trim-chip, .flat-trim-chip').forEach(c => {
@@ -2038,6 +2100,7 @@ function renderYearToggle() {
 function selectYear(year) {
   state.year = year;
   document.querySelectorAll('.year-btn').forEach(b => b.classList.toggle('active', parseInt(b.dataset.year) === year));
+  if (!state.brand) updateWizardProgress(2);
   if (state.brand) {
     if (state.model) {
       state.model = null;
@@ -2055,6 +2118,7 @@ function selectYear(year) {
 // ══════════════════════════════════════════════════════════
 
 function populateDealSection() {
+  setTimeout(() => { const el = document.getElementById('dealerOffer'); if (el) el.focus(); }, 350);
   document.getElementById('crumbModel').textContent = `${state.brand} ${state.model}`;
   document.getElementById('crumbYear').textContent = state.year;
 
@@ -2231,7 +2295,7 @@ function loadFromUrl() {
 
   // Show model row
   const modelRow = document.getElementById('modelRow');
-  if (modelRow) modelRow.classList.add('open');
+  if (modelRow) { modelRow.classList.add('open'); setTimeout(() => { const s = document.getElementById('modelSearch'); if (s) s.focus(); }, 300); }
 
   // Load models and select the right one
   state.msrpEstimate = estimateMsrp(make, model);
@@ -2481,6 +2545,7 @@ function editOffer() {
 }
 
 function startOver() {
+  updateWizardProgress(1);
   state.brand = null; state.model = null; state.year = CURRENT_YEAR - 1;
   state.msrpEstimate = 32000; state.reportData = null; state.loanTerm = 72;
   state.apr = 6.8; state.annualMiles = 13500; state.gasPrice = 3.45;
@@ -3429,11 +3494,16 @@ function escAttr(s) { return (s || '').replace(/'/g, "\\'").replace(/"/g, '&quot
 document.addEventListener('DOMContentLoaded', () => {
   renderBrandGrid();
   renderYearToggle();
+  updateWizardProgress(1);
 
   // Load from URL params if present (shareable link)
   if (window.location.search) loadFromUrl();
 
   // Dealer offer → live signal + glance (debounced)
+  document.getElementById('dealerOffer').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); checkDeal(); }
+  });
+
   document.getElementById('dealerOffer').addEventListener('input', () => {
     const price = parseFloat(document.getElementById('dealerOffer').value);
     if (price > 1000) prefillDownPayment(price);
