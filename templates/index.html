@@ -142,29 +142,32 @@ a:hover { text-decoration: underline; }
 /* Wizard progress indicator */
 .wizard-progress {
   display: flex; align-items: center; gap: 0;
-  margin-bottom: 20px; padding: 0 4px;
+  margin-bottom: 24px; padding: 4px;
+  background: rgba(0,0,0,0.2); border-radius: 10px;
 }
 .wp-step {
   display: flex; flex-direction: column; align-items: center; gap: 4px;
-  flex-shrink: 0; opacity: 0.35; transition: opacity 0.2s;
+  flex-shrink: 0; opacity: 0.5; transition: opacity 0.2s; padding: 8px 10px;
 }
-.wp-step.active, .wp-step.done { opacity: 1; }
+.wp-step.active { opacity: 1; }
+.wp-step.done { opacity: 0.75; }
 .wp-num {
-  width: 26px; height: 26px; border-radius: 50%;
-  background: #2a3a50; color: #8499b0; font-size: 0.75rem; font-weight: 700;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: #2a3a50; color: #b8cce0; font-size: 0.8rem; font-weight: 800;
   display: flex; align-items: center; justify-content: center;
-  transition: background 0.2s, color 0.2s;
+  border: 1.5px solid #3a4f68;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
-.wp-step.active .wp-num { background: #00d4aa; color: #0f1724; }
-.wp-step.done .wp-num { background: rgba(0,212,170,0.2); color: #00d4aa; }
-.wp-label { font-size: 0.72rem; color: #8499b0; font-weight: 600; white-space: nowrap; }
-.wp-step.active .wp-label { color: #00d4aa; }
+.wp-step.active .wp-num { background: #00d4aa; color: #0f1724; border-color: #00d4aa; }
+.wp-step.done .wp-num { background: rgba(0,212,170,0.15); color: #00d4aa; border-color: rgba(0,212,170,0.4); }
+.wp-label { font-size: 0.75rem; color: #b8cce0; font-weight: 600; white-space: nowrap; }
+.wp-step.active .wp-label { color: #00d4aa; font-weight: 700; }
 .wp-step.done .wp-label { color: #00d4aa; }
 .wp-line {
-  flex: 1; height: 1.5px; background: #2a3a50; margin: 0 4px; margin-bottom: 16px;
-  transition: background 0.3s;
+  flex: 1; height: 2px; background: #2a3a50; margin: 0 2px; margin-bottom: 20px;
+  border-radius: 2px; transition: background 0.3s; min-width: 12px;
 }
-.wp-line.done { background: rgba(0,212,170,0.4); }
+.wp-line.done { background: rgba(0,212,170,0.5); }
 
 .selection-section {
   background: #1a2535;
