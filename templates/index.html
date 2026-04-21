@@ -115,7 +115,7 @@ a:hover { text-decoration: underline; }
 
 /* ── Selection section ── */
 /* How it works */
-.how-it-works { margin-bottom: 12px; }
+.how-it-works { margin-bottom: 0; margin-top: 0; }
 .hiw-steps { display: flex; align-items: flex-start; gap: 8px; flex-wrap: wrap; }
 .hiw-step { flex: 1; min-width: 160px; display: flex; gap: 12px; align-items: flex-start; background: #1a2535; border-radius: 10px; padding: 16px 14px; }
 .hiw-num { width: 28px; height: 28px; border-radius: 50%; background: rgba(0,212,170,0.15); color: #00d4aa; font-size: 0.875rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
@@ -125,7 +125,7 @@ a:hover { text-decoration: underline; }
 @media (max-width: 600px) { .hiw-divider { display: none; } .hiw-step { min-width: 100%; } }
 
 /* FAQ */
-.faq-section { margin-bottom: 12px; margin-top: 40px; border-top: 1px solid #1e2d3d; padding-top: 40px; }
+.faq-section { margin-bottom: 12px; margin-top: 24px; border-top: 1px solid #1e2d3d; padding-top: 32px; }
 .faq-heading { font-size: 1.1rem; font-weight: 800; color: #eef2f7; margin-bottom: 20px; }
 .faq-jump-link { font-size: 0.875rem; color: #8499b0; text-decoration: none; transition: color 0.2s; }
 .faq-jump-link:hover { color: #00d4aa; }
@@ -3612,7 +3612,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 
-  <div class="page">
+  <div class="page" style="padding-top:0;padding-bottom:0;">
   <section class="how-it-works" id="hiw">
     <div class="hiw-steps">
       <div class="hiw-step">
@@ -3642,7 +3642,7 @@ document.addEventListener('DOMContentLoaded', () => {
   </section>
   </div>
 
-  <div class="page"><section class="faq-section" id="faq">
+  <div class="page" style="padding-top:0;"><section class="faq-section" id="faq">
     <h2 class="faq-heading">Common questions</h2>
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFaq(this)">
