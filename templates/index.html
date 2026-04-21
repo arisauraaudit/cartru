@@ -139,6 +139,40 @@ a:hover { text-decoration: underline; }
 .faq-a a { color: #00d4aa; }
 .faq-a.open { display: block; }
 
+/* Sticky progress bar */
+.sticky-progress {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(15,23,36,0.95); backdrop-filter: blur(8px);
+  border-bottom: 1px solid #1e2d3d;
+  padding: 8px 20px;
+}
+.sp-inner {
+  max-width: 780px; margin: 0 auto;
+  display: flex; align-items: center; gap: 0;
+}
+.sp-step {
+  background: none; border: none; cursor: pointer; font-family: inherit;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  opacity: 0.4; transition: opacity 0.2s; padding: 4px 10px;
+  pointer-events: none;
+}
+.sp-step.sp-done { opacity: 0.75; pointer-events: auto; cursor: pointer; }
+.sp-step.sp-active { opacity: 1; pointer-events: none; }
+.sp-step.sp-done:hover { opacity: 1; }
+.sp-num {
+  width: 22px; height: 22px; border-radius: 50%; font-size: 0.72rem; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  background: #2a3a50; color: #b8cce0; border: 1.5px solid #3a4f68;
+  transition: background 0.2s, color 0.2s;
+}
+.sp-step.sp-done .sp-num { background: rgba(0,212,170,0.15); color: #00d4aa; border-color: rgba(0,212,170,0.5); }
+.sp-step.sp-active .sp-num { background: #00d4aa; color: #0f1724; border-color: #00d4aa; }
+.sp-label { font-size: 0.68rem; color: #8499b0; font-weight: 600; white-space: nowrap; }
+.sp-step.sp-done .sp-label { color: #00d4aa; }
+.sp-step.sp-active .sp-label { color: #00d4aa; }
+.sp-line { flex: 1; height: 1.5px; background: #2a3a50; margin: 0 2px 16px; border-radius: 2px; }
+.sp-line.sp-done { background: rgba(0,212,170,0.4); }
+
 /* Wizard progress indicator */
 .wizard-progress {
   display: flex; align-items: center; gap: 0;
@@ -1205,7 +1239,7 @@ a:hover { text-decoration: underline; }
   <!-- ══════════════════════════════════════════ -->
   <!-- How it works                              -->
   <!-- ══════════════════════════════════════════ -->
-  <section class="how-it-works">
+  <section class="how-it-works" id="hiw">
     <div class="hiw-steps">
       <div class="hiw-step">
         <div class="hiw-num">1</div>
@@ -1233,32 +1267,34 @@ a:hover { text-decoration: underline; }
     </div>
   </section>
   <div style="text-align:center;margin-bottom:28px;">
-    <a href="#faq" class="faq-jump-link" onclick="document.getElementById('faq').scrollIntoView({behavior:'smooth'});return false;">Questions? See FAQ ↓</a>
+    <a href="#faq" class="faq-jump-link" onclick="document.getElementById('faq').scrollIntoView({behavior:'smooth'});return false;">Questions? See how it works + FAQ ↓</a>
   </div>
 
   <!-- ══════════════════════════════════════════ -->
   <!-- Selection: Year + Brand + Model           -->
   <!-- ══════════════════════════════════════════ -->
-  <section class="selection-section">
-    <!-- Progress indicator -->
-    <div class="wizard-progress" id="wizardProgress">
-      <div class="wp-step active" id="wp1">
-        <span class="wp-num">1</span><span class="wp-label">Year</span>
-      </div>
-      <div class="wp-line" id="wl1"></div>
-      <div class="wp-step" id="wp2">
-        <span class="wp-num">2</span><span class="wp-label">Brand</span>
-      </div>
-      <div class="wp-line" id="wl2"></div>
-      <div class="wp-step" id="wp3">
-        <span class="wp-num">3</span><span class="wp-label">Model</span>
-      </div>
-      <div class="wp-line" id="wl3"></div>
-      <div class="wp-step" id="wp4">
-        <span class="wp-num">4</span><span class="wp-label">Deal</span>
-      </div>
-    </div>
+<!-- Sticky progress bar (wizard only, hidden on results) -->
+<div class="sticky-progress" id="stickyProgress" style="display:none;">
+  <div class="sp-inner">
+    <button class="sp-step done-btn" id="sp1" onclick="goToStep(1)" title="Back to Year">
+      <span class="sp-num">1</span><span class="sp-label">Year</span>
+    </button>
+    <div class="sp-line" id="sl1"></div>
+    <button class="sp-step" id="sp2" onclick="goToStep(2)" title="Back to Brand">
+      <span class="sp-num">2</span><span class="sp-label">Brand</span>
+    </button>
+    <div class="sp-line" id="sl2"></div>
+    <button class="sp-step" id="sp3" onclick="goToStep(3)" title="Back to Model">
+      <span class="sp-num">3</span><span class="sp-label">Model</span>
+    </button>
+    <div class="sp-line" id="sl3"></div>
+    <button class="sp-step" id="sp4" onclick="goToStep(4)" title="View deal">
+      <span class="sp-num">4</span><span class="sp-label">Deal</span>
+    </button>
+  </div>
+</div>
 
+  <section class="selection-section">
     <!-- Year pills -->
     <div class="year-toggle" id="yearToggle"></div>
 
@@ -1901,8 +1937,63 @@ function renderBrandGrid() {
   }).join('');
 }
 
+// ── Sticky progress bar ───────────────────────────────────
+function showStickyProgress() {
+  const el = document.getElementById('stickyProgress');
+  if (el) el.style.display = '';
+}
+function hideStickyProgress() {
+  const el = document.getElementById('stickyProgress');
+  if (el) el.style.display = 'none';
+}
+
+function updateStickyProgress(step) {
+  for (let i = 1; i <= 4; i++) {
+    const s = document.getElementById('sp' + i);
+    const l = document.getElementById('sl' + i);
+    if (!s) continue;
+    s.classList.remove('sp-done', 'sp-active');
+    if (i < step) s.classList.add('sp-done');
+    else if (i === step) s.classList.add('sp-active');
+    if (l) l.classList.toggle('sp-done', i < step);
+  }
+}
+
+function goToStep(step) {
+  // Only allow going back to completed steps
+  if (step === 1) {
+    // Back to year — reset brand and model
+    state.brand = null; state.model = null;
+    document.querySelectorAll('.brand-text-btn').forEach(b => b.classList.remove('brand-selected','brand-inactive'));
+    const modelRow = document.getElementById('modelRow');
+    if (modelRow) modelRow.classList.remove('open');
+    hideDealSection(); hideResultSection();
+    updateWizardProgress(2); updateStickyProgress(2);
+    scrollToEl('stickyProgress');
+  } else if (step === 2) {
+    // Back to brand — reset model
+    if (!state.brand) return;
+    state.model = null;
+    const modelRow = document.getElementById('modelRow');
+    if (modelRow) modelRow.classList.remove('open');
+    hideDealSection(); hideResultSection();
+    updateWizardProgress(3); updateStickyProgress(3);
+    scrollToEl('stickyProgress');
+  } else if (step === 3) {
+    // Back to model — keep brand, hide deal
+    if (!state.brand) return;
+    hideDealSection(); hideResultSection();
+    const modelRow = document.getElementById('modelRow');
+    if (modelRow) { modelRow.classList.add('open'); scrollToEl('modelRow'); }
+    updateWizardProgress(3); updateStickyProgress(3);
+  }
+  track('wizard_step_back', { to: step });
+}
+
 // ── Wizard progress indicator ─────────────────────────────
 function updateWizardProgress(step) {
+  updateStickyProgress(step);
+  if (step >= 2) showStickyProgress(); else hideStickyProgress();
   // step: 1=year, 2=brand, 3=model, 4=deal
   for (let i = 1; i <= 4; i++) {
     const s = document.getElementById('wp' + i);
@@ -2549,6 +2640,7 @@ function editOffer() {
 
 function startOver() {
   updateWizardProgress(1);
+  hideStickyProgress();
   state.brand = null; state.model = null; state.year = CURRENT_YEAR - 1;
   state.msrpEstimate = 32000; state.reportData = null; state.loanTerm = 72;
   state.apr = 6.8; state.annualMiles = 13500; state.gasPrice = 3.45;
@@ -3549,6 +3641,7 @@ document.addEventListener('DOMContentLoaded', () => {
   track('page_loaded');
 });
 </script>
+
 
   <!-- ══════════════════════════════════════════ -->
   <!-- FAQ (pre-footer)                          -->
