@@ -734,6 +734,28 @@ a:hover { text-decoration: underline; }
 .junk-addon-cost { font-size: 0.875rem; color: #8499b0; margin-bottom: 4px; }
 .junk-addon-note { font-size: 0.875rem; color: #b8cce0; }
 
+/* ── Underwater / Equity block ── */
+.equity-block { background: #1a2535; border-radius: 14px; padding: 24px; margin-bottom: 16px; }
+.equity-block-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; gap: 12px; flex-wrap: wrap; }
+.equity-block-title { font-size: 1rem; font-weight: 800; color: #eef2f7; }
+.equity-verdict-badge { padding: 5px 14px; border-radius: 99px; font-size: 0.8rem; font-weight: 700; white-space: nowrap; }
+.equity-verdict-badge.green { background: rgba(0,212,170,0.15); color: #00d4aa; border: 1px solid rgba(0,212,170,0.3); }
+.equity-verdict-badge.yellow { background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); }
+.equity-verdict-badge.red { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+.equity-verdict-text { font-size: 0.9rem; color: #b8cce0; line-height: 1.6; margin-bottom: 20px; }
+.equity-resale-row { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+.equity-resale-label { font-size: 0.8rem; color: #8499b0; }
+.equity-resale-badge { font-size: 0.8rem; font-weight: 700; padding: 3px 10px; border-radius: 99px; }
+.equity-resale-badge.Strong  { background: rgba(0,212,170,0.12); color: #00d4aa; }
+.equity-resale-badge.Average { background: rgba(245,158,11,0.12); color: #f59e0b; }
+.equity-resale-badge.Weak    { background: rgba(239,68,68,0.12); color: #ef4444; }
+/* SVG chart */
+.equity-chart-wrap { width: 100%; overflow-x: auto; margin-bottom: 12px; }
+.equity-chart-svg { width: 100%; height: 160px; display: block; }
+.equity-chart-legend { display: flex; gap: 20px; font-size: 0.78rem; color: #8499b0; margin-top: 6px; }
+.equity-legend-item { display: flex; align-items: center; gap: 6px; }
+.equity-legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
 /* ── Term Trap Detector ── */
 .term-trap-block { background: #1a2535; border-radius: 14px; padding: 24px; margin-bottom: 16px; }
 .term-trap-title { font-size: 1.05rem; font-weight: 800; color: #eef2f7; margin-bottom: 6px; }
@@ -1607,7 +1629,30 @@ a:hover { text-decoration: underline; }
       </div>
 
       <!-- ─────────────────────────────────────── -->
-      <!-- 4. VIEW FULL BREAKDOWN toggle           -->
+      <!-- 4. EQUITY / UNDERWATER MODULE           -->
+      <!-- ─────────────────────────────────────── -->
+      <div class="equity-block" id="equityBlock" style="display:none;">
+        <div class="equity-block-header">
+          <div class="equity-block-title">🏦 Will you be underwater?</div>
+          <div class="equity-verdict-badge" id="equityVerdictBadge"></div>
+        </div>
+        <div class="equity-verdict-text" id="equityVerdictText"></div>
+        <div class="equity-resale-row">
+          <span class="equity-resale-label">Resale strength:</span>
+          <span class="equity-resale-badge" id="equityResaleBadge"></span>
+          <span class="equity-resale-label" id="equityResaleNote" style="margin-left:4px;"></span>
+        </div>
+        <div class="equity-chart-wrap">
+          <svg class="equity-chart-svg" id="equityChartSvg" viewBox="0 0 600 160" preserveAspectRatio="none"></svg>
+        </div>
+        <div class="equity-chart-legend">
+          <div class="equity-legend-item"><div class="equity-legend-dot" style="background:#00d4aa;"></div> Estimated vehicle value</div>
+          <div class="equity-legend-item"><div class="equity-legend-dot" style="background:#ef4444;"></div> Remaining loan balance</div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────────────────── -->
+      <!-- 5. VIEW FULL BREAKDOWN toggle           -->
       <!-- ─────────────────────────────────────── -->
       <div class="full-breakdown-toggle">
         <button class="view-breakdown-btn" id="viewBreakdownBtn" onclick="toggleFullBreakdown()">
@@ -3109,6 +3154,88 @@ function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
 let fullBreakdownOpen = false;
 
+// ── Equity / Underwater module ────────────────────────────
+function renderEquityBlock(d) {
+  const ea = d.equity_analysis;
+  const block = document.getElementById('equityBlock');
+  if (!ea || !ea.curve || ea.curve.length < 2) { if (block) block.style.display = 'none'; return; }
+  if (block) block.style.display = '';
+
+  // Verdict badge
+  const badge = document.getElementById('equityVerdictBadge');
+  const colors = { likely_positive: 'green', positive_but_early_risk: 'yellow', breakeven: 'yellow', likely_underwater: 'red' };
+  badge.className = 'equity-verdict-badge ' + (colors[ea.verdict] || 'yellow');
+  badge.textContent = ea.verdict_label;
+
+  // Verdict text
+  document.getElementById('equityVerdictText').textContent = ea.verdict_text;
+
+  // Resale badge
+  const rb = document.getElementById('equityResaleBadge');
+  rb.className = 'equity-resale-badge ' + ea.resale_strength;
+  rb.textContent = ea.resale_strength;
+  document.getElementById('equityResaleNote').textContent =
+    ea.resale_strength === 'Strong' ? '— this vehicle type holds value well' :
+    ea.resale_strength === 'Weak'   ? '— this vehicle type loses value faster' : '';
+
+  // SVG chart
+  const curve = ea.curve;
+  const maxVal = Math.max(...curve.map(r => Math.max(r.value, r.balance))) * 1.05;
+  const W = 600, H = 160, PAD_LEFT = 40, PAD_TOP = 12, PAD_BOTTOM = 24, PAD_RIGHT = 10;
+  const chartW = W - PAD_LEFT - PAD_RIGHT;
+  const chartH = H - PAD_TOP - PAD_BOTTOM;
+  const n = curve.length - 1;
+
+  function px(year) { return PAD_LEFT + (year / n) * chartW; }
+  function py(val)  { return PAD_TOP + chartH - (val / maxVal) * chartH; }
+
+  // Build underwater fill area
+  let fillPath = '';
+  const underwater = curve.filter(r => r.equity < 0);
+  if (underwater.length > 0) {
+    // Find crossing points and shade the underwater region
+    const pts = curve.map(r => ({ x: px(r.year), yv: py(r.value), yb: py(r.balance), eq: r.equity }));
+    fillPath = `<path fill="rgba(239,68,68,0.12)" stroke="none" d="`;
+    // Top: loan balance path through underwater region
+    let started = false;
+    for (let i = 0; i < pts.length; i++) {
+      if (pts[i].eq < 0) {
+        if (!started) { fillPath += `M ${pts[i].x} ${pts[i].yb} `; started = true; }
+        else fillPath += `L ${pts[i].x} ${pts[i].yb} `;
+      }
+    }
+    // Bottom: value path back through underwater region
+    for (let i = pts.length - 1; i >= 0; i--) {
+      if (pts[i].eq < 0) fillPath += `L ${pts[i].x} ${pts[i].yv} `;
+    }
+    fillPath += `Z"/>`;
+  }
+
+  // Build line paths
+  const valuePts  = curve.map(r => `${px(r.year)},${py(r.value)}`).join(' ');
+  const balancePts = curve.map(r => `${px(r.year)},${py(r.balance)}`).join(' ');
+
+  // Y-axis labels
+  const yLabels = [0, 0.25, 0.5, 0.75, 1.0].map(f => {
+    const val = Math.round(maxVal * f / 1000) * 1000;
+    const y = py(maxVal * f);
+    return `<text x="${PAD_LEFT - 4}" y="${y + 4}" text-anchor="end" font-size="10" fill="#8499b0">$${val >= 1000 ? (val/1000)+'k' : val}</text>
+    <line x1="${PAD_LEFT}" y1="${y}" x2="${W - PAD_RIGHT}" y2="${y}" stroke="#1e2d3d" stroke-width="1"/>`;
+  }).join('');
+
+  // X-axis labels
+  const xLabels = curve.map(r =>
+    `<text x="${px(r.year)}" y="${H - 4}" text-anchor="middle" font-size="10" fill="#8499b0">Yr ${r.year}</text>`
+  ).join('');
+
+  const svg = `${yLabels}${xLabels}
+    ${fillPath}
+    <polyline points="${balancePts}" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linejoin="round"/>
+    <polyline points="${valuePts}"   fill="none" stroke="#00d4aa" stroke-width="2.5" stroke-linejoin="round"/>`;
+
+  document.getElementById('equityChartSvg').innerHTML = svg;
+}
+
 function toggleFullBreakdown() {
   fullBreakdownOpen = !fullBreakdownOpen;
   const panel = document.getElementById('fullBreakdownPanel');
@@ -3365,6 +3492,7 @@ function renderResult(d) {
   renderReasons(d);
   renderWhatToSay(d);
   renderDimensionCards(d);
+  renderEquityBlock(d);
   renderTermTrapWarning(d);
   renderOTD(d);
   renderTermTrap(d);

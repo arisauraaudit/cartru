@@ -102,6 +102,162 @@ def get_fuel_economy(make, model, year):
 
 # ── True Cost Calculator ──────────────────────────────────────────────────────
 
+# ── Shared depreciation engine ────────────────────────────────────────────────
+# Base retention curve: fraction of original value remaining at end of each year.
+# Based on industry averages (NADA/CarGurus/iSeeCars data).
+# Year 0 = purchase, Year 7 = oldest we model.
+BASE_RETENTION = [1.00, 0.80, 0.67, 0.57, 0.49, 0.43, 0.38, 0.34]
+
+# Resale strength multipliers by body type
+# Trucks and SUVs hold value better; sedans/coupes depreciate faster
+RESALE_STRENGTH = {
+    "truck":  {"label": "Strong",  "multiplier": 1.10},  # trucks retain ~10% more
+    "suv":    {"label": "Strong",  "multiplier": 1.05},  # SUVs slightly above avg
+    "van":    {"label": "Average", "multiplier": 1.00},
+    "hatch":  {"label": "Average", "multiplier": 0.97},
+    "sedan":  {"label": "Average", "multiplier": 0.95},
+    "coupe":  {"label": "Weak",    "multiplier": 0.90},
+    "other":  {"label": "Average", "multiplier": 1.00},
+}
+
+def get_resale_strength(body_type: str) -> dict:
+    """Return resale strength label and multiplier for a body type."""
+    return RESALE_STRENGTH.get(body_type, RESALE_STRENGTH["other"])
+
+def get_vehicle_value_curve(msrp: float, loan_term_months: int, body_type: str = "other") -> list:
+    """
+    Return estimated vehicle value at the end of each year from 0 to loan term.
+    Uses front-loaded depreciation curve with resale strength adjustment.
+    Returns list of {year, value, retention_pct} dicts.
+    """
+    strength = get_resale_strength(body_type)
+    multiplier = strength["multiplier"]
+    years = int(loan_term_months / 12) + 1  # include year 0
+
+    curve = []
+    for y in range(years):
+        if y < len(BASE_RETENTION):
+            base_retention = BASE_RETENTION[y]
+        else:
+            # Beyond year 7: continue declining ~5% per year
+            base_retention = BASE_RETENTION[-1] * (0.95 ** (y - len(BASE_RETENTION) + 1))
+
+        # Apply resale strength (but don't let it exceed 100% or go below 10%)
+        adjusted = max(0.10, min(1.0, base_retention * multiplier))
+        curve.append({
+            "year": y,
+            "value": round(msrp * adjusted),
+            "retention_pct": round(adjusted * 100, 1),
+        })
+    return curve
+
+
+def get_loan_balance_curve(financed_amount: float, apr: float, loan_term_months: int) -> list:
+    """
+    Return remaining loan balance at the end of each year.
+    Uses real amortization math.
+    Returns list of {year, balance} dicts.
+    """
+    monthly_rate = apr / 12
+    n = loan_term_months
+    curve = []
+
+    if monthly_rate == 0:
+        # Zero-interest: linear paydown
+        monthly_payment = financed_amount / n
+        for y in range(int(n / 12) + 1):
+            months_paid = y * 12
+            balance = max(0, financed_amount - monthly_payment * months_paid)
+            curve.append({"year": y, "balance": round(balance)})
+    else:
+        monthly_payment = financed_amount * (monthly_rate * (1 + monthly_rate) ** n) / ((1 + monthly_rate) ** n - 1)
+        for y in range(int(n / 12) + 1):
+            months_paid = y * 12
+            # Balance after months_paid payments
+            if months_paid == 0:
+                balance = financed_amount
+            else:
+                balance = financed_amount * (1 + monthly_rate) ** months_paid - monthly_payment * ((1 + monthly_rate) ** months_paid - 1) / monthly_rate
+                balance = max(0, balance)
+            curve.append({"year": y, "balance": round(balance)})
+    return curve
+
+
+def get_equity_analysis(msrp: float, financed_amount: float, apr: float,
+                        loan_term_months: int, body_type: str = "other") -> dict:
+    """
+    Core equity analysis: compare loan balance vs vehicle value year by year.
+    Returns full curves + summary verdict.
+    """
+    value_curve = get_vehicle_value_curve(msrp, loan_term_months, body_type)
+    balance_curve = get_loan_balance_curve(financed_amount, apr, loan_term_months)
+    resale = get_resale_strength(body_type)
+
+    # Find crossover point (when value > balance = positive equity)
+    crossover_year = None
+    underwater_peak = 0
+    underwater_peak_year = 0
+
+    combined = []
+    for vc, bc in zip(value_curve, balance_curve):
+        equity = vc["value"] - bc["balance"]
+        combined.append({
+            "year": vc["year"],
+            "value": vc["value"],
+            "balance": bc["balance"],
+            "equity": equity,
+        })
+        if equity < 0 and abs(equity) > underwater_peak:
+            underwater_peak = abs(equity)
+            underwater_peak_year = vc["year"]
+        if crossover_year is None and equity >= 0 and vc["year"] > 0:
+            crossover_year = vc["year"]
+
+    # End-of-term equity
+    final = combined[-1]
+    final_equity = final["equity"]
+
+    # Classify
+    # How many years are underwater?
+    underwater_years = sum(1 for row in combined if row["equity"] < 0)
+
+    if final_equity >= 1000:
+        if underwater_years >= 2:
+            verdict = "positive_but_early_risk"
+            verdict_label = "Positive at end, risky early"
+            verdict_color = "yellow"
+            verdict_text = f"You'll likely be underwater for about {underwater_years} years (peak: -${underwater_peak:,} at year {underwater_peak_year}), then recover. At end of term: +${abs(final_equity):,}."
+        else:
+            verdict = "likely_positive"
+            verdict_label = "Likely positive equity"
+            verdict_color = "green"
+            verdict_text = f"At end of term, your vehicle should be worth approximately ${abs(final_equity):,} more than your remaining loan balance."
+    elif final_equity >= -1000:
+        verdict = "breakeven"
+        verdict_label = "Roughly break-even"
+        verdict_color = "yellow"
+        verdict_text = "At end of term, your vehicle value and loan balance should be close to even."
+    else:
+        verdict = "likely_underwater"
+        verdict_label = "Likely underwater"
+        verdict_color = "red"
+        verdict_text = f"At end of term, you may owe approximately ${abs(final_equity):,} more than the vehicle is worth."
+
+    return {
+        "curve": combined,
+        "verdict": verdict,
+        "verdict_label": verdict_label,
+        "verdict_color": verdict_color,
+        "verdict_text": verdict_text,
+        "final_equity": final_equity,
+        "underwater_peak": underwater_peak,
+        "underwater_peak_year": underwater_peak_year,
+        "crossover_year": crossover_year,
+        "resale_strength": resale["label"],
+        "loan_term_years": loan_term_months / 12,
+    }
+
+
 def calculate_true_cost(msrp, fuel_economy, annual_miles=13500, years=None,
                         gas_price=3.45, apr=0.068, loan_term_months=72):
     """
@@ -116,9 +272,9 @@ def calculate_true_cost(msrp, fuel_economy, annual_miles=13500, years=None,
     if years is None:
         years = years_of_loan
 
-    # Depreciation over loan term (49% is typical 5yr; scale proportionally, cap at 70%)
-    depreciation_rate = 0.49 * (years / 5.0)
-    depreciation = round(msrp * min(depreciation_rate, 0.70))
+    # Depreciation: use shared curve, take end-of-term value loss
+    value_at_end = get_vehicle_value_curve(msrp, int(years * 12))[-1]["value"]
+    depreciation = round(msrp - value_at_end)
 
     # Fuel cost
     if fuel_economy and fuel_economy.get("combined_mpg") and fuel_economy["combined_mpg"] != "N/A":
@@ -726,6 +882,27 @@ def _report_inner():
     # Term comparison (uses financed amount, not full price)
     term_comparison = calculate_term_comparison(financed_amount, apr)
 
+    # Equity / underwater analysis
+    # Infer body type from model name for resale strength
+    equity_analysis = None
+    if dealer_price > 0:
+        from collections import defaultdict as _dd
+        _bt = "other"
+        _m = model.lower()
+        if any(k in _m for k in ["truck","pickup","f-150","f150","silverado","sierra","tundra","tacoma","frontier","ram","1500","2500","3500","maverick","ranger","gladiator","ridgeline","cybertruck"]):
+            _bt = "truck"
+        elif any(k in _m for k in ["suv","crossover","rav4","cr-v","equinox","rogue","explorer","highlander","tahoe","suburban","expedition","4runner","bronco","cherokee","wrangler","compass","traverse","acadia","enclave","envision","escalade","xt4","xt5","xt6","gx","rx","mdx","q5","q7","x5","glc","gle","tucson","santa fe","sorento","telluride","forester","outback"]):
+            _bt = "suv"
+        elif any(k in _m for k in ["sedan","camry","accord","civic","corolla","altima","sonata","elantra","jetta","passat","fusion","malibu","s60","a4","3 series","c-class","ct4","ct5"]):
+            _bt = "sedan"
+        elif any(k in _m for k in ["coupe","mustang","camaro","corvette","challenger","charger","supra","brz","corvette","911","taycan"]):
+            _bt = "coupe"
+        elif any(k in _m for k in ["van","sienna","odyssey","carnival","transit","savana"]):
+            _bt = "van"
+        elif any(k in _m for k in ["hatchback","golf","gti","fit","yaris"]):
+            _bt = "hatch"
+        equity_analysis = get_equity_analysis(dealer_price, financed_amount, apr, loan_term, _bt)
+
     # Printable summary
     printable_summary = get_printable_summary(
         {"year": year, "make": make, "model": model},
@@ -791,6 +968,7 @@ def _report_inner():
         "dealer_offer": dealer_offer_f,
         "down_payment": round(down_payment),
         "financed_amount": round(financed_amount),
+        "equity_analysis": equity_analysis,
         "dealer_price_is_estimated": dealer_price_is_estimated,
         "destination_charge": dest_f,
         "dealer_fees": fees_f,
