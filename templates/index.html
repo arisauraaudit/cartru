@@ -38,7 +38,7 @@ a:hover { text-decoration: underline; }
 
 /* ── Header ── */
 .site-header {
-  padding: 52px 0 40px;
+  padding: 36px 0 24px;
   text-align: center;
 }
 .wordmark {
@@ -207,8 +207,8 @@ a:hover { text-decoration: underline; }
   background: #1a2535;
   border: 1.5px solid #2a3a50;
   border-radius: 16px;
-  padding: 28px 28px 24px;
-  margin-bottom: 36px;
+  padding: 24px 24px 20px;
+  margin-bottom: 28px;
 }
 
 /* Year toggle */
@@ -1236,36 +1236,32 @@ a:hover { text-decoration: underline; }
     <div class="trust-badge">100% buyer-funded · No dealer leads · No ads</div>
   </header>
 
-  <!-- ══════════════════════════════════════════ -->
-  <!-- How it works                              -->
-  <!-- ══════════════════════════════════════════ -->
-
-    <a href="#faq" class="faq-jump-link" onclick="document.getElementById('faq').scrollIntoView({behavior:'smooth'});return false;">Questions? See how it works + FAQ ↓</a>
+  <div class="page" style="padding-bottom:0;padding-top:0;">
+    <div style="text-align:center;margin-bottom:20px;">
+      <a href="#hiw" class="faq-jump-link" onclick="document.getElementById('hiw').scrollIntoView({behavior:'smooth'});return false;">Questions? See how it works + FAQ ↓</a>
+    </div>
   </div>
 
-  <!-- ══════════════════════════════════════════ -->
-  <!-- Selection: Year + Brand + Model           -->
-  <!-- ══════════════════════════════════════════ -->
-<!-- Sticky progress bar (wizard only, hidden on results) -->
-<div class="sticky-progress" id="stickyProgress" style="display:none;">
-  <div class="sp-inner">
-    <button class="sp-step done-btn" id="sp1" onclick="goToStep(1)" title="Back to Year">
-      <span class="sp-num">1</span><span class="sp-label">Year</span>
-    </button>
-    <div class="sp-line" id="sl1"></div>
-    <button class="sp-step" id="sp2" onclick="goToStep(2)" title="Back to Brand">
-      <span class="sp-num">2</span><span class="sp-label">Brand</span>
-    </button>
-    <div class="sp-line" id="sl2"></div>
-    <button class="sp-step" id="sp3" onclick="goToStep(3)" title="Back to Model">
-      <span class="sp-num">3</span><span class="sp-label">Model</span>
-    </button>
-    <div class="sp-line" id="sl3"></div>
-    <button class="sp-step" id="sp4" onclick="goToStep(4)" title="View deal">
-      <span class="sp-num">4</span><span class="sp-label">Deal</span>
-    </button>
+  <!-- Sticky progress bar (wizard only, hidden on results) -->
+  <div class="sticky-progress" id="stickyProgress" style="display:none;">
+    <div class="sp-inner">
+      <button class="sp-step done-btn" id="sp1" onclick="goToStep(1)" title="Back to Year">
+        <span class="sp-num">1</span><span class="sp-label">Year</span>
+      </button>
+      <div class="sp-line" id="sl1"></div>
+      <button class="sp-step" id="sp2" onclick="goToStep(2)" title="Back to Brand">
+        <span class="sp-num">2</span><span class="sp-label">Brand</span>
+      </button>
+      <div class="sp-line" id="sl2"></div>
+      <button class="sp-step" id="sp3" onclick="goToStep(3)" title="Back to Model">
+        <span class="sp-num">3</span><span class="sp-label">Model</span>
+      </button>
+      <div class="sp-line" id="sl3"></div>
+      <button class="sp-step" id="sp4" onclick="goToStep(4)" title="View deal">
+        <span class="sp-num">4</span><span class="sp-label">Deal</span>
+      </button>
+    </div>
   </div>
-</div>
 
   <section class="selection-section">
     <!-- Year pills -->
