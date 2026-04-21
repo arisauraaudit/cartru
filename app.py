@@ -860,15 +860,16 @@ def grouped_models():
         for model in all_models:
             parts = model.split()
             first = parts[0]
-            # BMW-style pure numeric prefix (e.g. "330i", "540i") → group by series number
-            if first[0].isdigit() and any(c.isdigit() for c in first):
-                # Extract leading digits for series grouping (330i → "3 Series", 540i → "5 Series")
-                leading = ''.join(c for c in first if c.isdigit())
-                if len(leading) >= 3:
-                    series_num = leading[0]  # First digit = series (3xx → 3 Series)
-                    family = f"{series_num} Series"
-                else:
-                    family = first
+            # BMW-style numeric prefix (e.g. "330i", "540i") → group by series number
+            # Only applies when first token is a 3-digit number followed by a letter (BMW naming)
+            # Does NOT apply to truck payload numbers like 1500, 2500, 3500
+            import re as _re
+            if _re.match(r'^\d{3}[a-zA-Z]', first):
+                series_num = first[0]  # First digit = series (3xx → 3 Series)
+                family = f"{series_num} Series"
+            elif first.isdigit():
+                # Pure number like 1500, 2500 — use as-is (will be normalized by frontend dict)
+                family = first
             else:
                 # Use first word as family (handles RAV4, GR86, 4Runner correctly)
                 family = first
