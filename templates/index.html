@@ -2420,26 +2420,6 @@ function renderGroupedModels(grouped, query) {
   const container = document.getElementById('modelAccordion');
   if (!container) return;
 
-  // Count total unique trims
-  const totalTrims = grouped.reduce((sum, g) => sum + g.trims.length, 0);
-  const useFlat = totalTrims <= 8;
-
-  if (useFlat) {
-    // Flat chips — just list all trims directly
-    const allTrims = grouped.flatMap(g => g.trims);
-    const filtered = query ? allTrims.filter(t => t.toLowerCase().includes(query.toLowerCase())) : allTrims;
-    if (!filtered.length) {
-      container.innerHTML = '<div style="color:#6a8599;font-size:0.875rem;padding:8px 0;">No models match your search</div>';
-      return;
-    }
-    container.innerHTML = `<div class="flat-chips-wrap">${
-      filtered.map(trim =>
-        `<button class="flat-trim-chip ${trim === state.model ? 'trim-selected' : ''}" onclick="selectModelTrim('${escAttr(trim)}')">${trim}</button>`
-      ).join('')
-    }</div>`;
-    return;
-  }
-
   const allTrims = grouped.flatMap(g => g.trims);
   const lq = (query || '').toLowerCase();
   const filteredTrims = lq ? allTrims.filter(t => t.toLowerCase().includes(lq)) : allTrims;
