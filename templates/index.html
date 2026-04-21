@@ -379,6 +379,12 @@ a:hover { text-decoration: underline; }
 .accordion-trim-chip.trim-selected { border-color: #00d4aa; background: rgba(0,212,170,0.1); color: #00d4aa; }
 
 /* Flat chips mode (≤8 total trims) */
+/* Body type groups in model picker */
+.body-group-list { display: flex; flex-direction: column; gap: 12px; }
+.body-group { }
+.body-group-label { font-size: 0.79rem; font-weight: 700; color: #8499b0; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+.body-group-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+
 .flat-chips-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
 .flat-trim-chip {
   background: #0f1724;
@@ -2035,6 +2041,38 @@ function loadGroupedModels() {
     });
 }
 
+// ── Body type grouping for large model lists ─────────────
+const BODY_GROUPS = [
+  { key: 'ev',      label: '⚡ EV / Hybrid',       keywords: ['hybrid','electric','ev','plug-in','phev','bev','lightning','ioniq','bz4x','leaf','model 3','model s','model x','model y','cybertruck','lucid','rivian','e-tron','eq','i4','ix','ariya','bolt','equinox ev'] },
+  { key: 'truck',   label: '🛻 Truck / Van',        keywords: ['truck','pickup','silverado','sierra','f-150','f-250','f-350','tundra','tacoma','frontier','colorado','canyon','ranger','ram 1500','ram 2500','ram 3500','maverick','ridgeline','transit','express','savana','sprinter','promaster','odyssey','sienna','carnival','van','2wd','4wd'] },
+  { key: 'suv',     label: '🚙 SUV / Crossover',    keywords: ['suv','crossover','rav4','cr-v','escape','equinox','rogue','tucson','santa fe','cx-5','cx-9','cx-50','forester','outback','ascent','traverse','tahoe','suburban','expedition','navigator','sequoia','land cruiser','pathfinder','murano','pilot','passport','telluride','sorento','sportage','blazer','trailblazer','encore','envision','enclave','acadia','yukon','armada','4runner','bronco','wrangler','gladiator','cherokee','compass','renegade','edge','explorer','flex','highlander','venza','bx','qx','mdx','rdx','rx','nx','gx','lx','q3','q5','q7','q8','x1','x3','x5','x7','glb','glc','gle','gls','gla','gle'] },
+  { key: 'perf',    label: '🏎 Performance / Sports', keywords: ['coupe','sport','performance','gt','rs','amg','m3','m5','m8','type r','sti','wrx','camaro','mustang','corvette','challenger','charger','gr86','gr','supra','brz','86','370z','400z','TT','r8','911','718','boxster','cayman','macan','panamera','taycan'] },
+  { key: 'sedan',   label: '🚗 Sedan / Hatchback',  keywords: ['sedan','hatchback','camry','accord','civic','corolla','altima','sonata','elantra','malibu','impala','fusion','focus','jetta','passat','golf','mazda3','mazda6','legacy','impreza','lacrosse','regal','verano','cruze','volt','insight','prius','avalon','s60','s90','a4','a6','a8','3 series','5 series','7 series','c-class','e-class','s-class'] },
+  { key: 'other',   label: '📦 Other',              keywords: [] },
+];
+
+function classifyTrimToBodyType(trimName) {
+  const lower = trimName.toLowerCase();
+  for (const group of BODY_GROUPS) {
+    if (group.key === 'other') continue;
+    if (group.keywords.some(kw => lower.includes(kw))) return group.key;
+  }
+  return 'other';
+}
+
+function groupTrimsByBodyType(allTrims) {
+  const buckets = {};
+  BODY_GROUPS.forEach(g => { buckets[g.key] = []; });
+  allTrims.forEach(trim => {
+    const key = classifyTrimToBodyType(trim);
+    buckets[key].push(trim);
+  });
+  // Return only non-empty groups in display order
+  return BODY_GROUPS
+    .filter(g => buckets[g.key].length > 0)
+    .map(g => ({ key: g.key, label: g.label, trims: buckets[g.key] }));
+}
+
 function renderGroupedModels(grouped, query) {
   const container = document.getElementById('modelAccordion');
   if (!container) return;
@@ -2059,46 +2097,39 @@ function renderGroupedModels(grouped, query) {
     return;
   }
 
-  // Accordion mode
+  // Group all trims by body type into buckets, then show chips per bucket
+  const allTrims = grouped.flatMap(g => g.trims);
   const lq = (query || '').toLowerCase();
-  let html = '<div class="accordion-list">';
-  grouped.forEach((family, idx) => {
-    const matchingTrims = lq
-      ? family.trims.filter(t => t.toLowerCase().includes(lq) || family.family.toLowerCase().includes(lq))
-      : family.trims;
+  const filteredTrims = lq ? allTrims.filter(t => t.toLowerCase().includes(lq)) : allTrims;
 
-    if (lq && matchingTrims.length === 0) return; // skip hidden families
+  if (!filteredTrims.length) {
+    container.innerHTML = '<div style="color:#6a8599;font-size:0.875rem;padding:8px 0;">No models match your search</div>';
+    return;
+  }
 
-    const isOpen = openFamilyIndex === idx || (lq && matchingTrims.length > 0) || family.trims.length === 1;
-    const trimCount = family.trims.length;
+  const bodyGroups = groupTrimsByBodyType(filteredTrims);
 
-    html += `<div class="accordion-family ${isOpen ? 'accordion-open' : ''}" id="accordion-family-${idx}">`;
-    if (family.trims.length > 1) {
-      html += `<div class="accordion-family-header" onclick="toggleAccordionFamily(${idx})">
-        <div class="accordion-family-left">
-          <span class="accordion-family-name">${family.family}</span>
-          <span class="accordion-trim-badge">${trimCount} trim${trimCount !== 1 ? 's' : ''}</span>
-        </div>
-        <span class="accordion-chevron">▼</span>
-      </div>`;
-    } else {
-      // Single trim — show header but non-interactive (auto-open)
-      html += `<div class="accordion-family-header" style="cursor:default;">
-        <div class="accordion-family-left">
-          <span class="accordion-family-name">${family.family}</span>
-        </div>
-      </div>`;
-    }
+  // If only one group after filtering, or few total, show flat
+  if (bodyGroups.length === 1 || filteredTrims.length <= 8) {
+    container.innerHTML = `<div class="flat-chips-wrap">${
+      filteredTrims.map(trim =>
+        `<button class="flat-trim-chip ${trim === state.model ? 'trim-selected' : ''}" onclick="selectModelTrim('${escAttr(trim)}')">${trim}</button>`
+      ).join('')
+    }</div>`;
+    return;
+  }
 
-    html += `<div class="accordion-trim-area">
-      <div class="accordion-trim-chips">${
-        matchingTrims.map(trim =>
-          `<button class="accordion-trim-chip ${trim === state.model ? 'trim-selected' : ''}" onclick="selectModelTrim('${escAttr(trim)}')">${trim}</button>`
+  // Render grouped buckets
+  let html = '<div class="body-group-list">';
+  bodyGroups.forEach(bg => {
+    html += `<div class="body-group">
+      <div class="body-group-label">${bg.label}</div>
+      <div class="body-group-chips">${
+        bg.trims.map(trim =>
+          `<button class="flat-trim-chip ${trim === state.model ? 'trim-selected' : ''}" onclick="selectModelTrim('${escAttr(trim)}')">${trim}</button>`
         ).join('')
       }</div>
     </div>`;
-
-    html += `</div>`; // /accordion-family
   });
   html += '</div>';
   container.innerHTML = html;
