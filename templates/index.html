@@ -2448,8 +2448,34 @@ function renderGroupedModels(grouped, query) {
     return;
   }
 
-  // Small lists: flat chips
+  // Small lists: collapse to family names first, then show as flat chips or grouped
   if (filteredTrims.length <= 8) {
+    // Still run through family grouping so e.g. "1500 2WD / 1500 4WD" → one "Ram 1500" chip
+    const smallGroups = groupModelsByBodyType(filteredTrims);
+    // If all one group OR grouping produced meaningful family collapse, show grouped
+    const totalFamilies = smallGroups.reduce((n, g) => n + g.models.length, 0);
+    if (totalFamilies < filteredTrims.length || smallGroups.length > 1) {
+      // Show grouped (body type buckets) even for small lists
+      let html = '<div class="body-group-list">';
+      smallGroups.forEach(bg => {
+        html += `<div class="body-group">
+          <div class="body-group-label">${bg.label}</div>
+          <div class="body-group-chips">`;
+        bg.models.forEach(m => {
+          const isSelected = m.trims.some(t => t === state.model);
+          if (m.trims.length === 1) {
+            html += `<button class="flat-trim-chip ${isSelected ? 'trim-selected' : ''}" onclick="selectModelTrim('${escAttr(m.trims[0])}')">${m.base}</button>`;
+          } else {
+            html += `<button class="flat-trim-chip base-model-btn ${isSelected ? 'trim-selected' : ''}" onclick="expandBaseModel(this,'${escAttr(m.base)}',${JSON.stringify(m.trims).replace(/"/g,'&quot;')})">${m.base} <span class="base-variant-count">${m.trims.length}</span></button>`;
+          }
+        });
+        html += `</div><div class="trim-expand-area" id="trim-expand-${escAttr(bg.key)}-sm" style="display:none;"></div></div>`;
+      });
+      html += '</div>';
+      container.innerHTML = html;
+      return;
+    }
+    // Truly small + single family: flat raw chips
     container.innerHTML = `<div class="flat-chips-wrap">${
       filteredTrims.map(trim =>
         `<button class="flat-trim-chip ${trim === state.model ? 'trim-selected' : ''}" onclick="selectModelTrim('${escAttr(trim)}')">${trim}</button>`
