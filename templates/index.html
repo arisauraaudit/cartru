@@ -2064,10 +2064,39 @@ const BODY_GROUPS = [
 // Variant suffixes to strip when extracting base model name
 const VARIANT_SUFFIXES = /\b(HEV|PHEV|EV|AWD|FWD|4WD|2WD|4x4|4x2|FF|RWD|XWD|LE|SE|XLE|XSE|SR|SR5|TRD|Limited|Platinum|Premium|LX|EX|EX-L|Sport|Touring|Base|FX|Hybrid|Electric|Long Range|Standard|Performance|Plus|Max|Pro|Prime|Plug-in|xDrive|sDrive|quattro|MHEV|FHEV|Gran Coupe|Gran Turismo|\d+\s*in\s*\w+|\(.*?\)|\d{2,4}[a-z]*)\b/gi;
 
-function extractBaseName(trimStr) {
-  // Remove variant suffixes to get the base model name
-  // E.g. "Camry HEV AWD LE" → "Camry", "4Runner 4WD" → "4Runner"
-  return trimStr.replace(VARIANT_SUFFIXES, '').replace(/\s+/g, ' ').trim();
+// Words/patterns that end the family name — everything after these is detail
+const FAMILY_STOP = /\b(HEV|PHEV|EV|AWD|FWD|4WD|2WD|RWD|XWD|FF|Pickup|Hybrid|Prime|Electric|Plug-in|ER\d|SR|LE|SE|SEL|XLE|XSE|XL|XLT|LT|LTZ|LX|EX|DX|Base|Pro|Limited|Platinum|Premium|Touring|Plus|Max|Prestige|Preferred|Advance|Value|TRD|AT4|Z71|Denali|Lariat|King Ranch|Laramie|Longhorn|Rebel|TrailHawk|Overland|Summit|Rubicon|Sahara|Willys|Trail|Night|Black|Carbon|Pack|Badlands|Sasquatch|Outer Banks|Raptor|Tremor|Crew Cab|Reg Cab|Regular Cab|Super Cab|Super Crew|Double Cab|Access Cab|Extended Cab|1500|2500|3500|\d+\s*cyl|xDrive|sDrive|quattro|\d{4}i|\d+e|Gran Coupe|Gran Turismo|\(.*)\b/i;
+
+function extractFamilyName(trimStr) {
+  // Special cases first
+  const specialMap = {
+    'F-150 Lightning': 'F-150 Lightning',
+    'F150 Lightning': 'F-150 Lightning',
+    'GR 86': 'GR86',
+    'GR86': 'GR86',
+    'GR Corolla': 'GR Corolla',
+    'GR Supra': 'GR Supra',
+    'Corolla Cross': 'Corolla Cross',
+    'Corolla Hatchback': 'Corolla Hatchback',
+    'Crown Signia': 'Crown Signia',
+    'Bronco Sport': 'Bronco Sport',
+  };
+  for (const [key, val] of Object.entries(specialMap)) {
+    if (trimStr.toLowerCase().startsWith(key.toLowerCase())) return val;
+  }
+
+  // Normalize F150 → F-150
+  let s = trimStr.replace(/\bF150\b/g, 'F-150');
+
+  // Find where the family name ends
+  const match = s.match(FAMILY_STOP);
+  if (match && match.index > 0) {
+    s = s.substring(0, match.index).trim().replace(/[\s\-/,]+$/, '');
+  }
+
+  // Clean up remaining suffixes
+  s = s.replace(/\s+/g, ' ').trim();
+  return s || trimStr.split(' ')[0];
 }
 
 function classifyBaseModelToBodyType(baseName) {
@@ -2083,7 +2112,7 @@ function groupModelsByBodyType(allTrims) {
   // Step 1: extract unique base names + map each to its full trim strings
   const baseToTrims = {};
   allTrims.forEach(trim => {
-    const base = extractBaseName(trim) || trim;
+    const base = extractFamilyName(trim) || trim;
     if (!baseToTrims[base]) baseToTrims[base] = [];
     if (!baseToTrims[base].includes(trim)) baseToTrims[base].push(trim);
   });
