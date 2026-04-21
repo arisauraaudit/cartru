@@ -2064,37 +2064,130 @@ const BODY_GROUPS = [
 // Variant suffixes to strip when extracting base model name
 const VARIANT_SUFFIXES = /\b(HEV|PHEV|EV|AWD|FWD|4WD|2WD|4x4|4x2|FF|RWD|XWD|LE|SE|XLE|XSE|SR|SR5|TRD|Limited|Platinum|Premium|LX|EX|EX-L|Sport|Touring|Base|FX|Hybrid|Electric|Long Range|Standard|Performance|Plus|Max|Pro|Prime|Plug-in|xDrive|sDrive|quattro|MHEV|FHEV|Gran Coupe|Gran Turismo|\d+\s*in\s*\w+|\(.*?\)|\d{2,4}[a-z]*)\b/gi;
 
-// Words/patterns that end the family name — everything after these is detail
-const FAMILY_STOP = /\b(HEV|PHEV|EV|AWD|FWD|4WD|2WD|RWD|XWD|FF|Pickup|Hybrid|Prime|Electric|Plug-in|ER\d|SR|LE|SE|SEL|XLE|XSE|XL|XLT|LT|LTZ|LX|EX|DX|Base|Pro|Limited|Platinum|Premium|Touring|Plus|Max|Prestige|Preferred|Advance|Value|TRD|AT4|Z71|Denali|Lariat|King Ranch|Laramie|Longhorn|Rebel|TrailHawk|Overland|Summit|Rubicon|Sahara|Willys|Trail|Night|Black|Carbon|Pack|Badlands|Sasquatch|Outer Banks|Raptor|Tremor|Crew Cab|Reg Cab|Regular Cab|Super Cab|Super Crew|Double Cab|Access Cab|Extended Cab|1500|2500|3500|\d+\s*cyl|xDrive|sDrive|quattro|\d{4}i|\d+e|Gran Coupe|Gran Turismo|\(.*)\b/i;
+// ── Model family normalization ────────────────────────────
+// Dict maps any trim string prefix → canonical family name
+// Rule: if a trim string starts with a key (case-insensitive), map to value.
+// Distinct products that deserve their own top-level chip are listed separately.
+// Anything else: strip variant suffixes to get family.
+
+const FAMILY_MAP = {
+  // Ford
+  'F-150 Lightning': 'F-150 Lightning',
+  'F150 Lightning':  'F-150 Lightning',
+  'F150 Pickup':     'F-150',
+  'F150 RA':         'F-150',  // RAPTOR
+  'F150':            'F-150',
+  'Bronco Sport':    'Bronco Sport',
+  'Bronco':          'Bronco',
+  'Mustang Mach-E':  'Mustang Mach-E',
+  'Mustang Dark Horse': 'Mustang',
+  'Mustang GTD':     'Mustang',
+  'Mustang':         'Mustang',
+  'Maverick Lobo':   'Maverick',
+  'Maverick':        'Maverick',
+
+  // Chevrolet
+  'Blazer EV':       'Blazer EV',
+  'Blazer':          'Blazer',
+  'Colorado ZR2':    'Colorado',
+  'Colorado':        'Colorado',
+  'Corvette E-Ray':  'Corvette',
+  'Corvette Z06':    'Corvette',
+  'Corvette ZR1':    'Corvette',
+  'Corvette':        'Corvette',
+  'Equinox EV':      'Equinox EV',
+  'Equinox':         'Equinox',
+  'Silverado EV':    'Silverado EV',
+  'Silverado':       'Silverado',
+  'Trax':            'Trax',
+  'Trailblazer':     'Trailblazer',
+
+  // GMC
+  'Hummer EV Pickup': 'Hummer EV Pickup',
+  'Hummer EV SUV':    'Hummer EV SUV',
+  'Canyon AT4X':      'Canyon',
+  'Canyon':           'Canyon',
+  'Sierra EV':        'Sierra EV',
+  'Sierra Cab':       'Sierra',
+  'Sierra':           'Sierra',
+
+  // Dodge
+  'Charger Daytona':  'Charger',
+  'Charger':          'Charger',
+  'Durango SRT':      'Durango',
+  'Durango':          'Durango',
+
+  // RAM (model names are just numbers)
+  '1500':             'Ram 1500',
+  '2500':             'Ram 2500',
+  '3500':             'Ram 3500',
+
+  // Toyota
+  'GR Corolla':       'GR Corolla',
+  'GR Supra':         'GR Supra',
+  'GR 86':            'GR86',
+  'GR86':             'GR86',
+  'Corolla Cross':    'Corolla Cross',
+  'Corolla Hatchback':'Corolla Hatchback',
+  'Corolla':          'Corolla',
+  'Crown Signia':     'Crown Signia',
+  'Crown':            'Crown',
+  'bZ4X':             'bZ4X',
+  'RAV4':             'RAV4',
+  'Camry':            'Camry',
+  'Highlander':       'Highlander',
+  'Tacoma':           'Tacoma',
+  'Tundra':           'Tundra',
+  'Prius Prime':      'Prius Prime',
+  'Prius':            'Prius',
+  '4Runner':          '4Runner',
+
+  // BMW series grouping
+  '228':  '2 Series', '230': '2 Series', '240': '2 Series', 'M2': 'M2',
+  '330':  '3 Series', '340': '3 Series', 'M3': 'M3',
+  '430':  '4 Series', '440': '4 Series', 'M4': 'M4',
+  '530':  '5 Series', '540': '5 Series', '550': '5 Series', 'M5': 'M5',
+  '740':  '7 Series', '750': '7 Series', '760': '7 Series',
+  '840':  '8 Series', '850': '8 Series', 'M8': 'M8',
+  'i4':   'i4', 'i5': 'i5', 'i7': 'i7',
+  'iX':   'iX',
+  'X1':   'X1', 'X2': 'X2', 'X3': 'X3', 'X4': 'X4',
+  'X5':   'X5', 'X6': 'X6', 'X7': 'X7',
+  'Z4':   'Z4',
+
+  // Kia
+  'EV6':  'EV6', 'EV9': 'EV9',
+
+  // Hyundai
+  'IONIQ 5':  'IONIQ 5',
+  'IONIQ 6':  'IONIQ 6',
+  'IONIQ 9':  'IONIQ 9',
+  'Ioniq 5':  'IONIQ 5',
+  'Ioniq 6':  'IONIQ 6',
+  'Tucson PHEV': 'Tucson',
+  'Santa Cruz': 'Santa Cruz',
+};
+
+// Suffixes to strip when FAMILY_MAP doesn't have a match
+const FAMILY_STOP = /\b(HEV|PHEV|EV|AWD|FWD|4WD|2WD|RWD|XWD|FF|Pickup|Hybrid|Prime|Electric|Plug-in|ER\d|SR|LE|SE|SEL|XLE|XSE|XL|XLT|LT|LTZ|LX|EX|DX|Base|Pro|Limited|Platinum|Premium|Touring|Plus|Max|Prestige|Preferred|TRD|AT4|Z71|Denali|Lariat|King Ranch|Laramie|Longhorn|Rebel|TrailHawk|Overland|Summit|Rubicon|Sahara|Willys|Trail|Badlands|Sasquatch|Outer Banks|Raptor|Tremor|ZR2|Bison|AT4X|AEV|Scat Pack|Daytona|Dark Horse|GTD|E-Ray|Z06|ZR1|Carbon Aero|Crew Cab|Reg Cab|Regular Cab|Super Cab|Super Crew|Double Cab|Access Cab|Extended Cab|Cab Chassis|1500|2500|3500|\d+\s*cyl|xDrive|sDrive|quattro|\d{3,4}i|\d+e|\d+[a-z]|Gran Coupe|Gran Turismo|Sedan|Coupe|Convertible|Wagon|\(.*)\b/i;
 
 function extractFamilyName(trimStr) {
-  // Special cases first
-  const specialMap = {
-    'F-150 Lightning': 'F-150 Lightning',
-    'F150 Lightning': 'F-150 Lightning',
-    'GR 86': 'GR86',
-    'GR86': 'GR86',
-    'GR Corolla': 'GR Corolla',
-    'GR Supra': 'GR Supra',
-    'Corolla Cross': 'Corolla Cross',
-    'Corolla Hatchback': 'Corolla Hatchback',
-    'Crown Signia': 'Crown Signia',
-    'Bronco Sport': 'Bronco Sport',
-  };
-  for (const [key, val] of Object.entries(specialMap)) {
-    if (trimStr.toLowerCase().startsWith(key.toLowerCase())) return val;
+  // Normalize common variants
+  let s = trimStr.replace(/\bF150\b/gi, 'F-150').trim();
+
+  // Dict lookup — try longest matching prefix first
+  const keys = Object.keys(FAMILY_MAP).sort((a, b) => b.length - a.length);
+  for (const key of keys) {
+    if (s.toLowerCase().startsWith(key.toLowerCase())) {
+      return FAMILY_MAP[key];
+    }
   }
 
-  // Normalize F150 → F-150
-  let s = trimStr.replace(/\bF150\b/g, 'F-150');
-
-  // Find where the family name ends
+  // Fallback: strip variant suffixes
   const match = s.match(FAMILY_STOP);
   if (match && match.index > 0) {
     s = s.substring(0, match.index).trim().replace(/[\s\-/,]+$/, '');
   }
-
-  // Clean up remaining suffixes
   s = s.replace(/\s+/g, ' ').trim();
   return s || trimStr.split(' ')[0];
 }
