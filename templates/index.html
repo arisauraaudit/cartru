@@ -3084,7 +3084,11 @@ function checkDeal() {
         renderResult(data);
       } catch (renderErr) {
         console.error('renderResult error:', renderErr);
-        throw renderErr;
+        // Show error visibly so we can debug
+        const errContainer = document.getElementById('riskContent');
+        if (errContainer) errContainer.innerHTML = '<div style="color:#ef4444;padding:20px;font-size:0.9rem;background:#1a2535;border-radius:8px;">Render error: ' + renderErr.message + '</div>';
+        showSectionContent('sec-risk');
+        return; // Don't re-throw, show the error
       }
       // Clear updating states (new structure)
       const rlEl = document.getElementById('resultLoading'); if(rlEl) rlEl.style.display='none';
