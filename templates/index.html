@@ -2868,7 +2868,7 @@ function loadFromUrl() {
 
   // Show deal section
   populateDealSection();
-  openSection('dealSection');
+  showDealInputs();  // dealSection renamed
 
   // Fill in values
   if (offer) document.getElementById('dealerOffer').value = offer;
@@ -3112,7 +3112,7 @@ function checkDeal() {
 // ══════════════════════════════════════════════════════════
 
 function editOffer() {
-  scrollToEl('dealSection');
+  scrollToSection('sec-deal');
   setTimeout(() => document.getElementById('dealerOffer').focus(), 300);
   track('edit_offer');
 }
