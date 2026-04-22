@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="build" content="2026-04-21-v2">
+<meta name="build" content="2026-04-22-v5section">
 <meta name="description" content="Free car deal checker. See if your dealer's offer is fair before you sign — 100% on your side, no dealer leads.">
 <meta property="og:title" content="WheelTheDeal — Don't Sign a Bad New-Car Deal">
 <meta property="og:description" content="Check if your dealer's offer is fair in seconds. Free, independent, buyer-funded.">
@@ -18,6 +18,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
@@ -1280,375 +1281,262 @@ a:hover { text-decoration: underline; }
   max-height: 30000px;
   opacity: 1;
 }
+
+/* ── 5-Section additions ── */
+.page-section { margin-bottom: 40px; scroll-margin-top: 60px; }
+.section-heading { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #4a6070; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #1e2d3d; }
+.section-placeholder { color: #4a6070; font-size: 0.9rem; padding: 28px 20px; text-align: center; background: #1a2535; border-radius: 12px; border: 1.5px dashed #2a3a50; }
+.section-updating { color: #8499b0; font-size: 0.9rem; padding: 20px; text-align: center; background: #1a2535; border-radius: 12px; border: 1.5px dashed #2a3a50; animation: pulse-update 1.5s ease-in-out infinite; }
+@keyframes pulse-update { 0%,100%{opacity:0.5;}50%{opacity:1;} }
+.deal-section-card { background: #1a2535; border: 1.5px solid #2a3a50; border-radius: 16px; padding: 24px 24px 20px; }
+.btn-check-hidden { display: none !important; }
+/* Unified nav */
+.unified-nav { display: flex; align-items: center; gap: 4px; flex-wrap: nowrap; justify-content: center; max-width: 780px; margin: 0 auto; }
+
 </style>
 </head>
 <body>
-<div class="page" style="padding-bottom:0;">
 
-  <!-- ── Header ── -->
+<!-- ── Header ── -->
+<div class="page" style="padding-bottom:0;">
   <header class="site-header" id="siteHeader">
     <h1>Don't sign a <em>bad new-car deal.</em></h1>
-    <p>Check if your dealer's offer is fair — free, on your side.</p>
+    <p>Pick your car, enter the deal — get a verdict instantly. No button needed.</p>
     <div class="trust-badge">100% buyer-funded · No dealer leads · No ads</div>
   </header>
-
-  <div class="page" style="padding-bottom:0;padding-top:0;">
-    <div style="text-align:center;margin-bottom:20px;">
-      <a href="#hiw" class="faq-jump-link" onclick="document.getElementById('hiw').scrollIntoView({behavior:'smooth'});return false;">Questions? See how it works + FAQ ↓</a>
-    </div>
+  <div style="text-align:center;margin-bottom:20px;">
+    <a href="#hiw" class="faq-jump-link" onclick="document.getElementById('hiw').scrollIntoView({behavior:'smooth'});return false;">Questions? See how it works + FAQ ↓</a>
   </div>
+</div>
 
-  <!-- Unified sticky nav — always present, maps to 5 real sections -->
-  <div class="sticky-progress" id="stickyProgress" style="display:none;">
-    <div class="unified-nav" id="unifiedNav">
-      <button class="rn-btn" onclick="scrollToSection('sec-select')" id="rn-select"><span class="rn-num">1</span> Select</button>
-      <button class="rn-btn" onclick="scrollToSection('sec-deal')"   id="rn-deal"><span class="rn-num">2</span> Deal</button>
-      <button class="rn-btn" onclick="scrollToSection('sec-risk')"   id="rn-risk"><span class="rn-num">3</span> Risk</button>
-      <button class="rn-btn" onclick="scrollToSection('sec-cost')"   id="rn-cost"><span class="rn-num">4</span> Cost</button>
-      <button class="rn-btn" onclick="scrollToSection('sec-details')" id="rn-details"><span class="rn-num">5</span> Details</button>
-    </div>
+<!-- Unified sticky nav (always present) -->
+<div class="sticky-progress" id="stickyProgress" style="display:none;">
+  <div class="unified-nav" id="unifiedNav">
+    <button class="rn-btn active" onclick="scrollToSection('sec-select')" id="rn-select"><span class="rn-num">1</span> Select</button>
+    <button class="rn-btn" onclick="scrollToSection('sec-deal')"    id="rn-deal"><span class="rn-num">2</span> Deal</button>
+    <button class="rn-btn" onclick="scrollToSection('sec-risk')"    id="rn-risk"><span class="rn-num">3</span> Risk</button>
+    <button class="rn-btn" onclick="scrollToSection('sec-cost')"    id="rn-cost"><span class="rn-num">4</span> Cost</button>
+    <button class="rn-btn" onclick="scrollToSection('sec-details')" id="rn-details"><span class="rn-num">5</span> Details</button>
   </div>
+</div>
 
-  <div class="ia-section-marker" id="sec-select"></div>
-  <div class="ia-section-title page-section-title">1 — Select your car</div>
-  <section class="selection-section">
-    <!-- Year pills -->
-    <div class="year-toggle" id="yearToggle"></div>
+<div class="page" style="padding-top:16px;">
 
-    <!-- Brand text grid -->
-    <div class="brand-section-label" style="font-size:0.875rem;color:#6a8599;font-weight:500;">Top 20 brands by US sales</div>
-    <div class="brand-text-grid" id="brandGrid"></div>
-    <div style="margin-top:10px;font-size:0.875rem;color:#8499b0;text-align:center;">
-      Missing a brand? <a href="mailto:hello@wheelthedeal.com" style="color:#00d4aa;">Let us know.</a>
-    </div>
-
-    <!-- Model accordion (appears after brand selected) -->
-    <div class="model-row reveal-panel" id="modelRow">
-      <div class="model-search-wrap">
-        <input
-          type="text"
-          id="modelSearch"
-          class="model-search-input"
-          placeholder="Search models…"
-          oninput="filterModelAccordion(this.value)"
-          autocomplete="off"
-        >
+  <!-- ═══════════════════════════════════════ -->
+  <!-- SECTION 1 — Select                      -->
+  <!-- ═══════════════════════════════════════ -->
+  <section class="page-section" id="sec-select">
+    <div class="section-heading">1 — Select your car</div>
+    <div class="selection-section">
+      <div class="year-toggle" id="yearToggle"></div>
+      <div class="brand-section-label" style="font-size:0.875rem;color:#6a8599;font-weight:500;">Top 20 brands by US sales</div>
+      <div class="brand-text-grid" id="brandGrid"></div>
+      <div style="margin-top:10px;font-size:0.875rem;color:#8499b0;text-align:center;">
+        Missing a brand? <a href="mailto:hello@wheelthedeal.com" style="color:#00d4aa;">Let us know.</a>
       </div>
-      <div id="modelAccordion"></div>
-    </div>
-    <div class="model-loading-msg" id="modelLoadingMsg"></div>
-  </section>
-
-  <!-- ══════════════════════════════════════════ -->
-  <!-- STEP 3: Deal details (reveal panel)        -->
-  <!-- ══════════════════════════════════════════ -->
-  <div class="ia-section-marker" id="sec-deal-input"></div>
-  <div class="ia-section-title page-section-title" id="deal-section-title" style="display:none;">2 — Deal</div>
-  <section class="reveal-panel deal-section" id="dealSection">
-    <!-- Vehicle badge -->
-    <div class="vehicle-crumb" id="vehicleCrumb">
-      <div class="vehicle-crumb-tag">
-        <span class="vehicle-crumb-label" id="crumbModel"></span>
-        <span class="vehicle-crumb-year" id="crumbYear"></span>
-      </div>
-    </div>
-
-    <!-- Dealer price -->
-    <div class="offer-wrap">
-      <label class="offer-label" for="dealerOffer">Dealer price</label>
-      <div class="offer-sublabel" id="offerSublabel">~5% below MSRP · typical average discount — edit to match your offer</div>
-      <div class="offer-input-row">
-        <span class="offer-dollar">$</span>
-        <input type="number" id="dealerOffer" class="offer-input" placeholder="Enter dealer price" min="1000" max="200000" autocomplete="off">
-      </div>
-      <!-- Live signal preview -->
-      <div class="live-signal-preview" id="liveSignalPreview">
-        <div class="live-signal-badge" id="liveSignalBadge"></div>
-        <div class="live-signal-vs" id="liveSignalVs"></div>
-      </div>
-    </div>
-
-    <!-- MSRP suggestion -->
-    <div class="msrp-row" id="msrpRow">
-      <span class="msrp-suggest-label">Suggested MSRP:</span>
-      <span class="msrp-suggest-value" id="msrpDisplay">~$32,000</span>
-      <button class="msrp-edit-btn" onclick="toggleMsrpEdit()" title="Edit MSRP">✎</button>
-      <input type="number" id="msrpInlineInput" class="msrp-inline-input" placeholder="e.g. 32000">
-    </div>
-
-    <!-- Down payment -->
-    <div class="down-payment-row">
-      <label for="downPayment">Down payment</label>
-      <div class="down-input-wrap">
-        <span class="offer-dollar">$</span>
-        <input type="number" id="downPayment" class="down-input" placeholder="0" min="0" max="200000" step="500" autocomplete="off">
-        <span class="down-pct-badge" id="downPctBadge">15%</span>
-      </div>
-      <div class="field-helper" id="downPaymentHelper">~15% of price — edit to match your actual down payment</div>
-    </div>
-
-    <!-- Credit tier + APR + Loan term -->
-    <div class="credit-row">
-      <label for="creditTier">Estimated credit score</label>
-      <div class="credit-tier-pills" id="creditTierPills">
-        <button class="credit-pill" data-tier="excellent" data-apr="5.2" onclick="selectCreditTier(this)">Excellent <span class="credit-score">740+</span></button>
-        <button class="credit-pill active" data-tier="good" data-apr="6.8" onclick="selectCreditTier(this)">Good <span class="credit-score">670–739</span></button>
-        <button class="credit-pill" data-tier="fair" data-apr="10.5" onclick="selectCreditTier(this)">Fair <span class="credit-score">580–669</span></button>
-        <button class="credit-pill" data-tier="poor" data-apr="15.0" onclick="selectCreditTier(this)">Poor <span class="credit-score">&lt;580</span></button>
-      </div>
-      <div class="field-helper" style="margin-top:6px;">Used to estimate a realistic APR for your financing</div>
-    </div>
-
-    <div class="apr-term-row">
-      <div class="apr-group">
-        <label for="aprInput">Interest rate (APR)</label>
-        <div class="apr-input-wrap">
-          <input type="number" id="aprInput" class="apr-input" value="6.8" min="0" max="25" step="0.1" autocomplete="off">
-          <span class="apr-pct-sign">%</span>
+      <div class="model-row reveal-panel" id="modelRow">
+        <div class="model-search-wrap">
+          <input type="text" id="modelSearch" class="model-search-input" placeholder="Search models…"
+            oninput="filterModelAccordion(this.value)" autocomplete="off">
         </div>
-        <div class="field-helper">Auto-set by credit tier — override if you know your rate</div>
+        <div id="modelAccordion"></div>
       </div>
-      <div class="term-group">
-        <label>Loan term</label>
-        <div class="term-pills" id="termPills">
-          <button class="term-pill" data-term="48" onclick="selectTerm(48)">48 mo</button>
-          <button class="term-pill" data-term="60" onclick="selectTerm(60)">60 mo</button>
-          <button class="term-pill selected" data-term="72" onclick="selectTerm(72)">72 mo</button>
-          <button class="term-pill" data-term="84" onclick="selectTerm(84)">84 mo</button>
-        </div>
-        <div class="field-helper">Default 72 mo · click to change</div>
-      </div>
-    </div>
-
-    <!-- Live glance panel -->
-    <div class="glance-panel" id="glancePanel">
-      <div class="glance-title">Your deal at a glance</div>
-      <div class="glance-grid">
-        <div class="glance-item">
-          <div class="glance-label">Monthly payment</div>
-          <div class="glance-value" id="glanceMonthly">—</div>
-        </div>
-        <div class="glance-item">
-          <div class="glance-label">Total interest</div>
-          <div class="glance-value" id="glanceInterest">—</div>
-        </div>
-        <div class="glance-item">
-          <div class="glance-label">Total cost</div>
-          <div class="glance-value" id="glanceTotalCost">—</div>
-        </div>
-        <div class="glance-item">
-          <div class="glance-label">Loan term</div>
-          <div class="glance-value" id="glanceTerm">—</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ZIP -->
-    <div class="zip-section">
-      <div class="zip-hint-row" id="zipHintRow" onclick="toggleZip()">
-        <span>📍 National estimate · Add ZIP for local pricing</span>
-        <span class="zip-expand-icon">▶</span>
-      </div>
-      <div class="zip-input-wrap" id="zipInputWrap">
-        <input type="text" id="zipCode" placeholder="ZIP code" maxlength="5" pattern="[0-9]{5}" autocomplete="postal-code">
-        <span class="zip-confirm-msg" id="zipConfirmMsg"></span>
-      </div>
-    </div>
-
-    <!-- Hidden fuel/usage values -->
-    <input type="hidden" id="annualMiles" value="13500">
-    <input type="hidden" id="gasPrice" value="3.45">
-
-    <!-- More details -->
-    <button class="more-toggle" id="moreToggle" onclick="toggleMore()">
-      <span class="more-arrow" id="moreArrow">▶</span>
-      Add more details
-    </button>
-    <div class="more-panel" id="morePanel">
-      <div class="form-row">
-        <div class="form-group">
-          <label>Destination charge</label>
-          <input type="number" id="destinationCharge" placeholder="~$1,000–$1,500">
-        </div>
-        <div class="form-group">
-          <label>Dealer / doc fee</label>
-          <input type="number" id="dealerFees" placeholder="e.g. 299">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Add-ons (describe)</label>
-          <input type="text" id="addOns" placeholder="e.g. paint protection, tint">
-        </div>
-        <div class="form-group"><!-- spacer --></div>
-      </div>
-    </div>
-
-    <!-- CTA -->
-    <button class="btn-check" id="checkDealBtn" onclick="checkDeal()">Check this deal →</button>
-    <div class="form-disclaimer">
-      Estimates based on market data. Not a guarantee. Always verify with your dealer's full itemized quote.
+      <div class="model-loading-msg" id="modelLoadingMsg"></div>
     </div>
   </section>
 
-  <!-- ══════════════════════════════════════════ -->
-  <!-- STEP 4: Result (reveal panel)              -->
-  <!-- ══════════════════════════════════════════ -->
-  <section class="reveal-panel result-section" id="resultSection">
-
-    <div class="result-top-nav">
-      <div class="result-top-nav-left">
-        <button class="change-btn" onclick="startOver()">← Start over</button>
-        <div class="result-vehicle-label" id="resultVehicleLabel"></div>
+  <!-- ═══════════════════════════════════════ -->
+  <!-- SECTION 2 — Deal                        -->
+  <!-- ═══════════════════════════════════════ -->
+  <section class="page-section" id="sec-deal">
+    <div class="section-heading">2 — Deal</div>
+    <div class="deal-section-card">
+      <div class="vehicle-crumb" id="vehicleCrumb" style="display:none;">
+        <div class="vehicle-crumb-tag">
+          <span class="vehicle-crumb-label" id="crumbModel"></span>
+          <span class="vehicle-crumb-year" id="crumbYear"></span>
+        </div>
+      </div>
+      <div id="dealPlaceholder" class="section-placeholder">Select a car above to set up your deal.</div>
+      <div id="dealInputs" style="display:none;">
+        <div class="offer-wrap">
+          <label class="offer-label" for="dealerOffer">Dealer price</label>
+          <div class="offer-sublabel" id="offerSublabel">~5% below MSRP · typical average discount — edit to match your offer</div>
+          <div class="offer-input-row">
+            <span class="offer-dollar">$</span>
+            <input type="number" id="dealerOffer" class="offer-input" placeholder="Enter dealer price" min="1000" max="200000" autocomplete="off">
+          </div>
+          <div class="live-signal-preview" id="liveSignalPreview">
+            <div class="live-signal-badge" id="liveSignalBadge"></div>
+            <div class="live-signal-vs" id="liveSignalVs"></div>
+          </div>
+        </div>
+        <div class="msrp-row" id="msrpRow">
+          <span class="msrp-suggest-label">Suggested MSRP:</span>
+          <span class="msrp-suggest-value" id="msrpDisplay">~$32,000</span>
+          <button class="msrp-edit-btn" onclick="toggleMsrpEdit()" title="Edit MSRP">✎</button>
+          <input type="number" id="msrpInlineInput" class="msrp-inline-input" placeholder="e.g. 32000">
+        </div>
+        <div class="down-payment-row">
+          <label for="downPayment">Down payment</label>
+          <div class="down-input-wrap">
+            <span class="offer-dollar">$</span>
+            <input type="number" id="downPayment" class="down-input" placeholder="0" min="0" max="200000" step="500" autocomplete="off">
+            <span class="down-pct-badge" id="downPctBadge">15%</span>
+          </div>
+          <div class="field-helper" id="downPaymentHelper">~15% of price — edit to match your actual down payment</div>
+        </div>
+        <div class="credit-row">
+          <label for="creditTier">Estimated credit score</label>
+          <div class="credit-tier-pills" id="creditTierPills">
+            <button class="credit-pill" data-tier="excellent" data-apr="5.2" onclick="selectCreditTier(this)">Excellent <span class="credit-score">740+</span></button>
+            <button class="credit-pill active" data-tier="good" data-apr="6.8" onclick="selectCreditTier(this)">Good <span class="credit-score">670–739</span></button>
+            <button class="credit-pill" data-tier="fair" data-apr="10.5" onclick="selectCreditTier(this)">Fair <span class="credit-score">580–669</span></button>
+            <button class="credit-pill" data-tier="poor" data-apr="15.0" onclick="selectCreditTier(this)">Poor <span class="credit-score">&lt;580</span></button>
+          </div>
+          <div class="field-helper" style="margin-top:6px;">Used to estimate a realistic APR for your financing</div>
+        </div>
+        <div class="apr-term-row">
+          <div class="apr-group">
+            <label for="aprInput">Interest rate (APR)</label>
+            <div class="apr-input-wrap">
+              <input type="number" id="aprInput" class="apr-input" value="6.8" min="0" max="25" step="0.1" autocomplete="off">
+              <span class="apr-pct-sign">%</span>
+            </div>
+            <div class="field-helper">Auto-set by credit tier — override if you know your rate</div>
+          </div>
+          <div class="term-group">
+            <label>Loan term</label>
+            <div class="term-pills" id="termPills">
+              <button class="term-pill" data-term="48" onclick="selectTerm(48)">48 mo</button>
+              <button class="term-pill" data-term="60" onclick="selectTerm(60)">60 mo</button>
+              <button class="term-pill selected" data-term="72" onclick="selectTerm(72)">72 mo</button>
+              <button class="term-pill" data-term="84" onclick="selectTerm(84)">84 mo</button>
+            </div>
+            <div class="field-helper">Default 72 mo · click to change</div>
+          </div>
+        </div>
+        <div class="glance-panel" id="glancePanel">
+          <div class="glance-title">Your deal at a glance</div>
+          <div class="glance-grid">
+            <div class="glance-item"><div class="glance-label">Monthly payment</div><div class="glance-value" id="glanceMonthly">—</div></div>
+            <div class="glance-item"><div class="glance-label">Total interest</div><div class="glance-value" id="glanceInterest">—</div></div>
+            <div class="glance-item"><div class="glance-label">Total cost</div><div class="glance-value" id="glanceTotalCost">—</div></div>
+            <div class="glance-item"><div class="glance-label">Loan term</div><div class="glance-value" id="glanceTerm">—</div></div>
+          </div>
+        </div>
+        <div class="zip-section">
+          <div class="zip-hint-row" id="zipHintRow" onclick="toggleZip()">
+            <span>📍 National estimate · Add ZIP for local pricing</span>
+            <span class="zip-expand-icon">▶</span>
+          </div>
+          <div class="zip-input-wrap" id="zipInputWrap">
+            <input type="text" id="zipCode" placeholder="ZIP code" maxlength="5" pattern="[0-9]{5}" autocomplete="postal-code">
+            <span class="zip-confirm-msg" id="zipConfirmMsg"></span>
+          </div>
+        </div>
+        <input type="hidden" id="annualMiles" value="13500">
+        <input type="hidden" id="gasPrice" value="3.45">
+        <button class="more-toggle" id="moreToggle" onclick="toggleMore()">
+          <span class="more-arrow" id="moreArrow">▶</span>
+          Add more details
+        </button>
+        <div class="more-panel" id="morePanel">
+          <div class="form-row">
+            <div class="form-group"><label>Destination charge</label><input type="number" id="destinationCharge" placeholder="~$1,000–$1,500"></div>
+            <div class="form-group"><label>Dealer / doc fee</label><input type="number" id="dealerFees" placeholder="e.g. 299"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Add-ons (describe)</label><input type="text" id="addOns" placeholder="e.g. paint protection, tint"></div>
+            <div class="form-group"><!-- spacer --></div>
+          </div>
+        </div>
+        <!-- Hidden fallback button (not visible) -->
+        <button class="btn-check-hidden" id="checkDealBtn" onclick="checkDeal()">Check this deal</button>
+        <div style="font-size:0.875rem;color:#8499b0;text-align:center;margin-top:8px;">Analysis updates automatically as you edit.</div>
       </div>
     </div>
+  </section>
 
-    <!-- Loading -->
-    <div class="spinner" id="resultLoading">Analyzing your deal…</div>
-
-    <!-- Result content -->
-    <div id="resultContent" class="hidden">
-      <div class="ia-section-marker" id="sec-car"></div>
-
-      <!-- ─────────────────────────────────────── -->
-      <!-- RISK section starts here -->
-      <div class="ia-section-marker" id="sec-risk"></div>
-      <div class="ia-section-title">3 — Risk</div>
-      <!-- ─────────────────────────────────────── -->
-      <!-- 1. HERO VERDICT CARD                    -->
-      <!-- ─────────────────────────────────────── -->
+  <!-- ═══════════════════════════════════════ -->
+  <!-- SECTION 3 — Risk                        -->
+  <!-- ═══════════════════════════════════════ -->
+  <section class="page-section" id="sec-risk">
+    <div class="section-heading">3 — Risk</div>
+    <div id="riskPlaceholder" class="section-placeholder">Select a car and deal terms to see the risk on this offer.</div>
+    <div id="riskContent" style="display:none;">
+      <!-- Loading spinner -->
+      <div class="spinner" id="riskLoading" style="display:none;">Analyzing your deal…</div>
+      <!-- Hero verdict card (populated by renderResult) -->
       <div class="hero-verdict-card" id="heroVerdictCard">
-
-        <!-- Signal block sits inside hero card -->
         <div id="signalBlock" class="signal-block green">
           <div class="signal-icon" id="signalIcon">🟢</div>
           <div class="signal-body">
             <div class="signal-name" id="signalName">LOOKS FAIR</div>
             <div class="signal-explanation" id="signalExplanation"></div>
-            <!-- Monthly cost line rendered by JS -->
             <div class="hero-monthly-cost" id="heroMonthlyCost"></div>
           </div>
         </div>
-
-        <!-- First reason (populated by renderHeroExtras) -->
         <div class="hero-first-reason hidden" id="heroFirstReason">
           <span class="hfr-arrow">→</span>
           <span id="heroFirstReasonText"></span>
         </div>
-
-        <!-- What to say block inside hero -->
         <div class="hero-say-block" id="whatToSayBox">
           <div class="hero-say-label">💬 What to say next</div>
-          <!-- whatToSayText populated by renderWhatToSay -->
           <div class="say-text" id="whatToSayText"></div>
         </div>
-
-        <!-- Hero actions row -->
         <div class="hero-actions">
           <button class="copy-link-btn" id="copyLinkBtn" onclick="copyShareLink()" title="Copy shareable link">🔗 Copy link</button>
-          <button class="edit-offer-btn" onclick="editOffer()">✎ Edit deal</button>
         </div>
       </div>
-
-      <!-- ─────────────────────────────────────── -->
-      <!-- 2. DIMENSION CARDS (2-column grid)      -->
-      <!-- ─────────────────────────────────────── -->
+      <!-- Dimension cards grid -->
       <div class="dimension-cards-grid">
-
-        <!-- Card 1: Market Position -->
         <div class="dim-card">
           <div class="dim-card-title">📍 Market Position</div>
-
-          <!-- Range numbers (populated by renderRange) -->
           <div class="dim-range-display">
-            <div>
-              <div class="dim-big-number" id="dimOfferDeltaNumber"></div>
-              <div class="dim-card-sub" id="dimOfferDeltaSub"></div>
-            </div>
+            <div><div class="dim-big-number" id="dimOfferDeltaNumber"></div><div class="dim-card-sub" id="dimOfferDeltaSub"></div></div>
             <div class="offer-delta-pill" id="offerDelta"></div>
           </div>
-
-          <!-- Range bar (reuse existing IDs) -->
-          <div class="range-bar-wrap" style="margin: 12px 0 10px;">
+          <div class="range-bar-wrap" style="margin:12px 0 10px;">
             <div class="range-bar-fill" id="rangeBarFill"></div>
             <div class="range-bar-marker" id="rangeBarMarker"></div>
           </div>
           <div class="range-bar-labels" id="rangeBarLabels"></div>
-
-          <!-- Hidden IDs renderRange still writes to (kept for compatibility, not shown) -->
-          <div style="display:none">
-            <div id="rangeTitle"></div>
-            <div id="rangeNumbers"></div>
-            <div id="rangeDisclaimer"></div>
-          </div>
-
+          <div style="display:none"><div id="rangeTitle"></div><div id="rangeNumbers"></div><div id="rangeDisclaimer"></div></div>
           <div class="dim-source-note" id="dimSourceNote">Regional estimate</div>
         </div>
-
-        <!-- Card 2: Financing Reality -->
         <div class="dim-card">
           <div class="dim-card-title">💰 Financing Reality</div>
           <div class="dim-big-number" id="dimMonthlyPayment">—</div>
           <div class="dim-card-sub">monthly payment</div>
-          <div class="dim-finance-row">
-            <span>Total interest</span>
-            <span class="dim-finance-val" id="dimTotalInterest">—</span>
-          </div>
-          <div class="dim-finance-row">
-            <span>Amount financed</span>
-            <span class="dim-finance-val" id="dimFinancedAmount">—</span>
-          </div>
-          <div class="dim-finance-row">
-            <span>APR · Credit tier</span>
-            <span class="dim-finance-val" id="dimAprTier">—</span>
-          </div>
+          <div class="dim-finance-row"><span>Total interest</span><span class="dim-finance-val" id="dimTotalInterest">—</span></div>
+          <div class="dim-finance-row"><span>Amount financed</span><span class="dim-finance-val" id="dimFinancedAmount">—</span></div>
+          <div class="dim-finance-row"><span>APR · Credit tier</span><span class="dim-finance-val" id="dimAprTier">—</span></div>
         </div>
-
-        <!-- Card 3: Safety Record -->
         <div class="dim-card">
           <div class="dim-card-title">🔔 Safety Record</div>
           <div id="dimRecallBadge" class="dim-recall-badge recall-clean">✓ No open recalls</div>
           <div id="dimRecallList"></div>
-          <!-- body-recalls kept accessible for renderRecalls (hidden detail) -->
           <div style="display:none" id="body-recalls"></div>
-          <!-- hidden chevron stub (renderRecalls writes to it) -->
           <div style="display:none" id="chevron-recalls"></div>
         </div>
-
-        <!-- Card 4: Ownership Cost -->
         <div class="dim-card">
           <div class="dim-card-title" id="dimOwnershipTitle">📆 True Cost</div>
           <div class="dim-big-number" id="dimMonthlyAllIn">—</div>
           <div class="dim-card-sub">/mo all-in (payment + fuel + insurance + maint.)</div>
-          <div class="dim-ownership-row">
-            <span>Annual fuel cost</span>
-            <span class="dim-ownership-val" id="dimAnnualFuel">—</span>
-          </div>
-          <div class="dim-ownership-row">
-            <span>Depreciation est.</span>
-            <span class="dim-ownership-val" id="dimDepreciation">—</span>
-          </div>
-          <div class="dim-ownership-row">
-            <span id="dimTermTotalLabel">Total over loan term</span>
-            <span class="dim-ownership-val" id="dimTermTotal">—</span>
-          </div>
+          <div class="dim-ownership-row"><span>Annual fuel cost</span><span class="dim-ownership-val" id="dimAnnualFuel">—</span></div>
+          <div class="dim-ownership-row"><span>Depreciation est.</span><span class="dim-ownership-val" id="dimDepreciation">—</span></div>
+          <div class="dim-ownership-row"><span id="dimTermTotalLabel">Total over loan term</span><span class="dim-ownership-val" id="dimTermTotal">—</span></div>
         </div>
-
-      </div><!-- /dimension-cards-grid -->
-
-      <!-- ─────────────────────────────────────── -->
-      <!-- 3. TERM TRAP WARNING (conditional)      -->
-      <!-- ─────────────────────────────────────── -->
+      </div>
+      <!-- Term trap warning -->
       <div class="term-trap-warning hidden" id="termTrapWarningBlock">
         <div class="ttw-header">⚠️ Long-term loan alert</div>
         <div class="ttw-summary" id="ttwSummaryText"></div>
         <div class="ttw-comparison" id="ttwComparison"></div>
         <button class="ttw-expand-btn" onclick="openFullBreakdown()">See all term options ↓</button>
       </div>
-
-      <!-- ─────────────────────────────────────── -->
-      <!-- 4. EQUITY / UNDERWATER MODULE (RISK section cont.)           -->
-      <!-- ─────────────────────────────────────── -->
+      <!-- Equity / underwater -->
       <div class="equity-block" id="equityBlock" style="display:none;">
         <div class="equity-block-header">
           <div class="equity-block-title">🏦 Will you be underwater?</div>
@@ -1668,38 +1556,20 @@ a:hover { text-decoration: underline; }
           <div class="equity-legend-item"><div class="equity-legend-dot" style="background:#ef4444;"></div> Remaining loan balance</div>
         </div>
       </div>
-
-      <!-- ─────────────────────────────────────── -->
-      <!-- 5. VIEW FULL BREAKDOWN toggle           -->
-      <!-- ─────────────────────────────────────── -->
+      <!-- Full breakdown toggle -->
       <div class="full-breakdown-toggle">
-        <button class="view-breakdown-btn" id="viewBreakdownBtn" onclick="toggleFullBreakdown()">
-          View full breakdown ↓
-        </button>
+        <button class="view-breakdown-btn" id="viewBreakdownBtn" onclick="toggleFullBreakdown()">View full breakdown ↓</button>
       </div>
-
-      <!-- ─────────────────────────────────────── -->
-      <!-- Full breakdown panel (starts collapsed) -->
-      <!-- ─────────────────────────────────────── -->
+      <!-- Full breakdown panel -->
       <div class="full-breakdown-panel" id="fullBreakdownPanel">
-
-        <!-- Full term trap table -->
-        <div class="ia-section-marker" id="sec-deal"></div>
-        <div class="ia-section-title">2 — Deal</div>
-        <div class="ia-section-title" style="display:none;" id="sec-deal-title"></div>
+        <!-- Term trap table -->
         <div class="term-trap-block" id="termTrapBlock" style="margin-bottom:20px;">
           <div class="term-trap-title">🪤 The Term Trap — See What Dealers Hide</div>
           <div class="term-trap-subtitle">Dealers extend loan terms to lower monthly payments — hiding thousands in extra interest.</div>
-          <div class="term-table-scroll">
-            <table class="term-table" id="termTable"></table>
-          </div>
+          <div class="term-table-scroll"><table class="term-table" id="termTable"></table></div>
           <div class="term-trap-summary" id="termTrapSummary"></div>
-          <div class="interest-bars">
-            <div class="interest-bars-title">Total interest paid by term</div>
-            <div id="interestBars"></div>
-          </div>
+          <div class="interest-bars"><div class="interest-bars-title">Total interest paid by term</div><div id="interestBars"></div></div>
         </div>
-
         <!-- OTD breakdown -->
         <div class="section" style="margin-bottom:16px;" id="otdSection">
           <div class="section-header" onclick="toggleSection('otd')">
@@ -1711,40 +1581,7 @@ a:hover { text-decoration: underline; }
             <div class="otd-note">* Taxes and registration vary by state — estimate only.</div>
           </div>
         </div>
-
-        <!-- Ownership cost section (full detail) -->
-        <div class="ia-section-marker" id="sec-cost"></div>
-        <div class="ia-section-title">4 — Cost</div>
-        <div class="ownership-section" id="ownershipSection" style="margin-bottom:20px;">
-          <div class="ownership-title" id="ownershipTitle">N-Year Cost of Ownership</div>
-          <div class="ownership-context" id="ownershipContext"></div>
-
-          <div class="monthly-breakdown">
-            <div class="monthly-breakdown-title">Monthly budget</div>
-            <div class="monthly-line"><span class="ml-label">Loan payment</span><span class="ml-value" id="own-monthly-payment">—</span></div>
-            <div class="monthly-line"><span class="ml-label" id="own-fuel-label">Monthly fuel</span><span class="ml-value" id="own-monthly-fuel">—</span></div>
-            <div class="monthly-line"><span class="ml-label">Insurance (est.)</span><span class="ml-value" id="own-monthly-ins">~$142</span></div>
-            <div class="monthly-line"><span class="ml-label">Maintenance (est.)</span><span class="ml-value" id="own-monthly-maint">—</span></div>
-            <hr class="monthly-divider">
-            <div class="monthly-total-line"><span>Total monthly all-in</span><span class="ml-value" id="own-monthly-total">—</span></div>
-          </div>
-
-          <div class="ownership-annuals">
-            <div class="ownership-stat">
-              <div class="ownership-stat-value" id="own-annual-total">—</div>
-              <div class="ownership-stat-label">Annual total cost</div>
-            </div>
-            <div class="ownership-stat">
-              <div class="ownership-stat-value" id="own-term-total">—</div>
-              <div class="ownership-stat-label" id="own-term-total-label">Total over loan term</div>
-            </div>
-          </div>
-
-          <table class="cost-breakdown-table" id="costBreakdownTable"></table>
-          <div class="cost-note" id="costNote"></div>
-        </div>
-
-        <!-- Fee & add-on review -->
+        <!-- Fee review -->
         <div class="section" style="margin-bottom:16px;" id="feeSection">
           <div class="section-header" onclick="toggleSection('fees')">
             <div class="section-title"><span class="section-icon">🔍</span> Fee &amp; Add-On Review</div>
@@ -1752,7 +1589,6 @@ a:hover { text-decoration: underline; }
           </div>
           <div class="section-body" id="body-fees"></div>
         </div>
-
         <!-- Negotiation script -->
         <div class="section" style="margin-bottom:16px;" id="negotiationSection">
           <div class="section-header" onclick="toggleSection('script')">
@@ -1761,70 +1597,189 @@ a:hover { text-decoration: underline; }
           </div>
           <div class="section-body" id="body-script"></div>
         </div>
-
-        <!-- Vehicle details (nested) -->
-        <div class="section" style="margin-bottom:16px;">
-          <div class="section-header" onclick="toggleSection('vehicle')">
-            <div class="section-title"><span class="section-icon">🚗</span> Vehicle Details</div>
-            <div class="section-chevron open" id="chevron-vehicle">▼</div>
-          </div>
-<div class="ia-section-marker" id="sec-details"></div>
-        <div class="ia-section-title">5 — Details</div>
-          <div class="section-body" id="body-vehicle">
-
-            <!-- Fuel economy -->
-            <div class="section" style="background:#0f1724;margin-bottom:10px;">
-              <div class="section-header" onclick="toggleSection('fuel')" style="padding:14px 18px;">
-                <div class="section-title" style="font-size:1rem;">⛽ Fuel Economy</div>
-                <div class="section-chevron" id="chevron-fuel">▼</div>
-              </div>
-              <div class="section-body hidden" id="body-fuel" style="padding:0 18px 18px;"></div>
-            </div>
-
-            <!-- NHTSA Recalls (full detail, links to dim card data) -->
-            <div class="section" style="background:#0f1724;margin-bottom:10px;">
-              <div class="section-header" onclick="toggleSection('recalls-full')" style="padding:14px 18px;">
-                <div class="section-title" style="font-size:1rem;">🔔 NHTSA Recalls (full detail)</div>
-                <div class="section-chevron" id="chevron-recalls-full">▼</div>
-              </div>
-              <div class="section-body hidden" id="body-recalls-full" style="padding:0 18px 18px;"></div>
-            </div>
-
-          </div>
-        </div>
-
-        <!-- Lease teaser -->
-        <div style="background:#1a2535;border-radius:14px;padding:28px;margin-bottom:16px;text-align:center;" id="leaseTeaser">
-          <div style="font-size:1rem;font-weight:700;color:#eef2f7;margin-bottom:8px;">🚘 Considering a lease instead?</div>
-          <div style="font-size:0.9375rem;color:#b8cce0;line-height:1.65;margin-bottom:20px;max-width:380px;margin-left:auto;margin-right:auto;">
-            Lower monthly payment, nothing owned at the end, and mileage limits that add up fast.<br>
-            Lease calculator coming soon — leave your email and we'll notify you.
-          </div>
-          <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;" id="leaseActions">
-            <input type="email" id="leaseEmail" placeholder="your@email.com" style="background:#0f1724;border:1.5px solid #2a3a50;border-radius:8px;padding:10px 16px;color:#eef2f7;font-size:0.9375rem;font-family:inherit;width:220px;" onkeydown="if(event.key==='Enter')submitLeaseEmail()">
-            <button onclick="submitLeaseEmail()" style="background:#00d4aa;color:#0f1724;border:none;border-radius:8px;padding:10px 20px;font-size:0.9375rem;font-weight:700;cursor:pointer;font-family:inherit;">Notify me</button>
-          </div>
-          <div id="leaseThanks" style="display:none;color:#00d4aa;font-size:0.9375rem;font-weight:600;margin-top:10px;">✓ Got it — we'll let you know when lease comparison launches.</div>
-        </div>
-
-        <!-- Feedback block -->
-        <div class="feedback-block" id="feedbackBlock">
-          <div class="feedback-block-title">Help us improve WheelTheDeal</div>
-          <div class="feedback-block-sub">Tell us what worked, what didn't, or what's missing.<br>Takes 30 seconds.</div>
-          <button class="btn-feedback-open" onclick="openFeedback()">Send feedback</button>
-        </div>
-
-        <!-- Also keep reasons list accessible for renderReasons -->
+        <!-- Hidden: reasons -->
         <div style="display:none" id="reasonsList"></div>
+      </div>
+    </div>
+  </section>
 
-      </div><!-- /fullBreakdownPanel -->
+  <!-- ═══════════════════════════════════════ -->
+  <!-- SECTION 4 — Cost                        -->
+  <!-- ═══════════════════════════════════════ -->
+  <section class="page-section" id="sec-cost">
+    <div class="section-heading">4 — Cost</div>
+    <div id="costPlaceholder" class="section-placeholder">Select a car and deal to see ownership cost.</div>
+    <div id="costContent" style="display:none;">
+      <div class="ownership-section" id="ownershipSection" style="margin-bottom:20px;">
+        <div class="ownership-title" id="ownershipTitle">N-Year Cost of Ownership</div>
+        <div class="ownership-context" id="ownershipContext"></div>
+        <div class="monthly-breakdown">
+          <div class="monthly-breakdown-title">Monthly budget</div>
+          <div class="monthly-line"><span class="ml-label">Loan payment</span><span class="ml-value" id="own-monthly-payment">—</span></div>
+          <div class="monthly-line"><span class="ml-label" id="own-fuel-label">Monthly fuel</span><span class="ml-value" id="own-monthly-fuel">—</span></div>
+          <div class="monthly-line"><span class="ml-label">Insurance (est.)</span><span class="ml-value" id="own-monthly-ins">~$142</span></div>
+          <div class="monthly-line"><span class="ml-label">Maintenance (est.)</span><span class="ml-value" id="own-monthly-maint">—</span></div>
+          <hr class="monthly-divider">
+          <div class="monthly-total-line"><span>Total monthly all-in</span><span class="ml-value" id="own-monthly-total">—</span></div>
+        </div>
+        <div class="ownership-annuals">
+          <div class="ownership-stat"><div class="ownership-stat-value" id="own-annual-total">—</div><div class="ownership-stat-label">Annual total cost</div></div>
+          <div class="ownership-stat"><div class="ownership-stat-value" id="own-term-total">—</div><div class="ownership-stat-label" id="own-term-total-label">Total over loan term</div></div>
+        </div>
+        <table class="cost-breakdown-table" id="costBreakdownTable"></table>
+        <div class="cost-note" id="costNote"></div>
+      </div>
+      <div class="section" style="margin-bottom:16px;">
+        <div class="section-header" onclick="toggleSection('fuel')">
+          <div class="section-title"><span class="section-icon">⛽</span> Fuel Economy</div>
+          <div class="section-chevron" id="chevron-fuel">▼</div>
+        </div>
+        <div class="section-body hidden" id="body-fuel" style="padding:0 18px 18px;"></div>
+      </div>
+    </div>
+  </section>
 
-    </div><!-- /resultContent -->
+  <!-- ═══════════════════════════════════════ -->
+  <!-- SECTION 5 — Details                     -->
+  <!-- ═══════════════════════════════════════ -->
+  <section class="page-section" id="sec-details">
+    <div class="section-heading">5 — Details</div>
+    <div id="detailsPlaceholder" class="section-placeholder">Select a car to see recalls and specs.</div>
+    <div id="detailsContent" style="display:none;">
+      <div class="section" style="margin-bottom:16px;">
+        <div class="section-header" onclick="toggleSection('recalls-full')">
+          <div class="section-title"><span class="section-icon">🔔</span> NHTSA Recalls</div>
+          <div class="section-chevron" id="chevron-recalls-full">▼</div>
+        </div>
+        <div class="section-body hidden" id="body-recalls-full" style="padding:0 18px 18px;"></div>
+      </div>
+      <div style="background:#1a2535;border-radius:14px;padding:28px;margin-bottom:16px;text-align:center;" id="leaseTeaser">
+        <div style="font-size:1rem;font-weight:700;color:#eef2f7;margin-bottom:8px;">🚘 Considering a lease instead?</div>
+        <div style="font-size:0.9375rem;color:#b8cce0;line-height:1.65;margin-bottom:20px;max-width:380px;margin-left:auto;margin-right:auto;">
+          Lower monthly payment, nothing owned at the end, and mileage limits that add up fast.<br>
+          Lease calculator coming soon — leave your email and we'll notify you.
+        </div>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;" id="leaseActions">
+          <input type="email" id="leaseEmail" placeholder="your@email.com" style="background:#0f1724;border:1.5px solid #2a3a50;border-radius:8px;padding:10px 16px;color:#eef2f7;font-size:0.9375rem;font-family:inherit;width:220px;" onkeydown="if(event.key==='Enter')submitLeaseEmail()">
+          <button onclick="submitLeaseEmail()" style="background:#00d4aa;color:#0f1724;border:none;border-radius:8px;padding:10px 20px;font-size:0.9375rem;font-weight:700;cursor:pointer;font-family:inherit;">Notify me</button>
+        </div>
+        <div id="leaseThanks" style="display:none;color:#00d4aa;font-size:0.9375rem;font-weight:600;margin-top:10px;">✓ Got it — we'll let you know when lease comparison launches.</div>
+      </div>
+      <div class="feedback-block" id="feedbackBlock">
+        <div class="feedback-block-title">Help us improve WheelTheDeal</div>
+        <div class="feedback-block-sub">Tell us what worked, what didn't, or what's missing.<br>Takes 30 seconds.</div>
+        <button class="btn-feedback-open" onclick="openFeedback()">Send feedback</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="how-it-works" id="hiw">
+    <div class="hiw-steps">
+      <div class="hiw-step"><div class="hiw-num">1</div><div class="hiw-text"><strong>Enter your vehicle + deal</strong>Pick brand, model, and what the dealer is asking.</div></div>
+      <div class="hiw-divider">→</div>
+      <div class="hiw-step"><div class="hiw-num">2</div><div class="hiw-text"><strong>We run the numbers</strong>Finance math + NHTSA recall data + regional market signals.</div></div>
+      <div class="hiw-divider">→</div>
+      <div class="hiw-step"><div class="hiw-num">3</div><div class="hiw-text"><strong>Get your verdict</strong>Looks Fair, Push Back, or High Risk — with a breakdown and what to say.</div></div>
+    </div>
+  </section>
+
+  <section class="faq-section" id="faq">
+    <h2 class="faq-heading">Common questions</h2>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">Is this really free? <span class="faq-arrow">↓</span></button>
+      <div class="faq-a">Yes, completely. No signup, no credit card, no trial period. We built this because we got burned at dealerships and wanted a tool that actually worked for buyers. You pay nothing.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">Are you selling my info to dealers? <span class="faq-arrow">↓</span></button>
+      <div class="faq-a">No. We don't sell leads. We don't take dealer money. We don't run dealer ads. The vehicle info you enter is used only to generate your report — it's not stored, shared, or sold. Ever.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">How do you make money? <span class="faq-arrow">↓</span></button>
+      <div class="faq-a">Right now, we don't. We're proving the tool is useful before thinking about monetization. If we ever charge for anything, it'll be a buyer-side upgrade — never dealer-funded. No ads, no sponsored results, no lead fees.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">Where does the data come from? <span class="faq-arrow">↓</span></button>
+      <div class="faq-a">We use US government data — fueleconomy.gov (Dept of Energy) for vehicle specs and fuel costs. NHTSA for recalls. Not a data company's proprietary black box.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">How accurate is this? <span class="faq-arrow">↓</span></button>
+      <div class="faq-a">It's designed to help you spot bad deals fast using current finance math, public data, and the numbers the dealer gives you. Not a legal or lending document, but it will quickly show you where an offer starts to go sideways.</div>
+    </div>
   </section>
 
 </div><!-- /page -->
 
+<footer class="site-footer">
+  <div class="page">
+    <div class="footer-wordmark">
+      <svg width="18" height="18" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="16" cy="16" r="13" stroke="#00d4aa" stroke-width="2.5" fill="none"/>
+        <circle cx="16" cy="16" r="4" fill="#00d4aa"/>
+        <line x1="16" y1="12" x2="16" y2="3" stroke="#00d4aa" stroke-width="2.2" stroke-linecap="round"/>
+        <line x1="12.5" y1="18.5" x2="5.2" y2="23" stroke="#00d4aa" stroke-width="2.2" stroke-linecap="round"/>
+        <line x1="19.5" y1="18.5" x2="26.8" y2="23" stroke="#00d4aa" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+      <span>WheelTheDeal</span>
+    </div>
+    <div class="footer-origin" style="font-size:0.875rem;color:#b8cce0;line-height:1.65;max-width:480px;margin:0 auto 16px;text-align:center;">
+      The dealership knows the numbers. Now you do too.
+      WheelTheDeal is 100% buyer-funded. No dealer money, ever. — Max &amp; Aris
+    </div>
+    <div class="footer-love">Built ❤️ for buyers, not dealers.</div>
+    <div class="footer-links">
+      <a href="mailto:hello@wheelthedeal.com" class="footer-link">hello@wheelthedeal.com</a>
+      <a href="/privacy" class="footer-link">Privacy Policy</a>
+      <a href="/terms" class="footer-link">Terms of Service</a>
+    </div>
+    <div class="footer-legal">WheelTheDeal is an independent service and is not affiliated with, sponsored by, or endorsed by any automobile manufacturer, dealer group, or third-party marketplace. All product names, brands, and trademarks are property of their respective owners and are used for identification purposes only.</div>
+    <div class="footer-copy">© 2026 WheelTheDeal · 100% buyer-funded · No dealer leads</div>
+  </div>
+</footer>
+
+<!-- Floating feedback button -->
+<div class="feedback-float" id="feedbackFloat" style="display:none;">
+  <button class="feedback-float-btn" onclick="openFeedback()">
+    <span>💬</span> Tell us what's missing
+  </button>
+</div>
+
+<!-- Feedback modal -->
+<div class="feedback-overlay" id="feedbackOverlay" onclick="closeFeedbackIfOutside(event)">
+  <div class="feedback-modal" id="feedbackModal">
+    <div id="feedbackForm">
+      <h3>Help us improve WheelTheDeal</h3>
+      <p>3 quick questions — your input shapes what we build next.</p>
+      <div class="feedback-question">
+        <label>Did this help you? *</label>
+        <div class="feedback-rating" id="ratingGroup">
+          <button class="rating-btn" onclick="setRating(this,'👍')">👍 Yes</button>
+          <button class="rating-btn" onclick="setRating(this,'👎')">👎 No</button>
+          <button class="rating-btn" onclick="setRating(this,'🤔')">🤔 Not sure</button>
+        </div>
+      </div>
+      <div class="feedback-question">
+        <label>What felt confusing or missing?</label>
+        <textarea class="feedback-textarea" id="feedbackText" style="color:#eef2f7 !important;-webkit-text-fill-color:#eef2f7 !important;background:#1a2535 !important;" placeholder="Anything that didn't make sense, felt unclear, or you wished was there…"></textarea>
+      </div>
+      <div class="feedback-question">
+        <label>Email (optional — if you'd like a reply)</label>
+        <input type="email" class="feedback-email-input" id="feedbackEmail" placeholder="your@email.com">
+      </div>
+      <div class="feedback-modal-actions">
+        <button class="btn-feedback-cancel" onclick="closeFeedback()">Cancel</button>
+        <button class="btn-feedback-submit" onclick="submitFeedback()">Send feedback →</button>
+      </div>
+    </div>
+    <div class="feedback-thanks" id="feedbackThanks" style="display:none;">
+      <div class="feedback-thanks-icon">🙏</div>
+      <h4>Thank you — genuinely.</h4>
+      <p>This is exactly what helps us build something people actually need.</p>
+    </div>
+  </div>
+</div>
 <script>
+
 // ══════════════════════════════════════════════════════════
 // Constants & Config
 // ══════════════════════════════════════════════════════════
@@ -1993,10 +1948,6 @@ function renderBrandGrid() {
 
 // ── Results section nav ──────────────────────────────────
 function showResultsNav() {
-  const wn = document.getElementById('wizardNav');
-  const rn = document.getElementById('resultsNav');
-  if (wn) wn.style.display = 'none';
-  if (rn) rn.style.display = 'flex';
   showStickyProgress();
   highlightActiveSection();
 }
@@ -2009,26 +1960,18 @@ function showWizardNav() {
 }
 
 function scrollToSection(id) {
-  // Map nav IDs to real anchor IDs
-  const anchorMap = { 'sec-select': 'sec-select', 'sec-deal': 'sec-deal-input', 'sec-risk': 'sec-risk', 'sec-cost': 'sec-cost', 'sec-details': 'sec-details' };
-  const target = anchorMap[id] || id;
-  // Open deal section or full breakdown as needed
-  if (id === 'sec-deal') openSection('dealSection');
-  if (['sec-cost','sec-details'].includes(id)) openFullBreakdown();
-  setTimeout(() => {
-    const el = document.getElementById(target);
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, ['sec-deal','sec-cost','sec-details'].includes(id) ? 350 : 0);
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   track('section_nav_click', { section: id });
 }
 
 // Map section marker IDs to nav button IDs
 const SECTION_MAP = [
-  { marker: 'sec-select',     btn: 'rn-select' },
-  { marker: 'sec-deal-input', btn: 'rn-deal' },
-  { marker: 'sec-risk',       btn: 'rn-risk' },
-  { marker: 'sec-cost',       btn: 'rn-cost' },
-  { marker: 'sec-details',    btn: 'rn-details' },
+  { marker: 'sec-select',  btn: 'rn-select' },
+  { marker: 'sec-deal',    btn: 'rn-deal' },
+  { marker: 'sec-risk',    btn: 'rn-risk' },
+  { marker: 'sec-cost',    btn: 'rn-cost' },
+  { marker: 'sec-details', btn: 'rn-details' },
 ];
 
 function highlightActiveSection() {
@@ -2045,11 +1988,7 @@ function highlightActiveSection() {
   if (activeBtn) activeBtn.classList.add('active');
 }
 
-window.addEventListener('scroll', () => {
-  if (document.getElementById('resultsNav')?.style.display !== 'none') {
-    highlightActiveSection();
-  }
-}, { passive: true });
+window.addEventListener('scroll', highlightActiveSection, { passive: true });
 
 // ── Sticky progress bar ───────────────────────────────────
 function showStickyProgress() {
@@ -2687,6 +2626,7 @@ function filterModelAccordion(query) {
 function selectModelTrim(model) {
   state.model = model;
   updateWizardProgress(4);
+  showDealInputs();
 
   // Update chip highlight across accordion/flat views
   document.querySelectorAll('.accordion-trim-chip, .flat-trim-chip').forEach(c => {
@@ -2697,8 +2637,8 @@ function selectModelTrim(model) {
   state.rangeEstimate = msrpToRange(state.msrpEstimate);
   populateDealSection();
   hideResultSection();
-  openSection('dealSection');
-  setTimeout(() => scrollToEl('dealSection'), 80);
+  // Auto-trigger report with defaults
+  setTimeout(() => debouncedCheckDeal(), 200);
   track('model_selected', { brand: state.brand, model, year: state.year });
 }
 
@@ -2986,6 +2926,7 @@ function selectCreditTier(btn) {
   // Cascade to live calculations
   debouncedGlance();
   debouncedSignal();
+  debouncedCheckDeal();
   track('credit_tier_selected', { tier: btn.dataset.tier, apr });
 }
 
@@ -2993,6 +2934,7 @@ function selectTerm(term) {
   state.loanTerm = term;
   document.querySelectorAll('.term-pill').forEach(p => p.classList.toggle('selected', parseInt(p.dataset.term) === term));
   updateGlancePanel();
+  debouncedCheckDeal();
   track('term_selected', { term });
 }
 
@@ -3122,8 +3064,9 @@ function checkDeal() {
 
   document.getElementById('resultLoading').style.display = 'block';
   document.getElementById('resultContent').classList.add('hidden');
-  openSection('resultSection');
-  setTimeout(() => scrollToEl('resultSection'), 80);
+  // Show loading state in risk section
+  const rl = document.getElementById('riskLoading');
+  if (rl) rl.style.display = 'block';
 
   fetch('/report', {
     method: 'POST',
@@ -3144,7 +3087,11 @@ function checkDeal() {
         throw renderErr;
       }
       document.getElementById('resultLoading').style.display = 'none';
+      const rl2 = document.getElementById('riskLoading'); if(rl2) rl2.style.display='none';
       document.getElementById('resultContent').classList.remove('hidden');
+      showSectionContent('sec-risk');
+      showSectionContent('sec-cost');
+      showSectionContent('sec-details');
       updateShareableUrl();
       showFeedbackFloat();
       showResultsNav();
@@ -3214,6 +3161,13 @@ function startOver() {
   document.getElementById('glancePanel').classList.remove('visible');
   hideLiveSignal();
   scrollToTop();
+  resetSectionsToPlaceholder();
+  const dp = document.getElementById('dealPlaceholder');
+  const di = document.getElementById('dealInputs');
+  const vc = document.getElementById('vehicleCrumb');
+  if (dp) dp.style.display = '';
+  if (di) di.style.display = 'none';
+  if (vc) vc.style.display = 'none';
   track('start_over');
 }
 
@@ -4205,7 +4159,6 @@ function escAttr(s) { return (s || '').replace(/'/g, "\\'").replace(/"/g, '&quot
 document.addEventListener('DOMContentLoaded', () => {
   renderBrandGrid();
   renderYearToggle();
-  updateWizardProgress(1);
   setTimeout(() => showStickyProgress(), 600);
 
   // Load from URL params if present (shareable link)
@@ -4221,12 +4174,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (price > 1000) prefillDownPayment(price);
     debouncedSignal();
     debouncedGlance();
+    debouncedCheckDeal();
   });
 
   // Down payment → recalculate
   document.getElementById('downPayment').addEventListener('input', () => {
     document.getElementById('downPayment').dataset.userEdited = 'true';
     updateDownPaymentBadge();
+    debouncedCheckDeal();
   });
 
   // APR → glance
@@ -4238,6 +4193,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.credit-pill').forEach(b => b.classList.remove('active'));
     if (matchingTier) matchingTier.classList.add('active');
     debouncedGlance();
+    debouncedCheckDeal();
   });
 
   // ZIP input
@@ -4257,170 +4213,85 @@ document.addEventListener('DOMContentLoaded', () => {
 
   track('page_loaded');
 });
+
+
+// ══════════════════════════════════════════════════════════
+// 5-SECTION: Placeholder / content helpers
+// ══════════════════════════════════════════════════════════
+
+const SECTION_CONTENT_MAP = {
+  'sec-risk':    ['riskPlaceholder',    'riskContent'],
+  'sec-cost':    ['costPlaceholder',    'costContent'],
+  'sec-details': ['detailsPlaceholder', 'detailsContent'],
+};
+
+function showSectionPlaceholder(sectionId) {
+  const ids = SECTION_CONTENT_MAP[sectionId];
+  if (!ids) return;
+  const ph = document.getElementById(ids[0]);
+  const ct = document.getElementById(ids[1]);
+  if (ph) ph.style.display = '';
+  if (ct) ct.style.display = 'none';
+}
+
+function showSectionContent(sectionId) {
+  const ids = SECTION_CONTENT_MAP[sectionId];
+  if (!ids) return;
+  const ph = document.getElementById(ids[0]);
+  const ct = document.getElementById(ids[1]);
+  if (ph) ph.style.display = 'none';
+  if (ct) ct.style.display = '';
+}
+
+function showDealInputs() {
+  const ph = document.getElementById('dealPlaceholder');
+  const inp = document.getElementById('dealInputs');
+  const crumb = document.getElementById('vehicleCrumb');
+  if (ph) ph.style.display = 'none';
+  if (inp) inp.style.display = '';
+  if (crumb) crumb.style.display = '';
+}
+
+function showSectionsUpdating() {
+  ['sec-risk', 'sec-cost', 'sec-details'].forEach(sid => {
+    const ids = SECTION_CONTENT_MAP[sid];
+    if (!ids) return;
+    const ph = document.getElementById(ids[0]);
+    const ct = document.getElementById(ids[1]);
+    if (ph) { ph.className = 'section-updating'; ph.textContent = 'Updating…'; ph.style.display = ''; }
+    if (ct) ct.style.display = 'none';
+  });
+}
+
+function resetSectionsToPlaceholder() {
+  const texts = {
+    'sec-risk':    'Select a car and deal terms to see the risk on this offer.',
+    'sec-cost':    'Select a car and deal to see ownership cost.',
+    'sec-details': 'Select a car to see recalls and specs.',
+  };
+  Object.entries(texts).forEach(([sid, txt]) => {
+    const ids = SECTION_CONTENT_MAP[sid];
+    if (!ids) return;
+    const ph = document.getElementById(ids[0]);
+    const ct = document.getElementById(ids[1]);
+    if (ph) { ph.className = 'section-placeholder'; ph.textContent = txt; ph.style.display = ''; }
+    if (ct) ct.style.display = 'none';
+  });
+}
+
+// ── Auto-trigger debounce (800ms) ───────────────────────
+const debouncedCheckDeal = (function() {
+  let t;
+  return function() {
+    clearTimeout(t);
+    if (!state.model) return;
+    const offer = parseFloat(document.getElementById('dealerOffer')?.value);
+    if (!offer || offer < 1000) return;
+    showSectionsUpdating();
+    t = setTimeout(checkDeal, 800);
+  };
+})();
+
 </script>
-
-  <div style="max-width:780px;margin:0 auto;padding:0 20px;">
-  <section class="how-it-works" id="hiw">
-    <div class="hiw-steps">
-      <div class="hiw-step">
-        <div class="hiw-num">1</div>
-        <div class="hiw-text">
-          <strong>Enter your vehicle + deal</strong>
-          Pick brand, model, and what the dealer is asking.
-        </div>
-      </div>
-      <div class="hiw-divider">→</div>
-      <div class="hiw-step">
-        <div class="hiw-num">2</div>
-        <div class="hiw-text">
-          <strong>We run the numbers</strong>
-          Finance math + NHTSA recall data + regional market signals.
-        </div>
-      </div>
-      <div class="hiw-divider">→</div>
-      <div class="hiw-step">
-        <div class="hiw-num">3</div>
-        <div class="hiw-text">
-          <strong>Get your verdict</strong>
-          Looks Fair, Push Back, or High Risk — with a breakdown and what to say.
-        </div>
-      </div>
-    </div>
-  </section>
-  </div>
-
-  <div class="page" style="padding-top:0;"><section class="faq-section" id="faq">
-    <h2 class="faq-heading">Common questions</h2>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        Is this really free? <span class="faq-arrow">↓</span>
-      </button>
-      <div class="faq-a">
-        Yes, completely. No signup, no credit card, no trial period. We built this because we got burned at dealerships and wanted a tool that actually worked for buyers. You pay nothing.
-      </div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        Are you selling my info to dealers? <span class="faq-arrow">↓</span>
-      </button>
-      <div class="faq-a">
-        No. We don't sell leads. We don't take dealer money. We don't run dealer ads. The vehicle info you enter is used only to generate your report — it's not stored, shared, or sold. Ever.
-      </div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        How do you make money? <span class="faq-arrow">↓</span>
-      </button>
-      <div class="faq-a">
-        Right now, we don't. We're proving the tool is useful before thinking about monetization. If we ever charge for anything, it'll be a buyer-side upgrade — never dealer-funded. No ads, no sponsored results, no lead fees. That's a promise.
-      </div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        Where does the data come from? <span class="faq-arrow">↓</span>
-      </button>
-      <div class="faq-a">
-        We use US government data — the same agencies that regulate the industry. fueleconomy.gov (Dept of Energy) for vehicle specs and fuel costs. NHTSA for recalls. Not a data company's proprietary black box.
-      </div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        How accurate is this? <span class="faq-arrow">↓</span>
-      </button>
-      <div class="faq-a">
-        It's designed to help you spot bad deals fast using current finance math, public data, and the numbers the dealer gives you. It's not a legal or lending document, but it will quickly show you where an offer starts to go sideways. This tool has flagged six-figure lifetime overcharges on $30K deals. The math doesn't lie — the question is whether you're looking at it.
-      </div>
-    </div>
-  </section>
-
-
-<footer class="site-footer">
-  <div class="page">
-    <!-- Small wordmark in footer -->
-    <div class="footer-wordmark">
-      <svg width="18" height="18" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <circle cx="16" cy="16" r="13" stroke="#00d4aa" stroke-width="2.5" fill="none"/>
-        <circle cx="16" cy="16" r="4" fill="#00d4aa"/>
-        <line x1="16" y1="12" x2="16" y2="3" stroke="#00d4aa" stroke-width="2.2" stroke-linecap="round"/>
-        <line x1="12.5" y1="18.5" x2="5.2" y2="23" stroke="#00d4aa" stroke-width="2.2" stroke-linecap="round"/>
-        <line x1="19.5" y1="18.5" x2="26.8" y2="23" stroke="#00d4aa" stroke-width="2.2" stroke-linecap="round"/>
-      </svg>
-      <span>WheelTheDeal</span>
-    </div>
-    <div class="footer-origin" style="font-size:0.875rem;color:#b8cce0;line-height:1.65;max-width:480px;margin:0 auto 16px;text-align:center;">
-      The dealership knows the numbers. Now you do too.
-      WheelTheDeal is 100% buyer-funded. No dealer money, ever. — Max &amp; Aris
-    </div>
-    <div class="footer-love">Built ❤️ for buyers, not dealers.
-    </div>
-    <div class="footer-links">
-      <a href="mailto:hello@wheelthedeal.com" class="footer-link">hello@wheelthedeal.com</a>
-      <a href="/privacy" class="footer-link">Privacy Policy</a>
-      <a href="/terms" class="footer-link">Terms of Service</a>
-    </div>
-    <div class="footer-legal">
-      WheelTheDeal is an independent service and is not affiliated with, sponsored by, or endorsed by any automobile manufacturer, dealer group, or third-party marketplace. All product names, brands, and trademarks are property of their respective owners and are used for identification purposes only.
-    </div>
-    <div class="footer-copy">© 2026 WheelTheDeal · 100% buyer-funded · No dealer leads</div>
-  </div>
-</footer>
-
-<!-- Floating feedback button -->
-<div class="feedback-float" id="feedbackFloat" style="display:none;">
-  <button class="feedback-float-btn" onclick="openFeedback()">
-    <span>💬</span> Tell us what's missing
-  </button>
-</div>
-
-<!-- Feedback modal -->
-<div class="feedback-overlay" id="feedbackOverlay" onclick="closeFeedbackIfOutside(event)">
-  <div class="feedback-modal" id="feedbackModal">
-    <div id="feedbackForm">
-      <h3>Help us improve WheelTheDeal</h3>
-      <p>3 quick questions — your input shapes what we build next.</p>
-
-      <div class="feedback-question">
-        <label>Did this help you? *</label>
-        <div class="feedback-rating" id="ratingGroup">
-          <button class="rating-btn" onclick="setRating(this,'👍')">👍 Yes</button>
-          <button class="rating-btn" onclick="setRating(this,'👎')">👎 No</button>
-          <button class="rating-btn" onclick="setRating(this,'🤔')">🤔 Not sure</button>
-        </div>
-      </div>
-
-      <div class="feedback-question">
-        <label>What felt confusing or missing?</label>
-        <textarea class="feedback-textarea" id="feedbackText" style="color:#eef2f7 !important;-webkit-text-fill-color:#eef2f7 !important;background:#1a2535 !important;" placeholder="Anything that didn't make sense, felt unclear, or you wished was there…"></textarea>
-      </div>
-
-      <div class="feedback-question">
-        <label>Email (optional — if you'd like a reply)</label>
-        <input type="email" class="feedback-email-input" id="feedbackEmail" placeholder="your@email.com">
-      </div>
-
-      <div class="feedback-modal-actions">
-        <button class="btn-feedback-cancel" onclick="closeFeedback()">Cancel</button>
-        <button class="btn-feedback-submit" onclick="submitFeedback()">Send feedback →</button>
-      </div>
-    </div>
-
-    <div class="feedback-thanks" id="feedbackThanks" style="display:none;">
-      <div class="feedback-thanks-icon">🙏</div>
-      <h4>Thank you — genuinely.</h4>
-      <p>This is exactly what helps us build something people actually need.</p>
-    </div>
-  </div>
-</div>
 </body>
 </html>
-
-<!--
-DEFAULTS USED:
-- Dealer discount: 5% below MSRP
-- APR: 6.8%
-- Loan term: 72 months
-- Annual mileage: 13,500 miles/year
-- Gas price: $3.45/gallon
-- Monthly insurance estimate: ~$142/mo ($1,700/yr)
-- Monthly maintenance: $0.09/mile
--->
