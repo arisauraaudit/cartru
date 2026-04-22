@@ -140,6 +140,17 @@ a:hover { text-decoration: underline; }
 .faq-a a { color: #00d4aa; }
 .faq-a.open { display: block; }
 
+/* Results section nav */
+.results-nav { justify-content: center; gap: 4px; flex-wrap: nowrap; }
+.rn-btn {
+  background: none; border: none; color: #8499b0; font-size: 0.8rem; font-weight: 600;
+  cursor: pointer; padding: 6px 12px; border-radius: 99px; font-family: inherit;
+  transition: background 0.15s, color 0.15s; white-space: nowrap;
+}
+.rn-btn:hover { background: rgba(255,255,255,0.06); color: #eef2f7; }
+.rn-btn.active { background: rgba(0,212,170,0.12); color: #00d4aa; }
+.ia-section-marker { scroll-margin-top: 56px; }
+
 /* Sticky progress bar */
 .sticky-progress {
   position: sticky; top: 0; z-index: 100;
@@ -1279,9 +1290,10 @@ a:hover { text-decoration: underline; }
     </div>
   </div>
 
-  <!-- Sticky progress bar (wizard only, hidden on results) -->
+  <!-- Sticky nav — wizard steps when selecting, section nav when viewing results -->
   <div class="sticky-progress" id="stickyProgress" style="display:none;">
-    <div class="sp-inner">
+    <!-- Wizard mode (shown during brand/model/deal selection) -->
+    <div class="sp-inner" id="wizardNav">
       <button class="sp-step done-btn" id="sp1" onclick="goToStep(1)" title="Back to Year">
         <span class="sp-num">1</span><span class="sp-label">Year</span>
       </button>
@@ -1297,6 +1309,14 @@ a:hover { text-decoration: underline; }
       <button class="sp-step" id="sp4" onclick="goToStep(4)" title="View deal">
         <span class="sp-num">4</span><span class="sp-label">Deal</span>
       </button>
+    </div>
+    <!-- Results mode (shown after report is generated) -->
+    <div class="results-nav sp-inner" id="resultsNav" style="display:none;">
+      <button class="rn-btn" onclick="scrollToSection('sec-car')"  id="rn-car">Car</button>
+      <button class="rn-btn" onclick="scrollToSection('sec-deal')" id="rn-deal">Deal</button>
+      <button class="rn-btn" onclick="scrollToSection('sec-risk')" id="rn-risk">Risk</button>
+      <button class="rn-btn" onclick="scrollToSection('sec-cost')" id="rn-cost">Cost</button>
+      <button class="rn-btn" onclick="scrollToSection('sec-details')" id="rn-details">Details</button>
     </div>
   </div>
 
@@ -1495,7 +1515,9 @@ a:hover { text-decoration: underline; }
 
     <!-- Result content -->
     <div id="resultContent" class="hidden">
+      <div class="ia-section" id="sec-car"></div><!-- Car anchor -->
 
+      <div class="ia-section-marker" id="sec-deal-marker"></div>
       <!-- ─────────────────────────────────────── -->
       <!-- 1. HERO VERDICT CARD                    -->
       <!-- ─────────────────────────────────────── -->
@@ -1618,6 +1640,7 @@ a:hover { text-decoration: underline; }
 
       </div><!-- /dimension-cards-grid -->
 
+      <div class="ia-section-marker" id="sec-risk-marker"></div>
       <!-- ─────────────────────────────────────── -->
       <!-- 3. TERM TRAP WARNING (conditional)      -->
       <!-- ─────────────────────────────────────── -->
@@ -1629,7 +1652,7 @@ a:hover { text-decoration: underline; }
       </div>
 
       <!-- ─────────────────────────────────────── -->
-      <!-- 4. EQUITY / UNDERWATER MODULE           -->
+      <!-- 4. EQUITY / UNDERWATER MODULE (RISK section cont.)           -->
       <!-- ─────────────────────────────────────── -->
       <div class="equity-block" id="equityBlock" style="display:none;">
         <div class="equity-block-header">
@@ -1692,6 +1715,7 @@ a:hover { text-decoration: underline; }
         </div>
 
         <!-- Ownership cost section (full detail) -->
+        <div class="ia-section-marker" id="sec-cost-marker"></div>
         <div class="ownership-section" id="ownershipSection" style="margin-bottom:20px;">
           <div class="ownership-title" id="ownershipTitle">N-Year Cost of Ownership</div>
           <div class="ownership-context" id="ownershipContext"></div>
@@ -1745,6 +1769,7 @@ a:hover { text-decoration: underline; }
             <div class="section-title"><span class="section-icon">🚗</span> Vehicle Details</div>
             <div class="section-chevron open" id="chevron-vehicle">▼</div>
           </div>
+<div class="ia-section-marker" id="sec-details-marker"></div>
           <div class="section-body" id="body-vehicle">
 
             <!-- Fuel economy -->
@@ -1965,6 +1990,62 @@ function renderBrandGrid() {
     </button>`;
   }).join('');
 }
+
+// ── Results section nav ──────────────────────────────────
+function showResultsNav() {
+  const wn = document.getElementById('wizardNav');
+  const rn = document.getElementById('resultsNav');
+  if (wn) wn.style.display = 'none';
+  if (rn) rn.style.display = 'flex';
+  showStickyProgress();
+  highlightActiveSection();
+}
+
+function showWizardNav() {
+  const wn = document.getElementById('wizardNav');
+  const rn = document.getElementById('resultsNav');
+  if (wn) wn.style.display = '';
+  if (rn) rn.style.display = 'none';
+}
+
+function scrollToSection(id) {
+  // Auto-open full breakdown if navigating to sections inside it
+  if (['sec-risk','sec-cost','sec-details'].includes(id)) openFullBreakdown();
+  setTimeout(() => {
+    const el = document.getElementById(id + '-marker') || document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, ['sec-risk','sec-cost','sec-details'].includes(id) ? 350 : 0);
+  track('section_nav_click', { section: id });
+}
+
+// Map section marker IDs to nav button IDs
+const SECTION_MAP = [
+  { marker: 'sec-car',          btn: 'rn-car',     threshold: 0 },
+  { marker: 'sec-deal-marker',  btn: 'rn-deal',    threshold: 0 },
+  { marker: 'sec-risk-marker',  btn: 'rn-risk',    threshold: 0 },
+  { marker: 'sec-cost-marker',  btn: 'rn-cost',    threshold: 0 },
+  { marker: 'sec-details-marker', btn: 'rn-details', threshold: 0 },
+];
+
+function highlightActiveSection() {
+  const scrollY = window.scrollY + 80;
+  let active = 'rn-deal'; // default
+  for (const s of SECTION_MAP) {
+    const el = document.getElementById(s.marker);
+    if (el && el.getBoundingClientRect().top + window.scrollY <= scrollY) {
+      active = s.btn;
+    }
+  }
+  document.querySelectorAll('.rn-btn').forEach(b => b.classList.remove('active'));
+  const activeBtn = document.getElementById(active);
+  if (activeBtn) activeBtn.classList.add('active');
+}
+
+window.addEventListener('scroll', () => {
+  if (document.getElementById('resultsNav')?.style.display !== 'none') {
+    highlightActiveSection();
+  }
+}, { passive: true });
 
 // ── Sticky progress bar ───────────────────────────────────
 function showStickyProgress() {
@@ -3062,6 +3143,7 @@ function checkDeal() {
       document.getElementById('resultContent').classList.remove('hidden');
       updateShareableUrl();
       showFeedbackFloat();
+      showResultsNav();
       track('signal_shown', { signal: data.signal });
     })
     .catch(err => {
@@ -3087,6 +3169,7 @@ function editOffer() {
 function startOver() {
   updateWizardProgress(1);
   hideStickyProgress();
+  showWizardNav();
   state.brand = null; state.model = null; state.year = CURRENT_YEAR - 1;
   state.msrpEstimate = 32000; state.reportData = null; state.loanTerm = 72;
   state.apr = 6.8; state.annualMiles = 13500; state.gasPrice = 3.45;
