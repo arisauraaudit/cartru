@@ -140,6 +140,13 @@ a:hover { text-decoration: underline; }
 .faq-a a { color: #00d4aa; }
 .faq-a.open { display: block; }
 
+/* IA section titles */
+.ia-section-title {
+  font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+  color: #4a6070; margin-bottom: 12px; margin-top: 4px; padding-left: 2px;
+}
+.rn-num { font-size: 0.7rem; opacity: 0.6; margin-right: 2px; }
+
 /* Results section nav */
 .results-nav { justify-content: center; gap: 4px; flex-wrap: nowrap; }
 .rn-btn {
@@ -1312,11 +1319,11 @@ a:hover { text-decoration: underline; }
     </div>
     <!-- Results mode (shown after report is generated) -->
     <div class="results-nav sp-inner" id="resultsNav" style="display:none;">
-      <button class="rn-btn" onclick="scrollToSection('sec-car')"  id="rn-car">Car</button>
-      <button class="rn-btn" onclick="scrollToSection('sec-deal')" id="rn-deal">Deal</button>
-      <button class="rn-btn" onclick="scrollToSection('sec-risk')" id="rn-risk">Risk</button>
-      <button class="rn-btn" onclick="scrollToSection('sec-cost')" id="rn-cost">Cost</button>
-      <button class="rn-btn" onclick="scrollToSection('sec-details')" id="rn-details">Details</button>
+      <button class="rn-btn" onclick="scrollToSection('sec-car')"  id="rn-car"><span class="rn-num">1</span> Car</button>
+      <button class="rn-btn" onclick="scrollToSection('sec-deal')" id="rn-deal"><span class="rn-num">2</span> Deal</button>
+      <button class="rn-btn" onclick="scrollToSection('sec-risk')" id="rn-risk"><span class="rn-num">3</span> Risk</button>
+      <button class="rn-btn" onclick="scrollToSection('sec-cost')" id="rn-cost"><span class="rn-num">4</span> Cost</button>
+      <button class="rn-btn" onclick="scrollToSection('sec-details')" id="rn-details"><span class="rn-num">5</span> Details</button>
     </div>
   </div>
 
@@ -1515,9 +1522,12 @@ a:hover { text-decoration: underline; }
 
     <!-- Result content -->
     <div id="resultContent" class="hidden">
-      <div class="ia-section" id="sec-car"></div><!-- Car anchor -->
+      <div class="ia-section-marker" id="sec-car"></div>
 
-      <div class="ia-section-marker" id="sec-deal-marker"></div>
+      <!-- ─────────────────────────────────────── -->
+      <!-- RISK section starts here -->
+      <div class="ia-section-marker" id="sec-risk"></div>
+      <div class="ia-section-title">3 — Risk</div>
       <!-- ─────────────────────────────────────── -->
       <!-- 1. HERO VERDICT CARD                    -->
       <!-- ─────────────────────────────────────── -->
@@ -1640,7 +1650,6 @@ a:hover { text-decoration: underline; }
 
       </div><!-- /dimension-cards-grid -->
 
-      <div class="ia-section-marker" id="sec-risk-marker"></div>
       <!-- ─────────────────────────────────────── -->
       <!-- 3. TERM TRAP WARNING (conditional)      -->
       <!-- ─────────────────────────────────────── -->
@@ -1689,6 +1698,9 @@ a:hover { text-decoration: underline; }
       <div class="full-breakdown-panel" id="fullBreakdownPanel">
 
         <!-- Full term trap table -->
+        <div class="ia-section-marker" id="sec-deal"></div>
+        <div class="ia-section-title">2 — Deal</div>
+        <div class="ia-section-title" style="display:none;" id="sec-deal-title"></div>
         <div class="term-trap-block" id="termTrapBlock" style="margin-bottom:20px;">
           <div class="term-trap-title">🪤 The Term Trap — See What Dealers Hide</div>
           <div class="term-trap-subtitle">Dealers extend loan terms to lower monthly payments — hiding thousands in extra interest.</div>
@@ -1715,7 +1727,8 @@ a:hover { text-decoration: underline; }
         </div>
 
         <!-- Ownership cost section (full detail) -->
-        <div class="ia-section-marker" id="sec-cost-marker"></div>
+        <div class="ia-section-marker" id="sec-cost"></div>
+        <div class="ia-section-title">4 — Cost</div>
         <div class="ownership-section" id="ownershipSection" style="margin-bottom:20px;">
           <div class="ownership-title" id="ownershipTitle">N-Year Cost of Ownership</div>
           <div class="ownership-context" id="ownershipContext"></div>
@@ -1769,7 +1782,8 @@ a:hover { text-decoration: underline; }
             <div class="section-title"><span class="section-icon">🚗</span> Vehicle Details</div>
             <div class="section-chevron open" id="chevron-vehicle">▼</div>
           </div>
-<div class="ia-section-marker" id="sec-details-marker"></div>
+<div class="ia-section-marker" id="sec-details"></div>
+        <div class="ia-section-title">5 — Details</div>
           <div class="section-body" id="body-vehicle">
 
             <!-- Fuel economy -->
@@ -2010,21 +2024,21 @@ function showWizardNav() {
 
 function scrollToSection(id) {
   // Auto-open full breakdown if navigating to sections inside it
-  if (['sec-risk','sec-cost','sec-details'].includes(id)) openFullBreakdown();
+  if (['sec-deal','sec-cost','sec-details'].includes(id)) openFullBreakdown();
   setTimeout(() => {
     const el = document.getElementById(id + '-marker') || document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, ['sec-risk','sec-cost','sec-details'].includes(id) ? 350 : 0);
+  }, ['sec-deal','sec-cost','sec-details'].includes(id) ? 350 : 0);
   track('section_nav_click', { section: id });
 }
 
 // Map section marker IDs to nav button IDs
 const SECTION_MAP = [
-  { marker: 'sec-car',          btn: 'rn-car',     threshold: 0 },
-  { marker: 'sec-deal-marker',  btn: 'rn-deal',    threshold: 0 },
-  { marker: 'sec-risk-marker',  btn: 'rn-risk',    threshold: 0 },
-  { marker: 'sec-cost-marker',  btn: 'rn-cost',    threshold: 0 },
-  { marker: 'sec-details-marker', btn: 'rn-details', threshold: 0 },
+  { marker: 'sec-car',     btn: 'rn-car' },
+  { marker: 'sec-deal',    btn: 'rn-deal' },
+  { marker: 'sec-risk',    btn: 'rn-risk' },
+  { marker: 'sec-cost',    btn: 'rn-cost' },
+  { marker: 'sec-details', btn: 'rn-details' },
 ];
 
 function highlightActiveSection() {
