@@ -3175,9 +3175,9 @@ function startOver() {
 // Section helpers
 // ══════════════════════════════════════════════════════════
 
-function openSection(id)    { document.getElementById(id).classList.add('open'); }
-function hideDealSection()  { document.getElementById('dealSection').classList.remove('open'); }
-function hideResultSection(){ document.getElementById('resultSection').classList.remove('open'); }
+function openSection(id)    { const el = document.getElementById(id); if (el) el.classList.add('open'); }
+function hideDealSection()  { /* no-op: deal section always visible in 5-section layout */ }
+function hideResultSection(){ /* no-op: result sections always visible in 5-section layout */ }
 
 function scrollToEl(id) {
   const el = document.getElementById(id);
