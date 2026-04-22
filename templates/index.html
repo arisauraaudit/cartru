@@ -141,6 +141,7 @@ a:hover { text-decoration: underline; }
 .faq-a.open { display: block; }
 
 /* IA section titles */
+.page-section-title { padding: 0 24px; }
 .ia-section-title {
   font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
   color: #4a6070; margin-bottom: 12px; margin-top: 4px; padding-left: 2px;
@@ -1297,36 +1298,19 @@ a:hover { text-decoration: underline; }
     </div>
   </div>
 
-  <!-- Sticky nav — wizard steps when selecting, section nav when viewing results -->
+  <!-- Unified sticky nav — always present, maps to 5 real sections -->
   <div class="sticky-progress" id="stickyProgress" style="display:none;">
-    <!-- Wizard mode (shown during brand/model/deal selection) -->
-    <div class="sp-inner" id="wizardNav">
-      <button class="sp-step done-btn" id="sp1" onclick="goToStep(1)" title="Back to Year">
-        <span class="sp-num">1</span><span class="sp-label">Year</span>
-      </button>
-      <div class="sp-line" id="sl1"></div>
-      <button class="sp-step" id="sp2" onclick="goToStep(2)" title="Back to Brand">
-        <span class="sp-num">2</span><span class="sp-label">Brand</span>
-      </button>
-      <div class="sp-line" id="sl2"></div>
-      <button class="sp-step" id="sp3" onclick="goToStep(3)" title="Back to Model">
-        <span class="sp-num">3</span><span class="sp-label">Model</span>
-      </button>
-      <div class="sp-line" id="sl3"></div>
-      <button class="sp-step" id="sp4" onclick="goToStep(4)" title="View deal">
-        <span class="sp-num">4</span><span class="sp-label">Deal</span>
-      </button>
-    </div>
-    <!-- Results mode (shown after report is generated) -->
-    <div class="results-nav sp-inner" id="resultsNav" style="display:none;">
-      <button class="rn-btn" onclick="scrollToSection('sec-car')"  id="rn-car"><span class="rn-num">1</span> Car</button>
-      <button class="rn-btn" onclick="scrollToSection('sec-deal')" id="rn-deal"><span class="rn-num">2</span> Deal</button>
-      <button class="rn-btn" onclick="scrollToSection('sec-risk')" id="rn-risk"><span class="rn-num">3</span> Risk</button>
-      <button class="rn-btn" onclick="scrollToSection('sec-cost')" id="rn-cost"><span class="rn-num">4</span> Cost</button>
+    <div class="unified-nav" id="unifiedNav">
+      <button class="rn-btn" onclick="scrollToSection('sec-select')" id="rn-select"><span class="rn-num">1</span> Select</button>
+      <button class="rn-btn" onclick="scrollToSection('sec-deal')"   id="rn-deal"><span class="rn-num">2</span> Deal</button>
+      <button class="rn-btn" onclick="scrollToSection('sec-risk')"   id="rn-risk"><span class="rn-num">3</span> Risk</button>
+      <button class="rn-btn" onclick="scrollToSection('sec-cost')"   id="rn-cost"><span class="rn-num">4</span> Cost</button>
       <button class="rn-btn" onclick="scrollToSection('sec-details')" id="rn-details"><span class="rn-num">5</span> Details</button>
     </div>
   </div>
 
+  <div class="ia-section-marker" id="sec-select"></div>
+  <div class="ia-section-title page-section-title">1 — Select your car</div>
   <section class="selection-section">
     <!-- Year pills -->
     <div class="year-toggle" id="yearToggle"></div>
@@ -1358,6 +1342,8 @@ a:hover { text-decoration: underline; }
   <!-- ══════════════════════════════════════════ -->
   <!-- STEP 3: Deal details (reveal panel)        -->
   <!-- ══════════════════════════════════════════ -->
+  <div class="ia-section-marker" id="sec-deal-input"></div>
+  <div class="ia-section-title page-section-title" id="deal-section-title" style="display:none;">2 — Deal</div>
   <section class="reveal-panel deal-section" id="dealSection">
     <!-- Vehicle badge -->
     <div class="vehicle-crumb" id="vehicleCrumb">
@@ -2023,10 +2009,14 @@ function showWizardNav() {
 }
 
 function scrollToSection(id) {
-  // Auto-open full breakdown if navigating to sections inside it
-  if (['sec-deal','sec-cost','sec-details'].includes(id)) openFullBreakdown();
+  // Map nav IDs to real anchor IDs
+  const anchorMap = { 'sec-select': 'sec-select', 'sec-deal': 'sec-deal-input', 'sec-risk': 'sec-risk', 'sec-cost': 'sec-cost', 'sec-details': 'sec-details' };
+  const target = anchorMap[id] || id;
+  // Open deal section or full breakdown as needed
+  if (id === 'sec-deal') openSection('dealSection');
+  if (['sec-cost','sec-details'].includes(id)) openFullBreakdown();
   setTimeout(() => {
-    const el = document.getElementById(id + '-marker') || document.getElementById(id);
+    const el = document.getElementById(target);
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, ['sec-deal','sec-cost','sec-details'].includes(id) ? 350 : 0);
   track('section_nav_click', { section: id });
@@ -2034,11 +2024,11 @@ function scrollToSection(id) {
 
 // Map section marker IDs to nav button IDs
 const SECTION_MAP = [
-  { marker: 'sec-car',     btn: 'rn-car' },
-  { marker: 'sec-deal',    btn: 'rn-deal' },
-  { marker: 'sec-risk',    btn: 'rn-risk' },
-  { marker: 'sec-cost',    btn: 'rn-cost' },
-  { marker: 'sec-details', btn: 'rn-details' },
+  { marker: 'sec-select',     btn: 'rn-select' },
+  { marker: 'sec-deal-input', btn: 'rn-deal' },
+  { marker: 'sec-risk',       btn: 'rn-risk' },
+  { marker: 'sec-cost',       btn: 'rn-cost' },
+  { marker: 'sec-details',    btn: 'rn-details' },
 ];
 
 function highlightActiveSection() {
@@ -4216,6 +4206,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderBrandGrid();
   renderYearToggle();
   updateWizardProgress(1);
+  setTimeout(() => showStickyProgress(), 600);
 
   // Load from URL params if present (shareable link)
   if (window.location.search) loadFromUrl();
