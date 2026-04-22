@@ -3086,20 +3086,22 @@ function checkDeal() {
         console.error('renderResult error:', renderErr);
         throw renderErr;
       }
-      document.getElementById('resultLoading').style.display = 'none';
+      // Clear updating states (new structure)
+      const rlEl = document.getElementById('resultLoading'); if(rlEl) rlEl.style.display='none';
       const rl2 = document.getElementById('riskLoading'); if(rl2) rl2.style.display='none';
-      document.getElementById('resultContent').classList.remove('hidden');
+      const rcEl = document.getElementById('resultContent'); if(rcEl) rcEl.classList.remove('hidden');
       showSectionContent('sec-risk');
       showSectionContent('sec-cost');
       showSectionContent('sec-details');
       updateShareableUrl();
       showFeedbackFloat();
-      showResultsNav();
+      // showResultsNav(); — unified nav already visible
       track('signal_shown', { signal: data.signal });
     })
     .catch(err => {
       console.error('checkDeal error:', err);
-      document.getElementById('resultLoading').innerHTML =
+      const rlErrEl = document.getElementById('resultLoading') || document.getElementById('sec-risk');
+      if(rlErrEl) rlErrEl.innerHTML =
         `<div style="color:#ef4444;text-align:center;padding:40px 0;font-size:1rem;">
           Could not load analysis — please try again.<br>
           <span style="font-size:0.8rem;color:#8499b0;margin-top:8px;display:block;">${err.message || 'Unknown error'}</span>
