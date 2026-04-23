@@ -3532,21 +3532,27 @@ function renderTermTrapWarning(d) {
 }
 
 function renderResult(d) {
-  renderSignal(d);
-  applyHeroCardColor(d.signal_color || 'green');
-  renderHeroExtras(d);
-  renderRange(d);
-  renderReasons(d);
-  renderWhatToSay(d);
-  renderDimensionCards(d);
-  renderEquityBlock(d);
-  renderTermTrapWarning(d);
-  renderOTD(d);
-  renderTermTrap(d);
-  renderOwnershipCost(d);
-  renderFees(d);
-  renderNegotiationScript(d);
-  renderVehicleDetails(d);
+  const fns = [
+    ['renderSignal', () => renderSignal(d)],
+    ['applyHeroCardColor', () => applyHeroCardColor(d.signal_color || 'green')],
+    ['renderHeroExtras', () => renderHeroExtras(d)],
+    ['renderRange', () => renderRange(d)],
+    ['renderReasons', () => renderReasons(d)],
+    ['renderWhatToSay', () => renderWhatToSay(d)],
+    ['renderDimensionCards', () => renderDimensionCards(d)],
+    ['renderEquityBlock', () => renderEquityBlock(d)],
+    ['renderTermTrapWarning', () => renderTermTrapWarning(d)],
+    ['renderOTD', () => renderOTD(d)],
+    ['renderTermTrap', () => renderTermTrap(d)],
+    ['renderOwnershipCost', () => renderOwnershipCost(d)],
+    ['renderFees', () => renderFees(d)],
+    ['renderNegotiationScript', () => renderNegotiationScript(d)],
+    ['renderVehicleDetails', () => renderVehicleDetails(d)],
+  ];
+  for (const [name, fn] of fns) {
+    try { fn(); }
+    catch(e) { throw new Error(name + ': ' + e.message); }
+  }
 }
 
 function renderSignal(d) {
