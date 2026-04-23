@@ -231,7 +231,7 @@ def get_equity_analysis(msrp: float, financed_amount: float, apr: float,
             verdict = "likely_positive"
             verdict_label = "Likely positive equity"
             verdict_color = "green"
-            verdict_text = f"At end of term, your vehicle should be worth approximately ${abs(final_equity):,} more than your remaining loan balance."
+            verdict_text = f"At the end of the term, you are projected to have ${abs(final_equity):,} in positive equity."
     elif final_equity >= -1000:
         verdict = "breakeven"
         verdict_label = "Roughly break-even"
