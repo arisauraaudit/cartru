@@ -3059,11 +3059,11 @@ function checkDeal() {
 
   track('deal_checked', { make: state.brand, model: state.model, year: state.year });
 
-  document.getElementById('resultVehicleLabel').innerHTML =
+  const rvl = document.getElementById('resultVehicleLabel'); if(rvl) rvl.innerHTML =
     `<strong>${state.year} ${state.brand} ${state.model}</strong>`;
 
-  document.getElementById('resultLoading').style.display = 'block';
-  document.getElementById('resultContent').classList.add('hidden');
+  const rlShow = document.getElementById('resultLoading'); if(rlShow) rlShow.style.display = 'block';
+  const rcHide = document.getElementById('resultContent'); if(rcHide) rcHide.classList.add('hidden');
   // Show loading state in risk section
   const rl = document.getElementById('riskLoading');
   if (rl) rl.style.display = 'block';
