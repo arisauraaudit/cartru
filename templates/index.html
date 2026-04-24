@@ -1534,72 +1534,83 @@ a:hover { text-decoration: underline; }
         <div class="ttw-header">⚠️ Long-term loan alert</div>
         <div class="ttw-summary" id="ttwSummaryText"></div>
         <div class="ttw-comparison" id="ttwComparison"></div>
-        <button class="ttw-expand-btn" onclick="openFullBreakdown()">See all term options ↓</button>
+        <button class="ttw-expand-btn" onclick="toggleSection('term-trap')">See all term options ↓</button>
       </div>
-      <!-- Equity / underwater -->
-      <div class="equity-block" id="equityBlock" style="display:none;">
-        <div class="equity-block-header">
-          <div class="equity-block-title">🏦 Will you be underwater?</div>
-          <div class="equity-verdict-badge" id="equityVerdictBadge"></div>
+      <!-- Equity accordion content below -->
+      <!-- Will you be underwater? — collapsible -->
+      <div class="section" style="margin-bottom:16px;" id="equityAccordion">
+        <div class="section-header" onclick="toggleSection('equity-accordion')">
+          <div class="section-title"><span class="section-icon">🏦</span> Will you be underwater?</div>
+          <div class="section-chevron" id="chevron-equity-accordion">▼</div>
         </div>
-        <div class="equity-verdict-text" id="equityVerdictText"></div>
-        <div class="equity-resale-row">
-          <span class="equity-resale-label">Resale strength:</span>
-          <span class="equity-resale-badge" id="equityResaleBadge"></span>
-          <span class="equity-resale-label" id="equityResaleNote" style="margin-left:4px;"></span>
-        </div>
-        <div class="equity-chart-wrap">
-          <svg class="equity-chart-svg" id="equityChartSvg" viewBox="0 0 600 160" preserveAspectRatio="none"></svg>
-        </div>
-        <div class="equity-chart-legend">
-          <div class="equity-legend-item"><div class="equity-legend-dot" style="background:#00d4aa;"></div> Estimated vehicle value</div>
-          <div class="equity-legend-item"><div class="equity-legend-dot" style="background:#ef4444;"></div> Remaining loan balance</div>
+        <div class="section-body hidden" id="body-equity-accordion">
+          <div id="equityInner">
+            <div class="equity-block-header">
+              <div class="equity-verdict-badge" id="equityVerdictBadge"></div>
+            </div>
+            <div class="equity-verdict-text" id="equityVerdictText"></div>
+            <div class="equity-resale-row">
+              <span class="equity-resale-label">Resale strength:</span>
+              <span class="equity-resale-badge" id="equityResaleBadge"></span>
+              <span class="equity-resale-label" id="equityResaleNote" style="margin-left:4px;"></span>
+            </div>
+            <div class="equity-chart-wrap">
+              <svg class="equity-chart-svg" id="equityChartSvg" viewBox="0 0 600 160" preserveAspectRatio="none"></svg>
+            </div>
+            <div class="equity-chart-legend">
+              <div class="equity-legend-item"><div class="equity-legend-dot" style="background:#00d4aa;"></div> Estimated vehicle value</div>
+              <div class="equity-legend-item"><div class="equity-legend-dot" style="background:#ef4444;"></div> Remaining loan balance</div>
+            </div>
+          </div>
         </div>
       </div>
-      <!-- Full breakdown toggle -->
-      <div class="full-breakdown-toggle">
-        <button class="view-breakdown-btn" id="viewBreakdownBtn" onclick="toggleFullBreakdown()">View full breakdown ↓</button>
-      </div>
-      <!-- Full breakdown panel -->
-      <div class="full-breakdown-panel" id="fullBreakdownPanel">
-        <!-- Term trap table -->
-        <div class="term-trap-block" id="termTrapBlock" style="margin-bottom:20px;">
-          <div class="term-trap-title">🪤 The Term Trap — See What Dealers Hide</div>
-          <div class="term-trap-subtitle">Dealers extend loan terms to lower monthly payments — hiding thousands in extra interest.</div>
+
+      <!-- Term Trap — collapsible -->
+      <div class="section" style="margin-bottom:16px;" id="termTrapAccordion">
+        <div class="section-header" onclick="toggleSection('term-trap')">
+          <div class="section-title"><span class="section-icon">🪤</span> The Term Trap — See What Dealers Hide</div>
+          <div class="section-chevron" id="chevron-term-trap">▼</div>
+        </div>
+        <div class="section-body hidden" id="termTrapBlock">
+          <div style="font-size:0.875rem;color:#b8cce0;margin-bottom:14px;">Dealers extend loan terms to lower monthly payments — hiding thousands in extra interest.</div>
           <div class="term-table-scroll"><table class="term-table" id="termTable"></table></div>
           <div class="term-trap-summary" id="termTrapSummary"></div>
           <div class="interest-bars"><div class="interest-bars-title">Total interest paid by term</div><div id="interestBars"></div></div>
         </div>
-        <!-- OTD breakdown -->
-        <div class="section" style="margin-bottom:16px;" id="otdSection">
-          <div class="section-header" onclick="toggleSection('otd')">
-            <div class="section-title"><span class="section-icon">📋</span> Full Out-the-Door Breakdown</div>
-            <div class="section-chevron open" id="chevron-otd">▼</div>
-          </div>
-          <div class="section-body" id="body-otd">
-            <table class="otd-table" id="otdTable"></table>
-            <div class="otd-note">* Taxes and registration vary by state — estimate only.</div>
-          </div>
-        </div>
-        <!-- Fee review -->
-        <div class="section" style="margin-bottom:16px;" id="feeSection">
-          <div class="section-header" onclick="toggleSection('fees')">
-            <div class="section-title"><span class="section-icon">🔍</span> Fee &amp; Add-On Review</div>
-            <div class="section-chevron open" id="chevron-fees">▼</div>
-          </div>
-          <div class="section-body" id="body-fees"></div>
-        </div>
-        <!-- Negotiation script -->
-        <div class="section" style="margin-bottom:16px;" id="negotiationSection">
-          <div class="section-header" onclick="toggleSection('script')">
-            <div class="section-title"><span class="section-icon">🗣️</span> Negotiation Script</div>
-            <div class="section-chevron open" id="chevron-script">▼</div>
-          </div>
-          <div class="section-body" id="body-script"></div>
-        </div>
-        <!-- Hidden: reasons -->
-        <div style="display:none" id="reasonsList"></div>
       </div>
+
+      <!-- OTD breakdown — collapsible -->
+      <div class="section" style="margin-bottom:16px;" id="otdSection">
+        <div class="section-header" onclick="toggleSection('otd')">
+          <div class="section-title"><span class="section-icon">📋</span> Full Out-the-Door Breakdown</div>
+          <div class="section-chevron" id="chevron-otd">▼</div>
+        </div>
+        <div class="section-body hidden" id="body-otd">
+          <table class="otd-table" id="otdTable"></table>
+          <div class="otd-note">* Taxes and registration vary by state — estimate only.</div>
+        </div>
+      </div>
+
+      <!-- Fee review — collapsible -->
+      <div class="section" style="margin-bottom:16px;" id="feeSection">
+        <div class="section-header" onclick="toggleSection('fees')">
+          <div class="section-title"><span class="section-icon">🔍</span> Fee &amp; Add-On Review</div>
+          <div class="section-chevron" id="chevron-fees">▼</div>
+        </div>
+        <div class="section-body hidden" id="body-fees"></div>
+      </div>
+
+      <!-- Negotiation script — collapsible -->
+      <div class="section" style="margin-bottom:16px;" id="negotiationSection">
+        <div class="section-header" onclick="toggleSection('script')">
+          <div class="section-title"><span class="section-icon">🗣️</span> Negotiation Script</div>
+          <div class="section-chevron" id="chevron-script">▼</div>
+        </div>
+        <div class="section-body hidden" id="body-script"></div>
+      </div>
+
+      <!-- Hidden: reasons -->
+      <div style="display:none" id="reasonsList"></div>
     </div>
   </section>
 
@@ -3231,9 +3242,11 @@ let fullBreakdownOpen = false;
 // ── Equity / Underwater module ────────────────────────────
 function renderEquityBlock(d) {
   const ea = d.equity_analysis;
-  const block = document.getElementById('equityBlock');
-  if (!ea || !ea.curve || ea.curve.length < 2) { if (block) block.style.display = 'none'; return; }
-  if (block) block.style.display = '';
+  const block = document.getElementById('equityInner');
+  if (!ea || !ea.curve || ea.curve.length < 2) { return; }
+  // Open equity accordion
+  openSection('body-equity-accordion');
+  const ch = document.getElementById('chevron-equity-accordion'); if(ch) ch.classList.add('open');
 
   // Verdict badge
   const badge = document.getElementById('equityVerdictBadge');
@@ -3310,6 +3323,7 @@ function renderEquityBlock(d) {
   document.getElementById('equityChartSvg').innerHTML = svg;
 }
 
+function openFullBreakdown() { /* no-op: sections are individual accordions */ }
 function toggleFullBreakdown() {
   fullBreakdownOpen = !fullBreakdownOpen;
   const panel = document.getElementById('fullBreakdownPanel');
