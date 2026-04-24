@@ -113,6 +113,83 @@ def get_assembly_info(vin: str = None, make: str = None, model: str = None, year
 
 
 
+def resolve_representative_vin(make: str, model: str, year: str) -> str | None:
+    """
+    Silently fetch a representative VIN for make/model/year using complaint records.
+    VINs from complaints are partial (10-11 chars) but sufficient for vPIC decode.
+    Returns None if no VIN can be resolved — callers fall back gracefully.
+    Never surfaces VIN to the user.
+    """
+    try:
+        url = f"https://api.nhtsa.gov/complaints/complaintsByVehicle?make={make}&model={model}&modelYear={year}"
+        r = requests.get(url, timeout=8)
+        complaints = r.json().get("results", [])
+        for complaint in complaints:
+            vin = (complaint.get("vin") or "").strip()
+            if len(vin) >= 10:  # Minimum length for vPIC decode
+                return vin
+    except Exception:
+        pass
+    return None
+
+
+def decode_vin_for_details(vin: str) -> dict:
+    """
+    Decode a (partial) VIN using NHTSA vPIC to get assembly + engine data.
+    Returns clean dict; omits any field that is empty/not applicable.
+    """
+    if not vin:
+        return {}
+    try:
+        r = requests.get(
+            f"https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinValues/{vin}?format=json",
+            timeout=10
+        )
+        raw = r.json().get("Results", [{}])[0]
+
+        def clean(val):
+            if not val:
+                return None
+            s = str(val).strip()
+            if s.lower() in ("", "not applicable", "n/a", "none", "null", "0"):
+                return None
+            return s
+
+        displ = clean(raw.get("DisplacementL"))
+        cyls  = clean(raw.get("EngineCylinders"))
+        engine = None
+        if displ and cyls:
+            engine = f"{displ}L {cyls}-Cylinder"
+        elif displ:
+            engine = f"{displ}L"
+
+        plant_country = clean(raw.get("PlantCountry"))
+        plant_city    = clean(raw.get("PlantCity"))
+        plant_company = clean(raw.get("PlantCompanyName"))
+
+        loc_parts = [p for p in [plant_city, plant_country] if p]
+        location  = ", ".join(loc_parts) if loc_parts else None
+
+        return {
+            "assembly": {
+                "available":    bool(location or plant_company),
+                "assembled_in": location,
+                "manufacturer": plant_company,
+                "country":      plant_country,
+            },
+            "engine_drivetrain": {
+                "engine":       engine,
+                "fuel_type":    clean(raw.get("FuelTypePrimary")),
+                "transmission": clean(raw.get("TransmissionStyle")),
+                "drive_type":   clean(raw.get("DriveType")),
+                "vehicle_class":clean(raw.get("VehicleType")),
+            }
+        }
+    except Exception as e:
+        logger.error(f"VIN decode error: {e}")
+        return {}
+
+
 def get_engine_drivetrain(make: str, model: str, year: str) -> dict:
     """Get engine + drivetrain specs from fueleconomy.gov."""
     try:
@@ -1043,8 +1120,22 @@ def _report_inner():
     # Recall & complaint data
     recalls    = get_recalls(make, model, year)
     complaints = get_complaints(make, model, year)
-    assembly_info   = get_assembly_info(make=make, model=model, year=year)
-    engine_drivetrain = get_engine_drivetrain(make, model, year)
+    # Silently resolve a representative VIN for richer assembly/engine data
+    _resolved_vin = resolve_representative_vin(make, model, year)
+    _vin_decoded  = decode_vin_for_details(_resolved_vin) if _resolved_vin else {}
+
+    # Assembly: prefer VIN-decoded data, fall back to manufacturer lookup
+    if _vin_decoded.get("assembly", {}).get("available"):
+        assembly_info = _vin_decoded["assembly"]
+    else:
+        assembly_info = get_assembly_info(make=make, model=model, year=year)
+
+    # Engine/drivetrain: prefer VIN-decoded, fall back to fueleconomy.gov
+    if _vin_decoded.get("engine_drivetrain") and any(_vin_decoded["engine_drivetrain"].values()):
+        engine_drivetrain = _vin_decoded["engine_drivetrain"]
+    else:
+        engine_drivetrain = get_engine_drivetrain(make, model, year)
+
     safety_ratings    = get_safety_ratings(make, model, year)
 
     # Fuel economy
