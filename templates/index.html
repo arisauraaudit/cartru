@@ -1653,6 +1653,25 @@ a:hover { text-decoration: underline; }
         </div>
         <div class="section-body hidden" id="body-recalls-full" style="padding:0 18px 18px;"></div>
       </div>
+
+      <!-- Owner Complaints -->
+      <div class="section" style="margin-bottom:16px;" id="complaintsSection">
+        <div class="section-header" onclick="toggleSection('complaints')">
+          <div class="section-title" id="complaintsTitle"><span class="section-icon">⚠️</span> Owner Complaints</div>
+          <div class="section-chevron" id="chevron-complaints">▼</div>
+        </div>
+        <div class="section-body hidden" id="body-complaints" style="padding:0 18px 18px;"></div>
+      </div>
+
+      <!-- Assembly & Origin -->
+      <div class="section" style="margin-bottom:16px;" id="assemblySection">
+        <div class="section-header" onclick="toggleSection('assembly')">
+          <div class="section-title"><span class="section-icon">🏭</span> Assembly & Origin</div>
+          <div class="section-chevron" id="chevron-assembly">▼</div>
+        </div>
+        <div class="section-body hidden" id="body-assembly" style="padding:0 18px 18px;"></div>
+      </div>
+
       <div style="background:#1a2535;border-radius:14px;padding:28px;margin-bottom:16px;text-align:center;" id="leaseTeaser">
         <div style="font-size:1rem;font-weight:700;color:#eef2f7;margin-bottom:8px;">🚘 Considering a lease instead?</div>
         <div style="font-size:0.9375rem;color:#b8cce0;line-height:1.65;margin-bottom:20px;max-width:380px;margin-left:auto;margin-right:auto;">
@@ -3936,6 +3955,76 @@ function renderNegotiationScript(d) {
 function renderVehicleDetails(d) {
   renderFuelEconomy(d.fuel_economy);
   renderRecalls(d.recalls, d.recall_count);
+  renderComplaints(d.complaints);
+  renderAssemblyInfo(d.assembly_info);
+}
+
+function renderComplaints(data) {
+  const body = document.getElementById('body-complaints');
+  const titleEl = document.getElementById('complaintsTitle');
+  if (!body) return;
+
+  if (!data || data.total === undefined) {
+    body.innerHTML = '<div style="color:#8499b0;font-size:0.875rem;padding:8px 0;">Complaint data unavailable.</div>';
+    return;
+  }
+
+  const total = data.total;
+  const signal = data.signal || 'green';
+  const signalColors = { green: '#00d4aa', yellow: '#f59e0b', red: '#ef4444' };
+  const color = signalColors[signal] || '#8499b0';
+
+  // Update section title with count + color
+  if (titleEl) {
+    const icon = signal === 'green' ? '✅' : signal === 'yellow' ? '🟡' : '🔴';
+    titleEl.innerHTML = `<span class="section-icon">${icon}</span> Owner Complaints`;
+    titleEl.style.color = color;
+  }
+
+  if (total === 0) {
+    body.innerHTML = `<div style="color:#00d4aa;font-size:0.9rem;padding:8px 0;">No complaints on record with NHTSA.</div>`;
+    return;
+  }
+
+  const headline = `<div style="font-size:1rem;font-weight:800;color:${color};margin-bottom:12px;">${total} complaint${total !== 1 ? 's' : ''} filed with NHTSA</div>`;
+
+  const components = (data.top_components || []);
+  const compRows = components.length
+    ? '<div style="display:flex;flex-direction:column;gap:8px;">' +
+      components.map(c => `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#0f1724;border-radius:8px;">
+          <span style="font-size:0.875rem;color:#b8cce0;">${c.component}</span>
+          <span style="font-size:0.875rem;font-weight:700;color:#eef2f7;">${c.count}</span>
+        </div>`).join('') + '</div>'
+    : '';
+
+  const disclaimer = `<div style="font-size:0.78rem;color:#4a6070;margin-top:12px;">Source: NHTSA Complaints Database · Counts may include multiple model variants</div>`;
+
+  body.innerHTML = headline + compRows + disclaimer;
+}
+
+function renderAssemblyInfo(data) {
+  const body = document.getElementById('body-assembly');
+  if (!body) return;
+
+  if (!data || !data.available) {
+    const reason = data && data.reason === 'no_vin' ? 'Enter a VIN to unlock assembly details.' : 'Assembly data unavailable.';
+    body.innerHTML = `<div style="color:#8499b0;font-size:0.875rem;padding:8px 0;">${reason}</div>`;
+    return;
+  }
+
+  const rows = [];
+  if (data.assembled_in) rows.push(['Assembled in', data.assembled_in]);
+  if (data.plant_company) rows.push(['Plant', data.plant_company]);
+  if (data.destination_market) rows.push(['Destination market', data.destination_market]);
+
+  const table = rows.map(([label, val]) => `
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1e2d3d;">
+      <span style="font-size:0.875rem;color:#8499b0;">${label}</span>
+      <span style="font-size:0.875rem;font-weight:600;color:#eef2f7;">${val}</span>
+    </div>`).join('');
+
+  body.innerHTML = table || '<div style="color:#8499b0;font-size:0.875rem;">No assembly data available.</div>';
 }
 
 function renderFuelEconomy(fe) {

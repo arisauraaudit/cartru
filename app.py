@@ -53,16 +53,60 @@ def get_complaints(make, model, year):
         r = requests.get(url, timeout=10)
         data = r.json()
         complaints = data.get("results", [])
+        total = len(complaints)  # API Count field is unreliable; use actual results length
         components = {}
-        for c in complaints:
-            comp = c.get("components", "Unknown")
+        for comp_entry in complaints:
+            comp = comp_entry.get("components", "Unknown") or "Unknown"
             components[comp] = components.get(comp, 0) + 1
+        top_components = [
+            {"component": k, "count": v}
+            for k, v in sorted(components.items(), key=lambda x: x[1], reverse=True)[:4]
+        ]
+        # Signal color
+        if total == 0:
+            signal = "green"
+        elif total <= 25:
+            signal = "yellow"
+        else:
+            signal = "red"
         return {
-            "total": data.get("Count", 0),
-            "by_component": dict(sorted(components.items(), key=lambda x: x[1], reverse=True)[:5])
+            "total": total,
+            "top_components": top_components,
+            "signal": signal,
         }
     except Exception:
-        return {"total": 0, "by_component": {}}
+        return {"total": 0, "top_components": [], "signal": "green"}
+
+
+def get_assembly_info(vin: str = None, make: str = None, model: str = None, year: str = None) -> dict:
+    """Fetch assembly/origin info from NHTSA vPIC API using VIN decode."""
+    if not vin:
+        return {"available": False, "reason": "no_vin"}
+    try:
+        url = f"https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinValues/{vin}?format=json"
+        r = requests.get(url, timeout=10)
+        data = r.json()
+        results = data.get("Results", [{}])[0] if data.get("Results") else {}
+
+        plant_country   = results.get("PlantCountry", "").strip()
+        plant_city      = results.get("PlantCity", "").strip()
+        plant_company   = results.get("PlantCompanyName", "").strip()
+        dest_market     = results.get("DestinationMarket", "").strip()
+
+        # Build location string
+        location_parts = [p for p in [plant_city, plant_country] if p]
+        location = ", ".join(location_parts) if location_parts else "Unknown"
+
+        return {
+            "available": True,
+            "assembled_in": location,
+            "plant_company": plant_company or None,
+            "destination_market": dest_market or None,
+            "country": plant_country or None,
+        }
+    except Exception as e:
+        logger.error(f"Assembly info error: {e}")
+        return {"available": False, "reason": "api_error"}
 
 
 # ── Fuel Economy API ──────────────────────────────────────────────────────────
@@ -799,6 +843,7 @@ def _report_inner():
     model              = data.get("model", "").strip()
     zip_code           = data.get("zip_code", "").strip()
     msrp               = data.get("msrp", "") or None
+    vin                = data.get("vin", "").strip() or None
     dealer_offer       = data.get("dealer_offer", "") or None
     destination_charge = data.get("destination_charge", 0)
     dealer_fees        = data.get("dealer_fees", 0)
@@ -858,6 +903,7 @@ def _report_inner():
     # Recall & complaint data
     recalls    = get_recalls(make, model, year)
     complaints = get_complaints(make, model, year)
+    assembly_info = get_assembly_info(vin=data.get("vin"), make=make, model=model, year=year)
 
     # Fuel economy
     fuel_economy = get_fuel_economy(make, model, year)
@@ -961,6 +1007,7 @@ def _report_inner():
         "recalls": recalls,
         "recall_count": recall_count,
         "complaints": complaints,
+        "assembly_info": assembly_info,
         "fuel_economy": fuel_economy,
         "true_cost": true_cost,
         "safety_signal": safety_signal,
