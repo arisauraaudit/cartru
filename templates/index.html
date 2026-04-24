@@ -719,7 +719,7 @@ a:hover { text-decoration: underline; }
 .section-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; cursor: pointer; user-select: none; transition: background 0.2s; }
 .section-header:hover { background: #1e2e42; }
 .section-title { font-size: 1rem; font-weight: 700; color: #eef2f7; display: flex; align-items: center; gap: 10px; }
-.section-icon { font-size: 1.05rem; }
+.section-icon { font-size: 1.1rem; font-size: 1.05rem; }
 .section-chevron { color: #8499b0; transition: transform 0.25s; font-size: 0.875rem; }
 .section-chevron.open { transform: rotate(180deg); }
 .section-body { padding: 0 22px 22px; font-size: 1rem; color: #b8cce0; line-height: 1.65; }
@@ -1571,7 +1571,7 @@ a:hover { text-decoration: underline; }
           <div class="section-title"><span class="section-icon">🪤</span> The Term Trap — See What Dealers Hide</div>
           <div class="section-chevron" id="chevron-term-trap">▼</div>
         </div>
-        <div class="section-body hidden" id="termTrapBlock">
+        <div class="section-body hidden" id="body-term-trap">
           <div style="font-size:0.875rem;color:#b8cce0;margin-bottom:14px;">Dealers extend loan terms to lower monthly payments — hiding thousands in extra interest.</div>
           <div class="term-table-scroll"><table class="term-table" id="termTable"></table></div>
           <div class="term-trap-summary" id="termTrapSummary"></div>
@@ -3338,7 +3338,7 @@ function toggleFullBreakdown() {
 
 function openFullBreakdown() {
   if (!fullBreakdownOpen) toggleFullBreakdown();
-  setTimeout(() => scrollToEl('termTrapBlock'), 80);
+  setTimeout(() => scrollToEl('termTrapAccordion'), 80);
 }
 
 // ══════════════════════════════════════════════════════════
@@ -4009,6 +4009,26 @@ function renderEngineDrivetrain(data) {
     renderRow('Class',           d.vehicle_class);
 }
 
+
+// Country → flag emoji mapping
+function countryFlag(country) {
+  if (!country) return '';
+  const c = country.toUpperCase();
+  if (c.includes('UNITED STATES') || c.includes('USA')) return '🇺🇸';
+  if (c.includes('JAPAN'))    return '🇯🇵';
+  if (c.includes('GERMANY'))  return '🇩🇪';
+  if (c.includes('KOREA'))    return '🇰🇷';
+  if (c.includes('CANADA'))   return '🇨🇦';
+  if (c.includes('MEXICO'))   return '🇲🇽';
+  if (c.includes('UNITED KINGDOM') || c.includes('UK')) return '🇬🇧';
+  if (c.includes('SWEDEN'))   return '🇸🇪';
+  if (c.includes('FRANCE'))   return '🇫🇷';
+  if (c.includes('ITALY'))    return '🇮🇹';
+  if (c.includes('CHINA'))    return '🇨🇳';
+  if (c.includes('INDIA'))    return '🇮🇳';
+  if (c.includes('AUSTRALIA'))return '🇦🇺';
+  return '';
+}
 function renderAssemblyInfo(data) {
   const body = document.getElementById('body-assembly');
   if (!body) return;
@@ -4017,9 +4037,8 @@ function renderAssemblyInfo(data) {
     return;
   }
   body.innerHTML =
-    renderRow('🌎 Assembled in', data.assembled_in) +
-    renderRow('🏙 Manufacturer',  data.manufacturer) +
-    renderRow('Country',          data.country);
+    renderRow('🌎 Assembled in', (countryFlag(data.country) + ' ' + (data.assembled_in || '')).trim()) +
+    renderRow('🏭 Manufacturer',  data.manufacturer);
   if (!body.innerHTML.trim()) {
     body.innerHTML = '<div style="color:#8499b0;font-size:0.875rem;padding:8px 0;">No assembly data available for this model.</div>';
   }
@@ -4139,6 +4158,26 @@ function renderComplaints(data) {
   body.innerHTML = headline + compRows + disclaimer;
 }
 
+
+// Country → flag emoji mapping
+function countryFlag(country) {
+  if (!country) return '';
+  const c = country.toUpperCase();
+  if (c.includes('UNITED STATES') || c.includes('USA')) return '🇺🇸';
+  if (c.includes('JAPAN'))    return '🇯🇵';
+  if (c.includes('GERMANY'))  return '🇩🇪';
+  if (c.includes('KOREA'))    return '🇰🇷';
+  if (c.includes('CANADA'))   return '🇨🇦';
+  if (c.includes('MEXICO'))   return '🇲🇽';
+  if (c.includes('UNITED KINGDOM') || c.includes('UK')) return '🇬🇧';
+  if (c.includes('SWEDEN'))   return '🇸🇪';
+  if (c.includes('FRANCE'))   return '🇫🇷';
+  if (c.includes('ITALY'))    return '🇮🇹';
+  if (c.includes('CHINA'))    return '🇨🇳';
+  if (c.includes('INDIA'))    return '🇮🇳';
+  if (c.includes('AUSTRALIA'))return '🇦🇺';
+  return '';
+}
 function renderAssemblyInfo(data) {
   const body = document.getElementById('body-assembly');
   if (!body) return;
