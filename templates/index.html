@@ -1646,24 +1646,17 @@ a:hover { text-decoration: underline; }
     <div class="section-heading">5 — Details</div>
     <div id="detailsPlaceholder" class="section-placeholder">Select a car to see recalls and specs.</div>
     <div id="detailsContent" style="display:none;">
-      <div class="section" style="margin-bottom:16px;">
-        <div class="section-header" onclick="toggleSection('recalls-full')">
-          <div class="section-title"><span class="section-icon">🔔</span> NHTSA Recalls</div>
-          <div class="section-chevron" id="chevron-recalls-full">▼</div>
+
+      <!-- 1. Engine & Drivetrain -->
+      <div class="section" style="margin-bottom:16px;" id="engineSection">
+        <div class="section-header" onclick="toggleSection('engine')">
+          <div class="section-title"><span class="section-icon">🔧</span> Engine & Drivetrain</div>
+          <div class="section-chevron" id="chevron-engine">▼</div>
         </div>
-        <div class="section-body hidden" id="body-recalls-full" style="padding:0 18px 18px;"></div>
+        <div class="section-body hidden" id="body-engine" style="padding:0 18px 18px;"></div>
       </div>
 
-      <!-- Owner Complaints -->
-      <div class="section" style="margin-bottom:16px;" id="complaintsSection">
-        <div class="section-header" onclick="toggleSection('complaints')">
-          <div class="section-title" id="complaintsTitle"><span class="section-icon">⚠️</span> Owner Complaints</div>
-          <div class="section-chevron" id="chevron-complaints">▼</div>
-        </div>
-        <div class="section-body hidden" id="body-complaints" style="padding:0 18px 18px;"></div>
-      </div>
-
-      <!-- Assembly & Origin -->
+      <!-- 2. Assembly & Origin -->
       <div class="section" style="margin-bottom:16px;" id="assemblySection">
         <div class="section-header" onclick="toggleSection('assembly')">
           <div class="section-title"><span class="section-icon">🏭</span> Assembly & Origin</div>
@@ -1672,19 +1665,34 @@ a:hover { text-decoration: underline; }
         <div class="section-body hidden" id="body-assembly" style="padding:0 18px 18px;"></div>
       </div>
 
-      <div style="background:#1a2535;border-radius:14px;padding:28px;margin-bottom:16px;text-align:center;" id="leaseTeaser">
-        <div style="font-size:1rem;font-weight:700;color:#eef2f7;margin-bottom:8px;">🚘 Considering a lease instead?</div>
-        <div style="font-size:0.9375rem;color:#b8cce0;line-height:1.65;margin-bottom:20px;max-width:380px;margin-left:auto;margin-right:auto;">
-          Lower monthly payment, nothing owned at the end, and mileage limits that add up fast.<br>
-          Lease calculator coming soon — leave your email and we'll notify you.
+      <!-- 3. Safety Score -->
+      <div class="section" style="margin-bottom:16px;" id="safetySection">
+        <div class="section-header" onclick="toggleSection('safety')">
+          <div class="section-title" id="safetyTitle"><span class="section-icon">⭐</span> Safety Score</div>
+          <div class="section-chevron" id="chevron-safety">▼</div>
         </div>
-        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;" id="leaseActions">
-          <input type="email" id="leaseEmail" placeholder="your@email.com" style="background:#0f1724;border:1.5px solid #2a3a50;border-radius:8px;padding:10px 16px;color:#eef2f7;font-size:0.9375rem;font-family:inherit;width:220px;" onkeydown="if(event.key==='Enter')submitLeaseEmail()">
-          <button onclick="submitLeaseEmail()" style="background:#00d4aa;color:#0f1724;border:none;border-radius:8px;padding:10px 20px;font-size:0.9375rem;font-weight:700;cursor:pointer;font-family:inherit;">Notify me</button>
-        </div>
-        <div id="leaseThanks" style="display:none;color:#00d4aa;font-size:0.9375rem;font-weight:600;margin-top:10px;">✓ Got it — we'll let you know when lease comparison launches.</div>
+        <div class="section-body hidden" id="body-safety" style="padding:0 18px 18px;"></div>
       </div>
-      <div class="feedback-block" id="feedbackBlock">
+
+      <!-- 4. Owner Complaints -->
+      <div class="section" style="margin-bottom:16px;" id="complaintsSection">
+        <div class="section-header" onclick="toggleSection('complaints')">
+          <div class="section-title" id="complaintsTitle"><span class="section-icon">⚠️</span> Owner Complaints</div>
+          <div class="section-chevron" id="chevron-complaints">▼</div>
+        </div>
+        <div class="section-body hidden" id="body-complaints" style="padding:0 18px 18px;"></div>
+      </div>
+
+      <!-- 5. NHTSA Recalls -->
+      <div class="section" style="margin-bottom:16px;">
+        <div class="section-header" onclick="toggleSection('recalls-full')">
+          <div class="section-title"><span class="section-icon">🔔</span> NHTSA Recalls</div>
+          <div class="section-chevron" id="chevron-recalls-full">▼</div>
+        </div>
+        <div class="section-body hidden" id="body-recalls-full" style="padding:0 18px 18px;"></div>
+      </div>
+
+            <div class="feedback-block" id="feedbackBlock">
         <div class="feedback-block-title">Help us improve WheelTheDeal</div>
         <div class="feedback-block-sub">Tell us what worked, what didn't, or what's missing.<br>Takes 30 seconds.</div>
         <button class="btn-feedback-open" onclick="openFeedback()">Send feedback</button>
@@ -3954,9 +3962,123 @@ function renderNegotiationScript(d) {
 
 function renderVehicleDetails(d) {
   renderFuelEconomy(d.fuel_economy);
-  renderRecalls(d.recalls, d.recall_count);
-  renderComplaints(d.complaints);
+  renderEngineDrivetrain(d.engine_drivetrain);
   renderAssemblyInfo(d.assembly_info);
+  renderSafetyRatings(d.safety_ratings);
+  renderComplaints(d.complaints);
+  renderRecalls(d.recalls, d.recall_count);
+}
+
+// ── Detail section renderers ──────────────────────────────
+
+function renderRow(label, value) {
+  if (!value) return '';
+  return `<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid #1e2d3d;">
+    <span style="font-size:0.875rem;color:#8499b0;">${label}</span>
+    <span style="font-size:0.875rem;font-weight:600;color:#eef2f7;">${value}</span>
+  </div>`;
+}
+
+function renderEngineDrivetrain(data) {
+  const body = document.getElementById('body-engine');
+  if (!body) return;
+  if (!data || Object.keys(data).filter(k => data[k]).length === 0) {
+    body.innerHTML = '<div style="color:#8499b0;font-size:0.875rem;padding:8px 0;">Engine data unavailable for this model.</div>';
+    return;
+  }
+  const d = data;
+  body.innerHTML =
+    renderRow('🔩 Engine',       d.engine) +
+    renderRow('⛽ Fuel Type',    d.fuel_type) +
+    renderRow('🔄 Transmission', d.transmission) +
+    renderRow('🚗 Drive Type',   d.drive_type) +
+    renderRow('Class',           d.vehicle_class);
+}
+
+function renderAssemblyInfo(data) {
+  const body = document.getElementById('body-assembly');
+  if (!body) return;
+  if (!data || !data.available) {
+    body.innerHTML = '<div style="color:#8499b0;font-size:0.875rem;padding:8px 0;">Assembly data unavailable.</div>';
+    return;
+  }
+  body.innerHTML =
+    renderRow('🌎 Assembled in', data.assembled_in) +
+    renderRow('🏙 Manufacturer',  data.manufacturer) +
+    renderRow('Country',          data.country);
+  if (!body.innerHTML.trim()) {
+    body.innerHTML = '<div style="color:#8499b0;font-size:0.875rem;padding:8px 0;">No assembly data available for this model.</div>';
+  }
+}
+
+function renderSafetyRatings(data) {
+  const body    = document.getElementById('body-safety');
+  const titleEl = document.getElementById('safetyTitle');
+  if (!body) return;
+
+  if (!data || !data.available) {
+    body.innerHTML = '<div style="color:#8499b0;font-size:0.875rem;padding:8px 0;">No NHTSA safety rating available for this model year.<br><span style="font-size:0.8rem;">Ratings typically available 1–2 years after model release.</span></div>';
+    return;
+  }
+
+  function stars(n) {
+    if (!n) return '<span style="color:#4a6070;">Not rated</span>';
+    const color = n >= 5 ? '#00d4aa' : n >= 4 ? '#eef2f7' : '#f59e0b';
+    return '<span style="color:' + color + ';">' + '⭐'.repeat(n) + '☆'.repeat(5 - n) + ' ' + n + '/5</span>';
+  }
+
+  const note = data.rated_year ? ` <span style="font-size:0.78rem;color:#4a6070;">(${data.rated_year} model year)</span>` : '';
+  if (titleEl) titleEl.innerHTML = '<span class="section-icon">⭐</span> Safety Score' + note;
+
+  body.innerHTML =
+    `<div style="display:flex;flex-direction:column;gap:2px;">` +
+    renderRow('Overall Rating',   stars(data.overall)) +
+    renderRow('Frontal Crash',    stars(data.frontal_crash)) +
+    renderRow('Side Crash',       stars(data.side_crash)) +
+    renderRow('Rollover',         stars(data.rollover)) +
+    '</div>';
+}
+
+function renderComplaints(data) {
+  const body    = document.getElementById('body-complaints');
+  const titleEl = document.getElementById('complaintsTitle');
+  if (!body) return;
+
+  if (!data) {
+    body.innerHTML = '<div style="color:#8499b0;font-size:0.875rem;padding:8px 0;">Complaint data unavailable.</div>';
+    return;
+  }
+
+  const total  = data.total || 0;
+  const signal = data.signal || 'green';
+  const colors = { green: '#00d4aa', yellow: '#f59e0b', red: '#ef4444' };
+  const color  = colors[signal];
+  const icons  = { green: '✅', yellow: '⚠️', red: '🔴' };
+
+  if (titleEl) {
+    titleEl.innerHTML = '<span class="section-icon">' + icons[signal] + '</span> Owner Complaints';
+    titleEl.style.color = color;
+  }
+
+  if (total === 0) {
+    body.innerHTML = '<div style="color:#00d4aa;font-size:0.9rem;padding:8px 0;">No complaints on record with NHTSA.</div>';
+    return;
+  }
+
+  const compIcons = { 'ENGINE': '🔧', 'POWER TRAIN': '🔧', 'ELECTRICAL': '⚡', 'SERVICE BRAKES': '🛑', 'AIR BAGS': '💥', 'STEERING': '🔄' };
+
+  const compRows = (data.top_components || []).map(comp => {
+    const icon = Object.entries(compIcons).find(([k]) => comp.component.toUpperCase().includes(k))?.[1] || '🔩';
+    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#0f1724;border-radius:8px;margin-bottom:6px;">' +
+      '<span style="font-size:0.875rem;color:#b8cce0;">' + icon + ' ' + comp.component + '</span>' +
+      '<span style="font-size:0.875rem;font-weight:700;color:#eef2f7;">' + comp.count + '</span>' +
+      '</div>';
+  }).join('');
+
+  body.innerHTML =
+    '<div style="font-size:1rem;font-weight:800;color:' + color + ';margin-bottom:12px;">' + total + ' complaint' + (total !== 1 ? 's' : '') + ' filed with NHTSA</div>' +
+    compRows +
+    '<div style="font-size:0.78rem;color:#4a6070;margin-top:10px;">Source: NHTSA Complaints Database</div>';
 }
 
 function renderComplaints(data) {

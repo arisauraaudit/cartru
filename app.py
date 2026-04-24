@@ -111,6 +111,146 @@ def get_assembly_info(vin: str = None, make: str = None, model: str = None, year
 
 # ── Fuel Economy API ──────────────────────────────────────────────────────────
 
+
+
+def get_engine_drivetrain(make: str, model: str, year: str) -> dict:
+    """Get engine + drivetrain specs from fueleconomy.gov."""
+    try:
+        r = requests.get(
+            f"https://www.fueleconomy.gov/ws/rest/vehicle/menu/options?year={year}&make={make}&model={model}",
+            headers={"Accept": "application/json"}, timeout=10
+        )
+        data = r.json()
+        items = data.get("menuItem", [])
+        if isinstance(items, dict): items = [items]
+        if not items:
+            return {}
+        vehicle_id = items[0].get("value")
+        if not vehicle_id:
+            return {}
+        r2 = requests.get(
+            f"https://www.fueleconomy.gov/ws/rest/vehicle/{vehicle_id}",
+            headers={"Accept": "application/json"}, timeout=10
+        )
+        v = r2.json()
+        # Build clean fields, skip empty/None/Not Applicable
+        def clean(val):
+            if not val or str(val).strip().lower() in ("", "not applicable", "n/a", "none"):
+                return None
+            return str(val).strip()
+
+        displ = clean(v.get("displ"))
+        cyls  = clean(v.get("cylinders"))
+        engine = None
+        if displ and cyls:
+            engine = f"{displ}L {cyls}-Cylinder"
+        elif displ:
+            engine = f"{displ}L"
+
+        return {
+            "engine":       engine,
+            "fuel_type":    clean(v.get("fuelType")),
+            "transmission": clean(v.get("trany")),
+            "drive_type":   clean(v.get("drive")),
+            "vehicle_class":clean(v.get("VClass")),
+        }
+    except Exception as e:
+        logger.error(f"Engine/drivetrain error: {e}")
+        return {}
+
+
+def get_assembly_info(vin: str = None, make: str = None, model: str = None, year: str = None) -> dict:
+    """Fetch assembly/origin info from NHTSA vPIC API using manufacturer name lookup."""
+    if not make:
+        return {"available": False}
+    try:
+        r = requests.get(
+            f"https://vpic.nhtsa.dot.gov/api/vehicles/GetManufacturerDetails/{make}?format=json",
+            timeout=10
+        )
+        results = r.json().get("Results", [])
+        if not results:
+            return {"available": False}
+
+        def clean(val):
+            if not val or str(val).strip().lower() in ("", "not applicable", "n/a", "none", "null"):
+                return None
+            return str(val).strip()
+
+        # Find the main brand manufacturer (match common name to make)
+        brand_results = [r for r in results if make.lower() in (r.get('Mfr_CommonName') or '').lower()]
+        mfr_details = brand_results[0] if brand_results else results[0]
+
+        country  = clean(mfr_details.get("Country"))
+        state_pr = clean(mfr_details.get("StateProvince"))
+        city     = clean(mfr_details.get("City"))
+        mfr_name = clean(mfr_details.get("Mfr_CommonName") or mfr_details.get("Mfr_Name"))
+
+        location_parts = [p for p in [city, state_pr] if p]
+        if country and country != "UNITED STATES (USA)":
+            location_parts.append(country)
+        elif not location_parts:
+            location_parts.append(country or "Unknown")
+        location = ", ".join(location_parts) if location_parts else None
+
+        return {
+            "available":     True,
+            "assembled_in":  location,
+            "manufacturer":  mfr_name,
+            "country":       country,
+        }
+    except Exception as e:
+        logger.error(f"Assembly info error: {e}")
+        return {"available": False}
+
+
+def get_safety_ratings(make: str, model: str, year: str) -> dict:
+    """Fetch NHTSA 5-star safety ratings. Falls back to prior year if current year not rated."""
+    for try_year in [year, str(int(year) - 1), str(int(year) - 2)]:
+        try:
+            r = requests.get(
+                f"https://api.nhtsa.gov/SafetyRatings/modelyear/{try_year}/make/{make}/model/{model}",
+                timeout=10
+            )
+            results = r.json().get("Results", [])
+            if not results:
+                continue
+            vehicle_id = results[0].get("VehicleId")
+            if not vehicle_id:
+                continue
+            r2 = requests.get(
+                f"https://api.nhtsa.gov/SafetyRatings/VehicleId/{vehicle_id}",
+                timeout=10
+            )
+            rat = r2.json().get("Results", [{}])[0]
+
+            def to_int(val):
+                try: return int(val)
+                except: return None
+
+            overall  = to_int(rat.get("OverallRating"))
+            frontal  = to_int(rat.get("OverallFrontCrashRating"))
+            side     = to_int(rat.get("OverallSideCrashRating"))
+            rollover = to_int(rat.get("RolloverRating"))
+
+            if overall is None and frontal is None:
+                continue
+
+            return {
+                "available":       True,
+                "rated_year":      try_year,
+                "overall":         overall,
+                "frontal_crash":   frontal,
+                "side_crash":      side,
+                "rollover":        rollover,
+                "vehicle_description": results[0].get("VehicleDescription", ""),
+            }
+        except Exception as e:
+            logger.error(f"Safety ratings error ({try_year}): {e}")
+            continue
+    return {"available": False}
+
+
 def get_fuel_economy(make, model, year):
     try:
         url = f"https://www.fueleconomy.gov/ws/rest/vehicle/menu/options?year={year}&make={make}&model={model}"
@@ -903,7 +1043,9 @@ def _report_inner():
     # Recall & complaint data
     recalls    = get_recalls(make, model, year)
     complaints = get_complaints(make, model, year)
-    assembly_info = get_assembly_info(vin=data.get("vin"), make=make, model=model, year=year)
+    assembly_info   = get_assembly_info(make=make, model=model, year=year)
+    engine_drivetrain = get_engine_drivetrain(make, model, year)
+    safety_ratings    = get_safety_ratings(make, model, year)
 
     # Fuel economy
     fuel_economy = get_fuel_economy(make, model, year)
@@ -1008,6 +1150,8 @@ def _report_inner():
         "recall_count": recall_count,
         "complaints": complaints,
         "assembly_info": assembly_info,
+        "engine_drivetrain": engine_drivetrain,
+        "safety_ratings": safety_ratings,
         "fuel_economy": fuel_economy,
         "true_cost": true_cost,
         "safety_signal": safety_signal,
