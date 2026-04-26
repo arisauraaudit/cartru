@@ -1649,7 +1649,7 @@ a:hover { text-decoration: underline; }
     <div id="costPlaceholder" class="section-placeholder">Select a car and deal to see ownership cost.</div>
     <div id="costContent" style="display:none;">
       <div class="ownership-section" id="ownershipSection" style="margin-bottom:20px;">
-        <div class="ownership-title" id="ownershipTitle">N-Year Cost of Ownership</div>
+        <div class="ownership-title" id="ownershipTitle">Total Cost of Ownership</div>
         <div class="ownership-context" id="ownershipContext"></div>
         <div class="monthly-breakdown">
           <div class="monthly-breakdown-title">Monthly budget</div>
@@ -3895,7 +3895,7 @@ function renderOwnershipCost(d) {
   const selTerm = d.loan_term || state.loanTerm;
   const years   = selTerm / 12;
 
-  document.getElementById('ownershipTitle').textContent = `${years}-Year Cost of Ownership`;
+  document.getElementById('ownershipTitle').textContent = 'Total Cost of Ownership';
 
   if (!tc) {
     document.getElementById('ownershipContext').textContent = 'Enter MSRP for ownership cost details.';
