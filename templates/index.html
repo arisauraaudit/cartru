@@ -4197,7 +4197,9 @@ function countryToCode(country) {
 function countryFlagSvg(country) {
   const code = countryToCode(country);
   if (!code) return '';
-  return '<img src="https://raw.githubusercontent.com/tandpfun/country-flags/main/svg/' + code.toUpperCase() + '.svg" style="height:1.2em;vertical-align:baseline;margin-left:4px;display:inline-block;" alt="' + country + '" />';
+  const codeUpper = code.toUpperCase();
+  const flagEmoji = String.fromCodePoint(0x1F1E6 + codeUpper.charCodeAt(0) - 65, 0x1F1E6 + codeUpper.charCodeAt(1) - 65);
+  return '<span style="margin-left:4px;" title="' + country + '">' + flagEmoji + '</span>';
 }
 function renderAssemblyInfo(data) {
   const body = document.getElementById('body-assembly');
