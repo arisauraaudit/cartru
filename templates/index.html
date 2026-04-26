@@ -4043,21 +4043,24 @@ function renderEngineDrivetrain(data) {
 
 
 // Country → flag emoji mapping
-function countryFlagEmoji(countryName) {
+
+function countryFlagSvg(countryName) {
   if (!countryName) return '';
   const c = countryName.toUpperCase();
   const flags = {
-    'USA': '🇺🇸', 'UNITED STATES': '🇺🇸',
-    'GERMANY': '🇩🇪',
-    'JAPAN': '🇯🇵',
-    'KOREA': '🇰🇷', 'SOUTH KOREA': '🇰🇷',
-    'CANADA': '🇨🇦',
-    'MEXICO': '🇲🇽'
+    'USA': '<svg width="20" height="13" viewBox="0 0 20 13" style="display:inline-block;margin:0 4px;vertical-align:middle;"><rect width="20" height="13" fill="#3C3B6B"/><rect y="0" width="20" height="0.86" fill="white"/><rect y="1.72" width="20" height="0.86" fill="#ED2939"/><rect y="2.58" width="20" height="0.86" fill="white"/><rect y="3.44" width="20" height="0.86" fill="#ED2939"/><rect y="4.3" width="20" height="0.86" fill="white"/><rect y="5.16" width="20" height="0.86" fill="#ED2939"/><rect y="6.02" width="20" height="0.86" fill="white"/><rect y="6.88" width="20" height="0.86" fill="#ED2939"/><rect y="7.74" width="20" height="0.86" fill="white"/><rect y="8.6" width="20" height="0.86" fill="#ED2939"/><rect y="9.46" width="20" height="0.86" fill="white"/><rect y="10.32" width="20" height="0.86" fill="#ED2939"/><rect y="11.18" width="20" height="0.86" fill="white"/><rect y="12.04" width="20" height="0.86" fill="#ED2939"/></svg>',
+    'UNITED STATES': '<svg width="20" height="13" viewBox="0 0 20 13" style="display:inline-block;margin:0 4px;vertical-align:middle;"><rect width="20" height="13" fill="#3C3B6B"/><rect y="0" width="20" height="0.86" fill="white"/><rect y="1.72" width="20" height="0.86" fill="#ED2939"/><rect y="2.58" width="20" height="0.86" fill="white"/><rect y="3.44" width="20" height="0.86" fill="#ED2939"/><rect y="4.3" width="20" height="0.86" fill="white"/><rect y="5.16" width="20" height="0.86" fill="#ED2939"/><rect y="6.02" width="20" height="0.86" fill="white"/><rect y="6.88" width="20" height="0.86" fill="#ED2939"/><rect y="7.74" width="20" height="0.86" fill="white"/><rect y="8.6" width="20" height="0.86" fill="#ED2939"/><rect y="9.46" width="20" height="0.86" fill="white"/><rect y="10.32" width="20" height="0.86" fill="#ED2939"/><rect y="11.18" width="20" height="0.86" fill="white"/><rect y="12.04" width="20" height="0.86" fill="#ED2939"/></svg>',
+    'GERMANY': '<svg width="20" height="13" viewBox="0 0 20 13" style="display:inline-block;margin:0 4px;vertical-align:middle;"><rect width="20" height="4.33" fill="#000"/><rect y="4.33" width="20" height="4.34" fill="#D00"/><rect y="8.67" width="20" height="4.33" fill="#FFCE00"/></svg>',
+    'JAPAN': '<svg width="20" height="13" viewBox="0 0 20 13" style="display:inline-block;margin:0 4px;vertical-align:middle;"><rect width="20" height="13" fill="white"/><circle cx="10" cy="6.5" r="4" fill="#BC002D"/></svg>',
+    'KOREA': '<svg width="20" height="13" viewBox="0 0 20 13" style="display:inline-block;margin:0 4px;vertical-align:middle;"><rect width="20" height="13" fill="white"/><rect width="20" height="4.33" fill="#003478"/><rect y="8.67" width="20" height="4.33" fill="#C60C30"/></svg>',
+    'SOUTH KOREA': '<svg width="20" height="13" viewBox="0 0 20 13" style="display:inline-block;margin:0 4px;vertical-align:middle;"><rect width="20" height="13" fill="white"/><rect width="20" height="4.33" fill="#003478"/><rect y="8.67" width="20" height="4.33" fill="#C60C30"/></svg>',
+    'CANADA': '<svg width="20" height="13" viewBox="0 0 20 13" style="display:inline-block;margin:0 4px;vertical-align:middle;"><rect width="20" height="13" fill="#FF0000"/><rect x="6.67" width="6.67" height="13" fill="white"/></svg>',
+    'MEXICO': '<svg width="20" height="13" viewBox="0 0 20 13" style="display:inline-block;margin:0 4px;vertical-align:middle;"><rect width="6.67" height="13" fill="#2E8B57"/><rect x="6.67" width="6.67" height="13" fill="white"/><rect x="13.33" width="6.67" height="13" fill="#CE1126"/></svg>'
   };
-  for (const [key, flag] of Object.entries(flags)) {
-    if (c.includes(key)) return flag;
+  for (const [key, svg] of Object.entries(flags)) {
+    if (c.includes(key)) return svg;
   }
-  return '🚩';
+  return '';
 }
 
 function renderAssemblyInfo(data) {
@@ -4204,7 +4207,7 @@ function renderAssemblyInfo(data) {
   }
 
   const rows = [];
-  if (data.assembled_in) rows.push(['Assembled in', data.assembled_in + ' ' + countryFlagEmoji(data.country)]);
+  if (data.assembled_in) rows.push(['Assembled in', data.assembled_in + ' ' + countryFlagSvg(data.country)]);
   if (data.plant_company) rows.push(['Plant', data.plant_company]);
   if (data.destination_market) rows.push(['Destination market', data.destination_market]);
 
