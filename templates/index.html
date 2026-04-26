@@ -3895,7 +3895,13 @@ function renderOwnershipCost(d) {
   const selTerm = d.loan_term || state.loanTerm;
   const years   = selTerm / 12;
 
-  document.getElementById('ownershipTitle').innerHTML = '<span class="section-icon">💰</span> Total Cost of Ownership';
+  let titleText = 'Total Cost of Ownership';
+  const zipEl = document.getElementById('zipCode');
+  const zip = zipEl ? zipEl.value.trim() : '';
+  if (zip && /^\d{5}$/.test(zip)) {
+    titleText = 'Total Cost of Ownership (ZIP-adjusted taxes & insurance)';
+  }
+  document.getElementById('ownershipTitle').innerHTML = '<span class="section-icon">💰</span> ' + titleText;
 
   if (!tc) {
     document.getElementById('ownershipContext').textContent = 'Enter MSRP for ownership cost details.';
@@ -4195,7 +4201,15 @@ function renderAssemblyInfo(data) {
   const rows = [];
   if (data.assembled_in) rows.push(['Assembled in', data.assembled_in + ' ' + countryFlagSvg(data.country)]);
   if (data.plant_company) rows.push(['Plant', data.plant_company]);
-  if (data.destination_market) rows.push(['Destination market', data.destination_market]);
+  if (data.destination_market) {
+    let locationText = data.destination_market;
+    const zipEl = document.getElementById('zipCode');
+    const zip = zipEl ? zipEl.value.trim() : '';
+    if (zip && /^\d{5}$/.test(zip)) {
+      locationText = data.destination_market + ' ' + zip;
+    }
+    rows.push(['Destination market', locationText]);
+  }
 
   const table = rows.map(([label, val]) => `
     <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1e2d3d;">
