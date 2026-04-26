@@ -99,43 +99,6 @@ a:hover { text-decoration: underline; }
   letter-spacing: 0;
 }
 
-/* ── Buyer Protection Strip ── */
-.buyer-protection-strip {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-top: 24px;
-  padding: 14px 18px;
-  background: rgba(0,212,170,0.05);
-  border: 1px solid rgba(0,212,170,0.2);
-  border-radius: 10px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-.bps-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.875rem;
-  color: #b8cce0;
-  font-weight: 600;
-}
-.bps-icon {
-  font-size: 1.1rem;
-  flex-shrink: 0;
-}
-.bps-separator {
-  color: #2a3a50;
-  font-size: 0.75rem;
-  flex-shrink: 0;
-  padding: 0 4px;
-}
-@media (max-width: 480px) {
-  .bps-separator { display: none; }
-  .buyer-protection-strip { gap: 12px; padding: 12px 14px; }
-  .bps-item { font-size: 0.825rem; }
-}
-
 /* ── Reveal panels ── */
 .reveal-panel {
   overflow: hidden;
@@ -1340,13 +1303,6 @@ a:hover { text-decoration: underline; }
     <h1>Don't sign a <em>bad new-car deal.</em></h1>
     <p>Pick your car, enter the deal — get a verdict instantly. No button needed.</p>
     <div class="trust-badge">100% buyer-funded · No dealer leads · No ads</div>
-    <div class="buyer-protection-strip">
-      <div class="bps-item"><span class="bps-icon">🛡️</span><span>Hidden fees flagged</span></div>
-      <div class="bps-separator">•</div>
-      <div class="bps-item"><span class="bps-icon">✅</span><span>Active recalls checked</span></div>
-      <div class="bps-separator">•</div>
-      <div class="bps-item"><span class="bps-icon">💰</span><span>True deal cost shown</span></div>
-    </div>
   </header>
   <div style="text-align:center;margin-bottom:20px;">
     <a href="#hiw" class="faq-jump-link" onclick="document.getElementById('hiw').scrollIntoView({behavior:'smooth'});return false;">Questions? See how it works + FAQ ↓</a>
