@@ -119,24 +119,29 @@ a:hover { text-decoration: underline; }
 /* Pre-HIW context */
 .pre-hiw-context {
   text-align: center;
-  margin-bottom: 24px;
+  margin: 20px 0 28px 0;
   padding: 0 12px;
-  display: inline-block;
+  line-height: 1.5;
 }
 .pre-hiw-text {
-  font-size: 0.825rem;
+  font-size: 0.875rem;
   color: #8499b0;
-  line-height: 1.6;
-  margin-bottom: 12px;
+  line-height: 1.5;
+  display: block;
+  margin-bottom: 10px;
 }
 .assembly-text {
-  font-size: 1.1rem !important;
+  font-size: 1.15rem !important;
   font-weight: 700 !important;
   color: #00d4aa !important;
   display: block !important;
-  margin-top: 12px !important;
-  opacity: 1 !important;
-  visibility: visible !important;
+  width: 100% !important;
+  text-align: center;
+  margin-top: 10px;
+  line-height: 1.4;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
 }
 /* How it works */
 .how-it-works { margin-bottom: 0; margin-top: 0; padding-top: 8px; }
@@ -1736,6 +1741,7 @@ a:hover { text-decoration: underline; }
   <!-- Context: what we check -->
   <div class="pre-hiw-context">
     <span class="pre-hiw-text">Before you sign: we flag hidden fees, open recalls, markup anomalies, and 72-month interest traps.</span>
+    <br>
     <span class="assembly-text">🏭 Assembled in the USA</span>
   </div>
   <!-- How it works -->
