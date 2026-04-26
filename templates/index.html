@@ -4195,10 +4195,14 @@ function countryToCode(country) {
 }
 
 function countryBadge(country) {
+  const flags = {
+    'us': '🇺🇸', 'jp': '🇯🇵', 'de': '🇩🇪', 'kr': '🇰🇷', 'ca': '🇨🇦', 'mx': '🇲🇽',
+    'gb': '🇬🇧', 'se': '🇸🇪', 'fr': '🇫🇷', 'it': '🇮🇹', 'cn': '🇨🇳', 'in': '🇮🇳', 'au': '🇦🇺'
+  };
   const code = countryToCode(country);
   if (!code) return '';
-  const codeUpper = code.toUpperCase();
-  return '<span style="display:inline-block;background:rgba(0,212,170,0.12);border:1px solid rgba(0,212,170,0.3);color:#00d4aa;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:700;letter-spacing:0.5px;margin-left:6px;" title="' + country + '">' + codeUpper + '</span>';
+  const flag = flags[code] || '🚩';
+  return '<span style="margin-left:4px;font-size:1.2em;" title="' + country + '">' + flag + '</span>';
 }
 function renderAssemblyInfo(data) {
   const body = document.getElementById('body-assembly');
