@@ -3895,7 +3895,7 @@ function renderOwnershipCost(d) {
   const selTerm = d.loan_term || state.loanTerm;
   const years   = selTerm / 12;
 
-  document.getElementById('ownershipTitle').textContent = 'Total Cost of Ownership';
+  document.getElementById('ownershipTitle').innerHTML = '<span class="section-icon">💰</span> Total Cost of Ownership';
 
   if (!tc) {
     document.getElementById('ownershipContext').textContent = 'Enter MSRP for ownership cost details.';
