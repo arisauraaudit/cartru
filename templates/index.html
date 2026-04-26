@@ -119,21 +119,33 @@ a:hover { text-decoration: underline; }
 /* Pre-HIW context */
 .pre-hiw-context {
   text-align: center;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
   padding: 0 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
 }
 .pre-hiw-text {
   font-size: 0.825rem;
   color: #8499b0;
   line-height: 1.6;
+  margin-bottom: 6px;
 }
-.assembly-flag {
-  font-size: 1.5em;
-  color: #8499b0;
+.assembly-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #00d4aa;
+  background: rgba(0,212,170,0.08);
+  border: 1px solid rgba(0,212,170,0.3);
+  padding: 4px 10px;
+  border-radius: 6px;
   letter-spacing: 0;
+}
+.assembly-icon {
+  font-size: 1.2em;
+}
+.assembly-text {
+  font-size: 0.9375rem;
 }
 /* How it works */
 .how-it-works { margin-bottom: 0; margin-top: 0; padding-top: 8px; }
@@ -1733,7 +1745,10 @@ a:hover { text-decoration: underline; }
   <!-- Context: what we check -->
   <div class="pre-hiw-context">
     <span class="pre-hiw-text">Before you sign: we flag hidden fees, open recalls, markup anomalies, and 72-month interest traps.</span>
-    <span class="assembly-flag">Assembled in the USA 🇺🇸</span>
+    <div class="assembly-badge">
+      <span class="assembly-icon">🏭</span>
+      <span class="assembly-text">Assembled in the USA</span>
+    </div>
   </div>
   <!-- How it works -->
   <section class="how-it-works" id="hiw">
