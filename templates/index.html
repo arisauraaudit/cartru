@@ -4043,6 +4043,23 @@ function renderEngineDrivetrain(data) {
 
 
 // Country → flag emoji mapping
+function countryFlagEmoji(countryName) {
+  if (!countryName) return '';
+  const c = countryName.toUpperCase();
+  const flags = {
+    'USA': '🇺🇸', 'UNITED STATES': '🇺🇸',
+    'GERMANY': '🇩🇪',
+    'JAPAN': '🇯🇵',
+    'KOREA': '🇰🇷', 'SOUTH KOREA': '🇰🇷',
+    'CANADA': '🇨🇦',
+    'MEXICO': '🇲🇽'
+  };
+  for (const [key, flag] of Object.entries(flags)) {
+    if (c.includes(key)) return flag;
+  }
+  return '🚩';
+}
+
 function renderAssemblyInfo(data) {
   const body = document.getElementById('body-assembly');
   if (!body) return;
@@ -4175,35 +4192,7 @@ function renderComplaints(data) {
 
 
 // Country → flag emoji mapping
-function countryToCode(country) {
-  if (!country) return '';
-  const c = country.toUpperCase();
-  if (c.includes('USA') || c.includes('UNITED STATES')) return 'us';
-  if (c.includes('JAPAN')) return 'jp';
-  if (c.includes('GERMANY')) return 'de';
-  if (c.includes('KOREA')) return 'kr';
-  if (c.includes('CANADA')) return 'ca';
-  if (c.includes('MEXICO')) return 'mx';
-  if (c.includes('UNITED KINGDOM') || c.includes('UK')) return 'gb';
-  if (c.includes('SWEDEN')) return 'se';
-  if (c.includes('FRANCE')) return 'fr';
-  if (c.includes('ITALY')) return 'it';
-  if (c.includes('CHINA')) return 'cn';
-  if (c.includes('INDIA')) return 'in';
-  if (c.includes('AUSTRALIA')) return 'au';
-  return '';
-}
 
-function countryBadge(country) {
-  const flags = {
-    'us': '🇺🇸', 'jp': '🇯🇵', 'de': '🇩🇪', 'kr': '🇰🇷', 'ca': '🇨🇦', 'mx': '🇲🇽',
-    'gb': '🇬🇧', 'se': '🇸🇪', 'fr': '🇫🇷', 'it': '🇮🇹', 'cn': '🇨🇳', 'in': '🇮🇳', 'au': '🇦🇺'
-  };
-  const code = countryToCode(country);
-  if (!code) return '';
-  const flag = flags[code] || '🚩';
-  return '<span style="margin-left:4px;font-size:1.2em;" title="' + country + '">' + flag + '</span>';
-}
 function renderAssemblyInfo(data) {
   const body = document.getElementById('body-assembly');
   if (!body) return;
@@ -4215,7 +4204,7 @@ function renderAssemblyInfo(data) {
   }
 
   const rows = [];
-  if (data.assembled_in) rows.push(['Assembled in', data.assembled_in + ' ' + countryBadge(data.country)]);
+  if (data.assembled_in) rows.push(['Assembled in', data.assembled_in + ' ' + countryFlagEmoji(data.country)]);
   if (data.plant_company) rows.push(['Plant', data.plant_company]);
   if (data.destination_market) rows.push(['Destination market', data.destination_market]);
 
@@ -4595,24 +4584,6 @@ const debouncedCheckDeal = (function() {
 })();
 
 // Country → display name mapping
-function countryName(country) {
-  if (!country) return '';
-  const c = country.toUpperCase();
-  if (c.includes('UNITED STATES') || c.includes('USA')) return 'USA';
-  if (c.includes('JAPAN'))    return 'Japan';
-  if (c.includes('GERMANY'))  return 'Germany';
-  if (c.includes('KOREA'))    return 'South Korea';
-  if (c.includes('CANADA'))   return 'Canada';
-  if (c.includes('MEXICO'))   return 'Mexico';
-  if (c.includes('UNITED KINGDOM') || c.includes('UK')) return 'UK';
-  if (c.includes('SWEDEN'))   return 'Sweden';
-  if (c.includes('FRANCE'))   return 'France';
-  if (c.includes('ITALY'))    return 'Italy';
-  if (c.includes('CHINA'))    return 'China';
-  if (c.includes('INDIA'))    return 'India';
-  if (c.includes('AUSTRALIA'))return 'Australia';
-  return country;
-}
 
 </script>
 </body>
