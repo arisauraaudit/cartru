@@ -4178,26 +4178,19 @@ function renderComplaints(data) {
 function countryFlag(country) {
   if (!country) return '';
   const c = country.toUpperCase();
-  const flags = {
-    'USA': '\uD83C\uDDFA\uD83C\uDDF8',
-    'UNITED STATES': '\uD83C\uDDFA\uD83C\uDDF8',
-    'JAPAN': '\uD83C\uDDEF\uD83C\uDDF5',
-    'GERMANY': '\uD83C\uDDE9\uD83C\uDDEA',
-    'KOREA': '\uD83C\uDDF0\uD83C\uDDF7',
-    'CANADA': '\uD83C\uDDE8\uD83C\uDDE6',
-    'MEXICO': '\uD83C\uDDF2\uD83C\uDDFD',
-    'UNITED KINGDOM': '\uD83C\uDDEC\uD83C\uDDE7',
-    'UK': '\uD83C\uDDEC\uD83C\uDDE7',
-    'SWEDEN': '\uD83C\uDDF8\uD83C\uDDEA',
-    'FRANCE': '\uD83C\uDDEB\uD83C\uDDF7',
-    'ITALY': '\uD83C\uDDEE\uD83C\uDDF9',
-    'CHINA': '\uD83C\uDDE8\uD83C\uDDF3',
-    'INDIA': '\uD83C\uDDEE\uD83C\uDDF3',
-    'AUSTRALIA': '\uD83C\uDDE6\uD83C\uDDFA'
-  };
-  for (const [key, flag] of Object.entries(flags)) {
-    if (c.includes(key)) return flag;
-  }
+  if (c.includes('USA') || c.includes('UNITED STATES')) return '🇺🇸';
+  if (c.includes('JAPAN')) return '🇯🇵';
+  if (c.includes('GERMANY')) return '🇩🇪';
+  if (c.includes('KOREA')) return '🇰🇷';
+  if (c.includes('CANADA')) return '🇨🇦';
+  if (c.includes('MEXICO')) return '🇲🇽';
+  if (c.includes('UNITED KINGDOM') || c.includes('UK')) return '🇬🇧';
+  if (c.includes('SWEDEN')) return '🇸🇪';
+  if (c.includes('FRANCE')) return '🇫🇷';
+  if (c.includes('ITALY')) return '🇮🇹';
+  if (c.includes('CHINA')) return '🇨🇳';
+  if (c.includes('INDIA')) return '🇮🇳';
+  if (c.includes('AUSTRALIA')) return '🇦🇺';
   return '';
 }
 function renderAssemblyInfo(data) {
