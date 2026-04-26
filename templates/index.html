@@ -4175,23 +4175,29 @@ function renderComplaints(data) {
 
 
 // Country → flag emoji mapping
-function countryFlag(country) {
+function countryToCode(country) {
   if (!country) return '';
   const c = country.toUpperCase();
-  if (c.includes('USA') || c.includes('UNITED STATES')) return '🇺🇸';
-  if (c.includes('JAPAN')) return '🇯🇵';
-  if (c.includes('GERMANY')) return '🇩🇪';
-  if (c.includes('KOREA')) return '🇰🇷';
-  if (c.includes('CANADA')) return '🇨🇦';
-  if (c.includes('MEXICO')) return '🇲🇽';
-  if (c.includes('UNITED KINGDOM') || c.includes('UK')) return '🇬🇧';
-  if (c.includes('SWEDEN')) return '🇸🇪';
-  if (c.includes('FRANCE')) return '🇫🇷';
-  if (c.includes('ITALY')) return '🇮🇹';
-  if (c.includes('CHINA')) return '🇨🇳';
-  if (c.includes('INDIA')) return '🇮🇳';
-  if (c.includes('AUSTRALIA')) return '🇦🇺';
+  if (c.includes('USA') || c.includes('UNITED STATES')) return 'us';
+  if (c.includes('JAPAN')) return 'jp';
+  if (c.includes('GERMANY')) return 'de';
+  if (c.includes('KOREA')) return 'kr';
+  if (c.includes('CANADA')) return 'ca';
+  if (c.includes('MEXICO')) return 'mx';
+  if (c.includes('UNITED KINGDOM') || c.includes('UK')) return 'gb';
+  if (c.includes('SWEDEN')) return 'se';
+  if (c.includes('FRANCE')) return 'fr';
+  if (c.includes('ITALY')) return 'it';
+  if (c.includes('CHINA')) return 'cn';
+  if (c.includes('INDIA')) return 'in';
+  if (c.includes('AUSTRALIA')) return 'au';
   return '';
+}
+
+function countryFlagSvg(country) {
+  const code = countryToCode(country);
+  if (!code) return '';
+  return '<img src="https://flagcdn.com/16x12/' + code + '.svg" style="height:1.2em;vertical-align:baseline;margin-left:4px;" alt="' + country + '" />';
 }
 function renderAssemblyInfo(data) {
   const body = document.getElementById('body-assembly');
@@ -4204,7 +4210,7 @@ function renderAssemblyInfo(data) {
   }
 
   const rows = [];
-  if (data.assembled_in) rows.push(['Assembled in', data.assembled_in + ' ' + countryFlag(data.country)]);
+  if (data.assembled_in) rows.push(['Assembled in', data.assembled_in + ' ' + countryFlagSvg(data.country)]);
   if (data.plant_company) rows.push(['Plant', data.plant_company]);
   if (data.destination_market) rows.push(['Destination market', data.destination_market]);
 
