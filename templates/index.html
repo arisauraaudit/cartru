@@ -4194,12 +4194,11 @@ function countryToCode(country) {
   return '';
 }
 
-function countryFlagSvg(country) {
+function countryBadge(country) {
   const code = countryToCode(country);
   if (!code) return '';
   const codeUpper = code.toUpperCase();
-  const flagEmoji = String.fromCodePoint(0x1F1E6 + codeUpper.charCodeAt(0) - 65, 0x1F1E6 + codeUpper.charCodeAt(1) - 65);
-  return '<span style="margin-left:4px;" title="' + country + '">' + flagEmoji + '</span>';
+  return '<span style="display:inline-block;background:rgba(0,212,170,0.12);border:1px solid rgba(0,212,170,0.3);color:#00d4aa;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:700;letter-spacing:0.5px;margin-left:6px;" title="' + country + '">' + codeUpper + '</span>';
 }
 function renderAssemblyInfo(data) {
   const body = document.getElementById('body-assembly');
@@ -4212,7 +4211,7 @@ function renderAssemblyInfo(data) {
   }
 
   const rows = [];
-  if (data.assembled_in) rows.push(['Assembled in', data.assembled_in + ' ' + countryFlagSvg(data.country)]);
+  if (data.assembled_in) rows.push(['Assembled in', data.assembled_in + ' ' + countryBadge(data.country)]);
   if (data.plant_company) rows.push(['Plant', data.plant_company]);
   if (data.destination_market) rows.push(['Destination market', data.destination_market]);
 
