@@ -4069,7 +4069,7 @@ function renderAssemblyInfo(data) {
     return;
   }
   body.innerHTML =
-    renderRow('🌎 Assembled in', (countryFlag(data.country) + ' ' + (data.assembled_in || '')).trim()) +
+    renderRow('🌎 Assembled in', ((data.assembled_in || '') + ' ' + countryFlag(data.country)).trim()) +
     '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1e2d3d;"><span style="font-size:0.875rem;color:#8499b0;">Country</span><span style="font-size:0.875rem;font-weight:600;color:#eef2f7;">' + countryName(data.country) + '</span></div>' +
     renderRow('🏭 Manufacturer',  data.manufacturer);
   if (!body.innerHTML.trim()) {
