@@ -1741,9 +1741,8 @@ a:hover { text-decoration: underline; }
   <!-- Context: what we check -->
   <div class="pre-hiw-context">
     <span class="pre-hiw-text">Before you sign: we flag hidden fees, open recalls, markup anomalies, and 72-month interest traps.</span>
-    <br>
-    <span class="assembly-text">🏭 Assembled in the USA</span>
   </div>
+  <!-- Assembly flag will be injected by JS into Assembly & Origin section -->
   <!-- How it works -->
   <section class="how-it-works" id="hiw">
     <div class="hiw-steps">
@@ -4071,6 +4070,7 @@ function renderAssemblyInfo(data) {
   }
   body.innerHTML =
     renderRow('🌎 Assembled in', (countryFlag(data.country) + ' ' + (data.assembled_in || '')).trim()) +
+    '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1e2d3d;"><span style="font-size:0.875rem;color:#8499b0;">Country</span><span style="font-size:0.875rem;font-weight:600;color:#eef2f7;">' + countryName(data.country) + '</span></div>' +
     renderRow('🏭 Manufacturer',  data.manufacturer);
   if (!body.innerHTML.trim()) {
     body.innerHTML = '<div style="color:#8499b0;font-size:0.875rem;padding:8px 0;">No assembly data available for this model.</div>';
@@ -4600,6 +4600,26 @@ const debouncedCheckDeal = (function() {
     t = setTimeout(checkDeal, 800);
   };
 })();
+
+// Country → display name mapping
+function countryName(country) {
+  if (!country) return '';
+  const c = country.toUpperCase();
+  if (c.includes('UNITED STATES') || c.includes('USA')) return 'USA';
+  if (c.includes('JAPAN'))    return 'Japan';
+  if (c.includes('GERMANY'))  return 'Germany';
+  if (c.includes('KOREA'))    return 'South Korea';
+  if (c.includes('CANADA'))   return 'Canada';
+  if (c.includes('MEXICO'))   return 'Mexico';
+  if (c.includes('UNITED KINGDOM') || c.includes('UK')) return 'UK';
+  if (c.includes('SWEDEN'))   return 'Sweden';
+  if (c.includes('FRANCE'))   return 'France';
+  if (c.includes('ITALY'))    return 'Italy';
+  if (c.includes('CHINA'))    return 'China';
+  if (c.includes('INDIA'))    return 'India';
+  if (c.includes('AUSTRALIA'))return 'Australia';
+  return country;
+}
 
 </script>
 </body>
