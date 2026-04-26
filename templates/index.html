@@ -4490,13 +4490,29 @@ document.addEventListener('DOMContentLoaded', () => {
     debouncedCheckDeal();
   });
 
-  // ZIP input
+  // ZIP input — lookup city/state
   document.getElementById('zipCode').addEventListener('input', function() {
+    const zipMsg = document.getElementById('zipConfirmMsg');
     if (this.value.length === 5) {
-      document.getElementById('zipConfirmMsg').textContent = '📍 Local pricing applied';
-      track('zip_entered', { zip: this.value });
+      // Call /zip-lookup endpoint
+      fetch('/zip-lookup?zip=' + encodeURIComponent(this.value))
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            zipMsg.textContent = `📍 ${data.city}, ${data.state}`;
+          } else {
+            // Fallback on error
+            zipMsg.textContent = '📍 Local pricing applied';
+          }
+          track('zip_entered', { zip: this.value });
+        })
+        .catch(err => {
+          // Fallback on network error
+          zipMsg.textContent = '📍 Local pricing applied';
+          logger.warn('ZIP lookup failed', err);
+        });
     } else {
-      document.getElementById('zipConfirmMsg').textContent = '';
+      zipMsg.textContent = '';
     }
   });
 

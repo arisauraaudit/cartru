@@ -1360,6 +1360,43 @@ def tip_jar():
     })
 
 
+@app.route("/zip-lookup", methods=["GET"])
+def zip_lookup():
+    """Look up city and state for a given ZIP code using zippopotam.us API."""
+    zip_code = request.args.get("zip", "").strip()
+    
+    # Validate ZIP code format (5 digits)
+    if not zip_code or not zip_code.isdigit() or len(zip_code) != 5:
+        return jsonify({"success": False, "error": "Invalid ZIP code"}), 400
+    
+    try:
+        # Use zippopotam.us free API
+        url = f"http://api.zippopotam.us/us/{zip_code}"
+        r = requests.get(url, timeout=5)
+        
+        if r.status_code == 200:
+            data = r.json()
+            # Extract city and state from response
+            # Response format: {"post code": "03222", "country": "United States", "country abbreviation": "US", "places": [{"place name": "Bristol", "longitude": "-71.7857", "state": "New Hampshire", "state abbreviation": "NH"}]}
+            places = data.get("places", [])
+            if places:
+                place = places[0]
+                city = place.get("place name", "")
+                state = place.get("state", "")
+                if city and state:
+                    return jsonify({
+                        "success": True,
+                        "city": city,
+                        "state": state,
+                        "zip": zip_code
+                    })
+        
+        return jsonify({"success": False, "error": "ZIP code not found"}), 404
+    except Exception as e:
+        logger.error(f"ZIP_LOOKUP_ERROR | zip={zip_code} error={str(e)}")
+        return jsonify({"success": False, "error": "Unable to look up ZIP code"}), 500
+
+
 # Legacy endpoints (keep for compatibility)
 @app.route("/makes")
 def makes():
