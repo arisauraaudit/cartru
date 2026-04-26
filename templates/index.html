@@ -4043,24 +4043,6 @@ function renderEngineDrivetrain(data) {
 
 
 // Country → flag emoji mapping
-function countryFlag(country) {
-  if (!country) return '';
-  const c = country.toUpperCase();
-  if (c.includes('UNITED STATES') || c.includes('USA')) return '🇺🇸';
-  if (c.includes('JAPAN'))    return '🇯🇵';
-  if (c.includes('GERMANY'))  return '🇩🇪';
-  if (c.includes('KOREA'))    return '🇰🇷';
-  if (c.includes('CANADA'))   return '🇨🇦';
-  if (c.includes('MEXICO'))   return '🇲🇽';
-  if (c.includes('UNITED KINGDOM') || c.includes('UK')) return '🇬🇧';
-  if (c.includes('SWEDEN'))   return '🇸🇪';
-  if (c.includes('FRANCE'))   return '🇫🇷';
-  if (c.includes('ITALY'))    return '🇮🇹';
-  if (c.includes('CHINA'))    return '🇨🇳';
-  if (c.includes('INDIA'))    return '🇮🇳';
-  if (c.includes('AUSTRALIA'))return '🇦🇺';
-  return '';
-}
 function renderAssemblyInfo(data) {
   const body = document.getElementById('body-assembly');
   if (!body) return;
@@ -4222,7 +4204,7 @@ function renderAssemblyInfo(data) {
   }
 
   const rows = [];
-  if (data.assembled_in) rows.push(['Assembled in', data.assembled_in]);
+  if (data.assembled_in) rows.push(['Assembled in', data.assembled_in + ' ' + countryFlag(data.country)]);
   if (data.plant_company) rows.push(['Plant', data.plant_company]);
   if (data.destination_market) rows.push(['Destination market', data.destination_market]);
 
