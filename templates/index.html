@@ -148,6 +148,15 @@ a:hover { text-decoration: underline; }
 .hiw-steps { display: flex; align-items: flex-start; gap: 8px; flex-wrap: wrap; }
 .hiw-step { flex: 1; min-width: 160px; display: flex; gap: 12px; align-items: flex-start; background: #1a2535; border-radius: 10px; padding: 16px 14px; }
 .hiw-num { width: 28px; height: 28px; border-radius: 50%; background: rgba(0,212,170,0.15); color: #00d4aa; font-size: 0.875rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+/* Paste listing feature */
+.paste-listing { margin: 24px 0; background: #1a2535; border: 2px solid #00d4aa; border-radius: 12px; padding: 20px; }
+.paste-listing-title { font-size: 1.1rem; font-weight: 700; color: #00d4aa; margin-bottom: 10px; }
+.paste-listing-hint { font-size: 0.8rem; color: #8499b0; margin-bottom: 14px; }
+.paste-listing-input { display: flex; gap: 10px; width: 100%; }
+.paste-listing-input input { flex: 1; padding: 12px 14px; border-radius: 8px; border: 1px solid #2a3747; background: #0f1724; color: #eef2f7; font-size: 0.9rem; }
+.paste-listing-input button { padding: 12px 20px; background: #00d4aa; color: #0f1724; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: opacity 0.2s; }
+.paste-listing-input button:hover { opacity: 0.9; }
+.paste-listing-note { font-size: 0.75rem; color: #8499b0; margin-top: 10px; }
 .hiw-text { font-size: 0.875rem; color: #b8cce0; line-height: 1.55; }
 .hiw-text strong { display: block; color: #eef2f7; font-weight: 700; margin-bottom: 3px; font-size: 0.9rem; }
 .hiw-divider { color: #2a3a50; font-size: 1.2rem; align-self: center; flex-shrink: 0; padding-top: 2px; }
@@ -1354,6 +1363,18 @@ a:hover { text-decoration: underline; }
   <!-- ═══════════════════════════════════════ -->
   <section class="page-section" id="sec-select">
     <div class="section-heading">1 — Select your car</div>
+    
+    <!-- Paste listing helper -->
+    <div class="paste-listing" style="margin:24px 0;background:#1a2535;border:2px solid #00d4aa;border-radius:12px;padding:20px;">
+      <div style="font-size:1.1rem;font-weight:700;color:#00d4aa;margin-bottom:10px;">Paste a Listing</div>
+      <div style="font-size:0.8rem;color:#8499b0;margin-bottom:14px;">Paste any car listing URL to auto-fill</div>
+      <div style="display:flex;gap:10px;">
+        <input type="text" id="listingUrlInput" placeholder="https://www.cargurus.com/..." style="flex:1;padding:12px 14px;border-radius:8px;border:1px solid #2a3747;background:#0f1724;color:#eef2f7;font-size:0.9rem;">
+        <button onclick="extractListing()" style="padding:12px 20px;background:#00d4aa;color:#0f1724;border:none;border-radius:8px;font-weight:700;cursor:pointer;">Auto-fill</button>
+      </div>
+      <div style="font-size:0.75rem;color:#8499b0;margin-top:10px;">We'll try to read it. If not, just continue manually below.</div>
+    </div>
+    
     <div class="selection-section">
       <div class="year-toggle" id="yearToggle"></div>
       <div class="brand-section-label" style="font-size:0.875rem;color:#6a8599;font-weight:500;">Top 20 brands by US sales</div>
@@ -2697,6 +2718,33 @@ function selectModelTrim(model) {
   state.model = model;
   updateWizardProgress(4);
   showDealInputs();
+}
+
+function extractListing() {
+  const url = document.getElementById('listingUrlInput').value.trim();
+  if (!url) {
+    alert('Please paste a listing URL first.');
+    return;
+  }
+  
+  // Mock extraction - replace with real parser later
+  const mockData = {
+    brand: 'Toyota',
+    model: 'Camry',
+    year: '2024',
+    price: 28500
+  };
+  
+  // Pre-fill form
+  state.brand = mockData.brand;
+  state.year = mockData.year;
+  
+  // Update UI
+  document.getElementById('listingUrlInput').value = '';
+  document.getElementById('brandGrid').scrollIntoView({behavior:'smooth'});
+  
+  alert(`Extracted:\n${mockData.brand} ${mockData.model} ${mockData.year}\nPrice: $${mockData.price.toLocaleString()}`);
+}
 
   // Update chip highlight across accordion/flat views
   document.querySelectorAll('.accordion-trim-chip, .flat-trim-chip').forEach(c => {
