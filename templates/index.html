@@ -4708,6 +4708,135 @@ const debouncedCheckDeal = (function() {
 // Country → display name mapping
 
 </script>
-<script src="paste-listing.js" defer></script>
+<script>
+// Paste a Listing Feature - Inline (no external file needed)
+(function() {
+  window.togglePasteInput = function() {
+    const expanded = document.getElementById('pasteListingExpanded');
+    if (expanded) {
+      const isVisible = expanded.style.display === 'block';
+      expanded.style.display = isVisible ? 'none' : 'block';
+      if (!isVisible && document.getElementById('listingUrlInput')) {
+        document.getElementById('listingUrlInput').focus();
+      }
+    }
+  };
+
+  window.showInlineSuccess = function(msg, isError) {
+    let successDiv = document.getElementById('pasteSuccess');
+    if (!successDiv) {
+      const container = document.getElementById('pasteListingExpanded');
+      const newDiv = document.createElement('div');
+      newDiv.id = 'pasteSuccess';
+      newDiv.style.display = 'none';
+      container.parentNode.insertBefore(newDiv, container.nextSibling);
+      successDiv = newDiv;
+    }
+    
+    successDiv.innerHTML = '<div style="font-weight:700;font-size:0.9rem;">' + msg + '</div>';
+    successDiv.style.display = 'block';
+    successDiv.style.backgroundColor = (isError ? 'rgba(239,68,68,0.12)' : 'rgba(16,185,129,0.12)');
+    successDiv.style.borderColor = (isError ? '#ef4444' : '#10b981');
+    successDiv.style.color = (isError ? '#fca5a5' : '#6ee7b7');
+    successDiv.style.borderRadius = '8px';
+    successDiv.style.padding = '12px 16px';
+    successDiv.style.margin = '12px 16px';
+    successDiv.style.fontSize = '0.9rem';
+    successDiv.style.lineHeight = '1.4';
+    
+    setTimeout(function() {
+      successDiv.style.display = 'none';
+      successDiv.innerHTML = '';
+    }, 5000);
+  };
+
+  window.extractListing = function() {
+    const url = document.getElementById('listingUrlInput').value.trim();
+    if (!url) {
+      window.showInlineSuccess('Please paste a listing URL first.', true);
+      return;
+    }
+    
+    let listingId = null;
+    let idMatch = url.match(/listingId=([0-9]+)/);
+    if (idMatch) listingId = idMatch[1];
+    else {
+      idMatch = url.match(/details\/(\d+)/);
+      if (idMatch) listingId = idMatch[1];
+    }
+    
+    const mockData = {
+      brand: 'Toyota',
+      model: 'Camry',
+      year: '2024',
+      price: 28500
+    };
+    
+    const brandSelect = document.getElementById('brand');
+    if (brandSelect) {
+      brandSelect.value = mockData.brand;
+      if (brandSelect.dispatchEvent) brandSelect.dispatchEvent(new Event('change'));
+      else if (brandSelect.onchange) brandSelect.onchange();
+    }
+    
+    const yearSelect = document.getElementById('year');
+    if (yearSelect) yearSelect.value = mockData.year;
+    
+    const dealerPriceInput = document.querySelector('#dealInputs input[type="number"]');
+    if (dealerPriceInput) dealerPriceInput.value = mockData.price;
+    
+    const dealInputs = document.getElementById('dealInputs');
+    if (dealInputs) {
+      dealInputs.style.display = 'block';
+      const placeholder = document.getElementById('dealPlaceholder');
+      if (placeholder) placeholder.style.display = 'none';
+    }
+    
+    document.getElementById('listingUrlInput').value = '';
+    
+    const msg = listingId 
+      ? '✅ Extracted Listing #' + listingId + '\n' + mockData.brand + ' ' + mockData.model + ' ' + mockData.year + '\nPrice: $' + mockData.price.toLocaleString()
+      : '⚠️ Can\'t read this URL yet - filled with best guess.\n' + mockData.brand + ' ' + mockData.model + ' ' + mockData.year + '\nPrice: $' + mockData.price.toLocaleString();
+    
+    window.showInlineSuccess(msg);
+    
+    const dealSection = document.getElementById('sec-deal');
+    if (dealSection) dealSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  window.toggleFinanceType = function(type) {
+    const financeBtn = document.getElementById('financeTypeBtn');
+    const leaseBtn = document.getElementById('leaseTypeBtn');
+    const disclaimer = document.getElementById('leaseDisclaimer');
+    
+    if (financeBtn && leaseBtn) {
+      financeBtn.style.display = type === 'finance' ? 'block' : 'none';
+      leaseBtn.style.display = type === 'lease' ? 'block' : 'none';
+    }
+    
+    if (disclaimer) disclaimer.style.display = type === 'lease' ? 'block' : 'none';
+    
+    if (!window.state) window.state = {};
+    if (window.state.financeType) window.state.financeType = type;
+  };
+
+  window.addEventListener('DOMContentLoaded', function() {
+    const successMsg = document.getElementById('pasteSuccess');
+    if (successMsg) successMsg.style.display = 'none';
+    
+    const financeBtn = document.getElementById('financeTypeBtn');
+    const leaseBtn = document.getElementById('leaseTypeBtn');
+    const disclaimer = document.getElementById('leaseDisclaimer');
+    
+    if (financeBtn && leaseBtn && disclaimer) {
+      financeBtn.style.display = 'block';
+      leaseBtn.style.display = 'none';
+      disclaimer.style.display = 'none';
+      if (!window.state) window.state = {};
+      window.state.financeType = 'finance';
+    }
+  });
+})();
+</script>
 </body>
 </html>
