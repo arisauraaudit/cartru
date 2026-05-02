@@ -2740,6 +2740,16 @@ function extractListing() {
     return;
   }
   
+  // Try to extract listingId from various Cargurus URL formats
+  let listingIdMatch = url.match(/listingId=([0-9]+)/);
+  let listingId = listingIdMatch ? listingIdMatch[1] : null;
+  
+  // If no listingId found, try other patterns
+  if (!listingId) {
+    listingIdMatch = url.match(/details\/(\d+)/);
+    if (listingIdMatch) listingId = listingIdMatch[1];
+  }
+  
   // Mock extraction - replace with real parser later
   const mockData = {
     brand: 'Toyota',
@@ -2756,7 +2766,11 @@ function extractListing() {
   document.getElementById('listingUrlInput').value = '';
   document.getElementById('brandGrid').scrollIntoView({behavior:'smooth'});
   
-  alert(`Extracted:\n${mockData.brand} ${mockData.model} ${mockData.year}\nPrice: $${mockData.price.toLocaleString()}`);
+  const msg = listingId 
+    ? `Extracted (Listing #${listingId})\n${mockData.brand} ${mockData.model} ${mockData.year}\nPrice: $${mockData.price.toLocaleString()}`
+    : `Can't read this URL yet.\n${mockData.brand} ${mockData.model} ${mockData.year}\nPrice: $${mockData.price.toLocaleString()}\n\nContinue manually below.`;
+  
+  alert(msg);
 }
 
 function resetModelAccordion() {
