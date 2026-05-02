@@ -14,7 +14,7 @@
     }
   };
 
-  // Function to show inline success/error message
+  // Function to show inline success/error message (replaces alert())
   window.showInlineSuccess = function(msg, isError = false) {
     let successDiv = document.getElementById('pasteSuccess');
     if (!successDiv) {
@@ -27,7 +27,7 @@
       successDiv = newDiv;
     }
     
-    successDiv.innerHTML = `<div style="font-weight:700;font-size:0.9rem;">${msg}</div>`;
+    successDiv.innerHTML = '<div style="font-weight:700;font-size:0.9rem;">' + msg + '</div>';
     successDiv.style.display = 'block';
     successDiv.style.backgroundColor = isError ? 'rgba(239,68,68,0.12)' : 'rgba(16,185,129,0.12)';
     successDiv.style.borderColor = isError ? '#ef4444' : '#10b981';
@@ -38,39 +38,19 @@
     successDiv.style.fontSize = '0.9rem';
     successDiv.style.lineHeight = '1.4';
     
-    setTimeout(() => {
+    setTimeout(function() {
       successDiv.style.display = 'none';
       successDiv.innerHTML = '';
     }, 5000);
   };
 
-  // Function to extract listing data from URL
-  window.toggleFinanceType = function(type) {
-  const financeBtn = document.getElementById('financeTypeBtn');
-  const leaseBtn = document.getElementById('leaseTypeBtn');
-  const disclaimer = document.getElementById('leaseDisclaimer');
-  
-  if (financeBtn && leaseBtn) {
-    financeBtn.style.display = type === 'finance' ? 'block' : 'none';
-    leaseBtn.style.display = type === 'lease' ? 'block' : 'none';
-  }
-  
-  if (disclaimer) {
-    disclaimer.style.display = type === 'lease' ? 'block' : 'none';
-  }
-  
-  window.state = window.state || {};
-  if (window.state.financeType) {
-    window.state.financeType = type;
-  }
-};
-
-window.extractListing = function() {
-  const url = document.getElementById('listingUrlInput').value.trim();
-  if (!url) {
-    showInlineSuccess('Please paste a listing URL first.', true);
-    return;
-  }
+  // Function to extract listing data from URL (no alert() - uses inline message)
+  window.extractListing = function() {
+    const url = document.getElementById('listingUrlInput').value.trim();
+    if (!url) {
+      showInlineSuccess('Please paste a listing URL first.', true);
+      return;
+    }
     
     let listingId = null;
     let idMatch = url.match(/listingId=([0-9]+)/);
@@ -97,7 +77,7 @@ window.extractListing = function() {
       brandSelect.value = mockData.brand;
       if (brandSelect.dispatchEvent) {
         brandSelect.dispatchEvent(new Event('change'));
-      } else {
+      } else if (brandSelect.onchange) {
         brandSelect.onchange();
       }
     }
@@ -124,7 +104,7 @@ window.extractListing = function() {
     // Clear input
     document.getElementById('listingUrlInput').value = '';
     
-    // Show success message
+    // Show inline success message (not alert!)
     const msg = listingId 
       ? '✅ Extracted Listing #' + listingId + '\n' + mockData.brand + ' ' + mockData.model + ' ' + mockData.year + '\nPrice: $' + mockData.price.toLocaleString()
       : '⚠️ Can\'t read this URL yet - filled with best guess.\n' + mockData.brand + ' ' + mockData.model + ' ' + mockData.year + '\nPrice: $' + mockData.price.toLocaleString();
@@ -138,7 +118,28 @@ window.extractListing = function() {
     }
   };
 
-  // Hide inline success messages on page load
+  // Finance/Lease toggle function
+  window.toggleFinanceType = function(type) {
+    const financeBtn = document.getElementById('financeTypeBtn');
+    const leaseBtn = document.getElementById('leaseTypeBtn');
+    const disclaimer = document.getElementById('leaseDisclaimer');
+    
+    if (financeBtn && leaseBtn) {
+      financeBtn.style.display = type === 'finance' ? 'block' : 'none';
+      leaseBtn.style.display = type === 'lease' ? 'block' : 'none';
+    }
+    
+    if (disclaimer) {
+      disclaimer.style.display = type === 'lease' ? 'block' : 'none';
+    }
+    
+    if (!window.state) window.state = {};
+    if (window.state.financeType) {
+      window.state.financeType = type;
+    }
+  };
+
+  // Initialize on page load
   window.addEventListener('DOMContentLoaded', function() {
     const successMsg = document.getElementById('pasteSuccess');
     if (successMsg) {
