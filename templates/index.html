@@ -1366,7 +1366,7 @@ a:hover { text-decoration: underline; }
     
     <!-- Paste listing CTA -->
     <div id="pasteListingCTA" style="margin:16px 0; text-align: center;">
-      <button type="button" onclick="togglePasteInput()" style="background:rgba(0,212,170,0.1);border:1px solid #00d4aa;color:#00d4aa;font-weight:700;font-size:0.875rem;padding:8px 16px;border-radius:8px;cursor:pointer;width:100%;"
+      <button onclick="togglePasteInput()" style="background:rgba(0,212,170,0.1);border:1px solid #00d4aa;color:#00d4aa;font-weight:700;font-size:0.875rem;padding:8px 16px;border-radius:8px;cursor:pointer;width:100%;">
         🚀 Have a car in mind? Paste the deal link — we'll analyze it for you.
       </button>
     </div>
@@ -1382,10 +1382,9 @@ a:hover { text-decoration: underline; }
     </div>
     
     <div class="selection-section" style="display: block !important; opacity: 1 !important; visibility: visible !important;">
-      <div class="selection-placeholder" id="brandGridPlaceholder" style="text-align:center;padding:40px;color:#8499b0;font-size:0.9rem;">Loading brands...</div>
       <div class="year-toggle" id="yearToggle"></div>
       <div class="brand-section-label" style="font-size:0.875rem;color:#6a8599;font-weight:500;">Top 20 brands by US sales</div>
-      <div class="brand-text-grid" id="brandGrid" style="display:block !important;"></div>
+      <div class="brand-text-grid" id="brandGrid"></div>
       <div style="margin-top:10px;font-size:0.875rem;color:#8499b0;text-align:center;">
         Missing a brand? <a href="mailto:hello@wheelthedeal.com" style="color:#00d4aa;">Let us know.</a>
       </div>
@@ -2755,21 +2754,20 @@ function selectModelTrim(model) {
 function extractListing() {
   const url = document.getElementById('listingUrlInput').value.trim();
   if (!url) {
-    showInlineSuccess('Please paste a listing URL first.', true);
+    alert('Please paste a listing URL first.');
     return;
   }
   
-  let listingId = null;
-  let idMatch = url.match(/listingId=([0-9]+)/);
-  if (idMatch) {
-    listingId = idMatch[1];
-  } else {
-    idMatch = url.match(/details\/(\d+)/);
-    if (idMatch) {
-      listingId = idMatch[1];
-    }
+  // Try to extract listingId from various URL formats
+  let listingIdMatch = url.match(/listingId=([0-9]+)/);
+  let listingId = listingIdMatch ? listingIdMatch[1] : null;
+  
+  if (!listingId) {
+    listingIdMatch = url.match(/details\/(\d+)/);
+    if (listingIdMatch) listingId = listingIdMatch[1];
   }
   
+  // Mock data - replace with real parser later
   const mockData = {
     brand: 'Toyota',
     model: 'Camry',
@@ -2777,7 +2775,7 @@ function extractListing() {
     price: 28500
   };
   
-  // Auto-fill form
+  // Auto-fill form fields
   const brandSelect = document.getElementById('brand');
   if (brandSelect) {
     brandSelect.value = mockData.brand;
@@ -2787,23 +2785,18 @@ function extractListing() {
   const yearSelect = document.getElementById('year');
   if (yearSelect) yearSelect.value = mockData.year;
   
-  const dealerPriceInput = document.querySelector('#dealInputs input[type="number"]');
+  const dealerPriceInput = document.getElementById('dealInputs')?.querySelector('input[type="number"]');
   if (dealerPriceInput) dealerPriceInput.value = mockData.price;
   
-  const dealInputs = document.getElementById('dealInputs');
-  if (dealInputs) {
-    dealInputs.style.display = '';
-    const placeholder = document.getElementById('dealPlaceholder');
-    if (placeholder) placeholder.style.display = 'none';
+  // Show deal inputs
+  if (document.getElementById('dealInputs')) {
+    document.getElementById('dealInputs').style.display = '';
+    document.getElementById('dealPlaceholder').style.display = 'none';
   }
   
-  
-  const msg = listingId 
-    ? `\u2705 Extracted Listing #${listingId}\n${mockData.brand} ${mockData.model} ${mockData.year}\nPrice: $${mockData.price.toLocaleString()}`
-    : `\u26a0 Can't read this URL yet - filled with best guess.\n${mockData.brand} ${mockData.model} ${mockData.year}\nPrice: $${mockData.price.toLocaleString()}`;
-  
-  showInlineSuccess(msg);
-}
+  // Clear input and show success
+  document.getElementById('listingUrlInput').value = '';
+  document.getElementById('pasteListingExpanded').scrollIntoView({behavior:'smooth'});
   
   const msg = listingId 
     ? `✅ Extracted Listing #${listingId}\n${mockData.brand} ${mockData.model} ${mockData.year}\nPrice: $${mockData.price.toLocaleString()}\n\nWe'll analyze your deal below.`
@@ -2813,18 +2806,12 @@ function extractListing() {
 }
 
 function togglePasteInput() {
-  console.log('togglePasteInput called!');
   const expanded = document.getElementById('pasteListingExpanded');
-  console.log('Expanded element:', expanded);
-  if (expanded) {
-    if (expanded.style.display === 'none' || !expanded.style.display) {
-      expanded.style.display = 'block';
-      if (document.getElementById('listingUrlInput')) {
-        document.getElementById('listingUrlInput').focus();
-      }
-    } else {
-      expanded.style.display = 'none';
-    }
+  if (expanded.style.display === 'none') {
+    expanded.style.display = 'block';
+    document.getElementById('listingUrlInput').focus();
+  } else {
+    expanded.style.display = 'none';
   }
 }
 
@@ -4678,81 +4665,10 @@ function showDealInputs() {
   if (crumb) crumb.style.display = '';
 }
 
-// Force all functions to window scope
-window.togglePasteInput = function() {
-  console.log('togglePasteInput called!');
-  const expanded = document.getElementById('pasteListingExpanded');
-  console.log('Expanded element:', expanded);
-  if (expanded) {
-    if (expanded.style.display === 'none' || !expanded.style.display || expanded.style.display === '') {
-      expanded.style.display = 'block';
-      console.log('Expanded input field');
-      if (document.getElementById('listingUrlInput')) {
-        document.getElementById('listingUrlInput').focus();
-      }
-    } else {
-      expanded.style.display = 'none';
-      console.log('Closed input field');
-    }
-  } else {
-    console.log('ERROR: pasteListingExpanded not found');
-  }
-};
-
-window.extractListing = function() {
-  const url = document.getElementById('listingUrlInput').value.trim();
-  if (!url) {
-    showInlineSuccess('Please paste a listing URL first.', true);
-    return;
-  }
-  
-  window.console.log('extractListing triggered');
-  let listingId = null;
-  let idMatch = url.match(/listingId=([0-9]+)/);
-  if (idMatch) {
-    listingId = idMatch[1];
-  } else {
-    idMatch = url.match(/details\/(\d+)/);
-    if (idMatch) {
-      listingId = idMatch[1];
-    }
-  }
-  
-  const mockData = {
-    brand: 'Toyota',
-    model: 'Camry',
-    year: '2024',
-    price: 28500
-  };
-  
-  // Auto-fill form
-  const brandSelect = document.getElementById('brand');
-  if (brandSelect) {
-    brandSelect.value = mockData.brand;
-    brandSelect.dispatchEvent(new Event('change'));
-  }
-  
-  const yearSelect = document.getElementById('year');
-  if (yearSelect) yearSelect.value = mockData.year;
-  
-  const dealerPriceInput = document.querySelector('#dealInputs input[type="number"]');
-  if (dealerPriceInput) dealerPriceInput.value = mockData.price;
-  
-  const dealInputs = document.getElementById('dealInputs');
-  if (dealInputs) {
-    dealInputs.style.display = '';
-    const placeholder = document.getElementById('dealPlaceholder');
-    if (placeholder) placeholder.style.display = 'none';
-  }
-  
-  document.getElementById('listingUrlInput').value = '';
-  
-  const msg = listingId 
-    ? '✅ Extracted Listing #' + listingId + '\n' + mockData.brand + ' ' + mockData.model + ' ' + mockData.year + '\nPrice: $' + mockData.price.toLocaleString()
-    : '⚠️ Can\'t read this URL yet - filled with best guess.\n' + mockData.brand + ' ' + mockData.model + ' ' + mockData.year + '\nPrice: $' + mockData.price.toLocaleString();
-  
-  showInlineSuccess(msg);
-};
+function showSectionsUpdating() {
+  ['sec-risk', 'sec-cost', 'sec-details'].forEach(sid => {
+    const ids = SECTION_CONTENT_MAP[sid];
+    if (!ids) return;
     const ph = document.getElementById(ids[0]);
     const ct = document.getElementById(ids[1]);
     if (ph) { ph.className = 'section-updating'; ph.textContent = 'Updating…'; ph.style.display = ''; }
@@ -4793,101 +4709,6 @@ const debouncedCheckDeal = (function() {
 
 </script>
 </body>
+  <script src="paste-listing.js" defer></script>
+</body>
 </html>
-
-// NEW FUNCTIONS FOR FINANCE/LEASE TOGGLE AND INLINE MESSAGES
-function toggleFinanceType(type) {
-  const financeBtn = document.getElementById('financeTypeBtn');
-  const leaseBtn = document.getElementById('leaseTypeBtn');
-  const disclaimer = document.getElementById('leaseDisclaimer');
-  
-  financeBtn.classList.toggle('active', type === 'finance');
-  financeBtn.style.background = type === 'finance' ? '#00d4aa' : '#1a2535';
-  financeBtn.style.color = type === 'finance' ? '#0f1724' : '#8499b0';
-  
-  leaseBtn.classList.toggle('active', type === 'lease');
-  leaseBtn.style.background = type === 'lease' ? '#00d4aa' : '#1a2535';
-  leaseBtn.style.color = type === 'lease' ? '#0f1724' : '#8499b0';
-  
-  disclaimer.style.display = type === 'lease' ? 'block' : 'none';
-  state.financeType = type;
-}
-
-function showInlineSuccess(msg, isError = false) {
-  let successDiv = document.getElementById('pasteSuccess');
-  if (!successDiv) {
-    const container = document.getElementById('pasteListingExpanded');
-    const newDiv = document.createElement('div');
-    newDiv.id = 'pasteSuccess';
-    newDiv.style.cssText = 'margin:12px 16px;padding:12px;border-radius:8px;font-size:0.9rem;line-height:1.4;opacity:0;transition:opacity 0.3s;';
-    container.parentNode.insertBefore(newDiv, container.nextSibling);
-    successDiv = newDiv;
-  } else {
-    successDiv.innerHTML = `<div style="font-weight:700;font-size:0.9rem;">${msg}</div>`;
-    successDiv.style.opacity = '1';
-    successDiv.style.cssText = isError ? 'margin:12px 16px;padding:12px;border-radius:8px;font-size:0.9rem;background:rgba(239,68,68,0.12);border:1px solid #ef4444;color:#fca5a5;' : 'margin:12px 16px;padding:12px;border-radius:8px;font-size:0.9rem;background:rgba(16,185,129,0.12);border:1px solid #10b981;color:#6ee7b7;';
-  }
-  
-  setTimeout(() => { successDiv.style.opacity = '0'; setTimeout(() => { if(successDiv && !successDiv.innerHTML) successDiv.innerHTML = ''; }, 300); }, 5000);
-}
-
-function calculateDealerScore(offer, msrp) {
-  let score = 9;
-  let label = 'Strong Dealer';
-  let reasons = ['Price is near MSRP - good confidence'];
-  
-  const markup = ((offer - msrp) / msrp) * 100;
-  
-  if (markup > 20) {
-    score = 3;
-    label = 'Caution - High Markup';
-    reasons = ['Price >20% above MSRP', 'Possible dealer overcharge'];
-  } else if (markup > 10) {
-    score = 5;
-    label = 'Mixed - Negotiate Hard';
-    reasons = ['Price 10-20% above MSRP', 'Strong negotiation needed'];
-  } else if (markup > 5) {
-    score = 7;
-    label = 'Fair - Some Room';
-    reasons = ['Price 5-10% above MSRP', 'Negotiate toward MSRP'];
-  } else if (markup <= 0) {
-    score = 9;
-    label = 'Excellent';
-    reasons = ['Price at or below MSRP', 'Good deal'];
-  }
-  
-  return { score, label, reasons, markupPercent: markup.toFixed(1) };
-}
-
-function getMockDealerReputation() {
-  const ratings = [4.2, 4.6, 3.8, 4.1, 4.5];
-  const complaints = [3, 1, 5, 2, 4];
-  
-  return {
-    googleRating: ratings[Math.floor(Math.random() * ratings.length)].toFixed(1),
-    complaints: complaints[Math.floor(Math.random() * complaints.length)],
-    reviews: Math.floor(Math.random() * 500) + 120
-  };
-}
-
-function getMockDealerReputation() {
-  const ratings = [4.2, 4.6, 3.8, 4.1, 4.5];
-  const complaints = [3, 1, 5, 2, 4];
-  
-  return {
-    googleRating: ratings[Math.floor(Math.random() * ratings.length)].toFixed(1),
-    complaints: complaints[Math.floor(Math.random() * complaints.length)],
-    reviews: Math.floor(Math.random() * 500) + 120
-  };
-}
-
-// Add success div
-(function() {
-  const container = document.getElementById('pasteListingExpanded');
-  if (container) {
-    const successDiv = document.createElement('div');
-    successDiv.id = 'pasteSuccess';
-    successDiv.style.display = 'none';
-    container.parentNode.insertBefore(successDiv, container.nextSibling);
-  }
-})();
