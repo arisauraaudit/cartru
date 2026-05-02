@@ -4870,6 +4870,17 @@ function getMockDealerReputation() {
   };
 }
 
+function getMockDealerReputation() {
+  const ratings = [4.2, 4.6, 3.8, 4.1, 4.5];
+  const complaints = [3, 1, 5, 2, 4];
+  
+  return {
+    googleRating: ratings[Math.floor(Math.random() * ratings.length)].toFixed(1),
+    complaints: complaints[Math.floor(Math.random() * complaints.length)],
+    reviews: Math.floor(Math.random() * 500) + 120
+  };
+}
+
 // Add success div
 (function() {
   const container = document.getElementById('pasteListingExpanded');
