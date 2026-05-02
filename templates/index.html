@@ -1406,14 +1406,14 @@ a:hover { text-decoration: underline; }
     <div class="section-heading">2 — Deal</div>
     <!-- Finance vs Lease Toggle -->
     <div class="finance-toggle" style="display:flex;gap:12px;margin-bottom:16px;justify-content:center;">
-      <button id="financeTypeBtn" onclick="toggleFinanceType('finance')" class="finance-toggle-btn active" style="flex:1;padding:10px;border-radius:8px;font-weight:600;background:#00d4aa;color:#0f1724;border:none;cursor:pointer;transition:all 0.2s;">
+      <button id="financeTypeBtn" onclick="toggleFinanceType('finance')" style="flex:1;padding:10px;border-radius:8px;font-weight:600;cursor:pointer;transition:all 0.2s;background:#00d4aa;color:#0f1724;border:none;">
         💵 Finance
       </button>
-      <button id="leaseTypeBtn" onclick="toggleFinanceType('lease')" class="finance-toggle-btn" style="flex:1;padding:10px;border-radius:8px;font-weight:600;background:#1a2535;color:#8499b0;border:1px solid #2a3a50;cursor:pointer;">
+      <button id="leaseTypeBtn" onclick="toggleFinanceType('lease')" style="flex:1;padding:10px;border-radius:8px;font-weight:600;cursor:pointer;transition:all 0.2s;background:#1a2535;color:#8499b0;border:1px solid #2a3a50;">
         📅 Lease
       </button>
     </div>
-    <div id="leaseDisclaimer" style="margin-bottom:16px;padding:12px;background:rgba(255,230,0,0.1);border:1px solid #ffd33a;border-radius:8px;font-size:0.85rem;color:#ffec8b;text-align:center;" class="hidden">
+    <div id="leaseDisclaimer" style="display:none;margin-bottom:16px;padding:12px;background:rgba(255,230,0,0.1);border:1px solid #ffd33a;border-radius:8px;font-size:0.85rem;color:#ffec8b;text-align:center;">
       ⚠️ Lease terms vary by dealer. We'll use standard assumptions — verify exact money factor & residual with your contract.
     </div>
     <div class="deal-section-card">

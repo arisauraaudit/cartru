@@ -45,12 +45,32 @@
   };
 
   // Function to extract listing data from URL
-  window.extractListing = function() {
-    const url = document.getElementById('listingUrlInput').value.trim();
-    if (!url) {
-      showInlineSuccess('Please paste a listing URL first.', true);
-      return;
-    }
+  window.toggleFinanceType = function(type) {
+  const financeBtn = document.getElementById('financeTypeBtn');
+  const leaseBtn = document.getElementById('leaseTypeBtn');
+  const disclaimer = document.getElementById('leaseDisclaimer');
+  
+  if (financeBtn && leaseBtn) {
+    financeBtn.style.display = type === 'finance' ? 'block' : 'none';
+    leaseBtn.style.display = type === 'lease' ? 'block' : 'none';
+  }
+  
+  if (disclaimer) {
+    disclaimer.style.display = type === 'lease' ? 'block' : 'none';
+  }
+  
+  window.state = window.state || {};
+  if (window.state.financeType) {
+    window.state.financeType = type;
+  }
+};
+
+window.extractListing = function() {
+  const url = document.getElementById('listingUrlInput').value.trim();
+  if (!url) {
+    showInlineSuccess('Please paste a listing URL first.', true);
+    return;
+  }
     
     let listingId = null;
     let idMatch = url.match(/listingId=([0-9]+)/);
@@ -123,6 +143,20 @@
     const successMsg = document.getElementById('pasteSuccess');
     if (successMsg) {
       successMsg.style.display = 'none';
+    }
+    
+    // Initialize finance/lease toggle state
+    const financeBtn = document.getElementById('financeTypeBtn');
+    const leaseBtn = document.getElementById('leaseTypeBtn');
+    const disclaimer = document.getElementById('leaseDisclaimer');
+    
+    if (financeBtn && leaseBtn && disclaimer) {
+      // Default to finance
+      financeBtn.style.display = 'block';
+      leaseBtn.style.display = 'none';
+      disclaimer.style.display = 'none';
+      if (!window.state) window.state = {};
+      window.state.financeType = 'finance';
     }
   });
 })();
