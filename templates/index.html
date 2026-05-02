@@ -1382,9 +1382,10 @@ a:hover { text-decoration: underline; }
     </div>
     
     <div class="selection-section" style="display: block !important; opacity: 1 !important; visibility: visible !important;">
+      <div class="selection-placeholder" id="brandGridPlaceholder" style="text-align:center;padding:40px;color:#8499b0;font-size:0.9rem;">Loading brands...</div>
       <div class="year-toggle" id="yearToggle"></div>
       <div class="brand-section-label" style="font-size:0.875rem;color:#6a8599;font-weight:500;">Top 20 brands by US sales</div>
-      <div class="brand-text-grid" id="brandGrid"></div>
+      <div class="brand-text-grid" id="brandGrid" style="display:block !important;"></div>
       <div style="margin-top:10px;font-size:0.875rem;color:#8499b0;text-align:center;">
         Missing a brand? <a href="mailto:hello@wheelthedeal.com" style="color:#00d4aa;">Let us know.</a>
       </div>
@@ -2759,8 +2760,15 @@ function extractListing() {
   }
   
   let listingId = null;
-  const idMatch = url.match(/listingId=([0-9]+)/) || url.match(/details\/(\d+)/);
-  if (idMatch) listingId = idMatch[1];
+  let idMatch = url.match(/listingId=([0-9]+)/);
+  if (idMatch) {
+    listingId = idMatch[1];
+  } else {
+    idMatch = url.match(/details\/(\d+)/);
+    if (idMatch) {
+      listingId = idMatch[1];
+    }
+  }
   
   const mockData = {
     brand: 'Toyota',
@@ -2806,11 +2814,15 @@ function extractListing() {
 
 function togglePasteInput() {
   const expanded = document.getElementById('pasteListingExpanded');
-  if (expanded.style.display === 'none') {
-    expanded.style.display = 'block';
-    document.getElementById('listingUrlInput').focus();
-  } else {
-    expanded.style.display = 'none';
+  if (expanded) {
+    if (expanded.style.display === 'none' || !expanded.style.display) {
+      expanded.style.display = 'block';
+      if (document.getElementById('listingUrlInput')) {
+        document.getElementById('listingUrlInput').focus();
+      }
+    } else {
+      expanded.style.display = 'none';
+    }
   }
 }
 
