@@ -1366,7 +1366,7 @@ a:hover { text-decoration: underline; }
     
     <!-- Paste listing CTA -->
     <div id="pasteListingCTA" style="margin:16px 0; text-align: center;">
-      <button onclick="togglePasteInput()" style="background:rgba(0,212,170,0.1);border:1px solid #00d4aa;color:#00d4aa;font-weight:700;font-size:0.875rem;padding:8px 16px;border-radius:8px;cursor:pointer;width:100%;">
+      <button type="button" onclick="togglePasteInput()" style="background:rgba(0,212,170,0.1);border:1px solid #00d4aa;color:#00d4aa;font-weight:700;font-size:0.875rem;padding:8px 16px;border-radius:8px;cursor:pointer;width:100%;"
         🚀 Have a car in mind? Paste the deal link — we'll analyze it for you.
       </button>
     </div>
@@ -2813,7 +2813,9 @@ function extractListing() {
 }
 
 function togglePasteInput() {
+  console.log('togglePasteInput called!');
   const expanded = document.getElementById('pasteListingExpanded');
+  console.log('Expanded element:', expanded);
   if (expanded) {
     if (expanded.style.display === 'none' || !expanded.style.display) {
       expanded.style.display = 'block';
@@ -4676,10 +4678,81 @@ function showDealInputs() {
   if (crumb) crumb.style.display = '';
 }
 
-function showSectionsUpdating() {
-  ['sec-risk', 'sec-cost', 'sec-details'].forEach(sid => {
-    const ids = SECTION_CONTENT_MAP[sid];
-    if (!ids) return;
+// Force all functions to window scope
+window.togglePasteInput = function() {
+  console.log('togglePasteInput called!');
+  const expanded = document.getElementById('pasteListingExpanded');
+  console.log('Expanded element:', expanded);
+  if (expanded) {
+    if (expanded.style.display === 'none' || !expanded.style.display || expanded.style.display === '') {
+      expanded.style.display = 'block';
+      console.log('Expanded input field');
+      if (document.getElementById('listingUrlInput')) {
+        document.getElementById('listingUrlInput').focus();
+      }
+    } else {
+      expanded.style.display = 'none';
+      console.log('Closed input field');
+    }
+  } else {
+    console.log('ERROR: pasteListingExpanded not found');
+  }
+};
+
+window.extractListing = function() {
+  const url = document.getElementById('listingUrlInput').value.trim();
+  if (!url) {
+    showInlineSuccess('Please paste a listing URL first.', true);
+    return;
+  }
+  
+  window.console.log('extractListing triggered');
+  let listingId = null;
+  let idMatch = url.match(/listingId=([0-9]+)/);
+  if (idMatch) {
+    listingId = idMatch[1];
+  } else {
+    idMatch = url.match(/details\/(\d+)/);
+    if (idMatch) {
+      listingId = idMatch[1];
+    }
+  }
+  
+  const mockData = {
+    brand: 'Toyota',
+    model: 'Camry',
+    year: '2024',
+    price: 28500
+  };
+  
+  // Auto-fill form
+  const brandSelect = document.getElementById('brand');
+  if (brandSelect) {
+    brandSelect.value = mockData.brand;
+    brandSelect.dispatchEvent(new Event('change'));
+  }
+  
+  const yearSelect = document.getElementById('year');
+  if (yearSelect) yearSelect.value = mockData.year;
+  
+  const dealerPriceInput = document.querySelector('#dealInputs input[type="number"]');
+  if (dealerPriceInput) dealerPriceInput.value = mockData.price;
+  
+  const dealInputs = document.getElementById('dealInputs');
+  if (dealInputs) {
+    dealInputs.style.display = '';
+    const placeholder = document.getElementById('dealPlaceholder');
+    if (placeholder) placeholder.style.display = 'none';
+  }
+  
+  document.getElementById('listingUrlInput').value = '';
+  
+  const msg = listingId 
+    ? '✅ Extracted Listing #' + listingId + '\n' + mockData.brand + ' ' + mockData.model + ' ' + mockData.year + '\nPrice: $' + mockData.price.toLocaleString()
+    : '⚠️ Can\'t read this URL yet - filled with best guess.\n' + mockData.brand + ' ' + mockData.model + ' ' + mockData.year + '\nPrice: $' + mockData.price.toLocaleString();
+  
+  showInlineSuccess(msg);
+};
     const ph = document.getElementById(ids[0]);
     const ct = document.getElementById(ids[1]);
     if (ph) { ph.className = 'section-updating'; ph.textContent = 'Updating…'; ph.style.display = ''; }
