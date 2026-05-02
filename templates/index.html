@@ -4795,35 +4795,53 @@ const debouncedCheckDeal = (function() {
     document.getElementById('listingUrlInput').value = '';
     
     const msg = listingId 
-      ? '✅ Extracted Listing #' + listingId + '\n' + mockData.brand + ' ' + mockData.model + ' ' + mockData.year + '\nPrice: $' + mockData.price.toLocaleString()
-      : '⚠️ Can\'t read this URL yet - filled with best guess.\n' + mockData.brand + ' ' + mockData.model + ' ' + mockData.year + '\nPrice: $' + mockData.price.toLocaleString();
+      ? '✅ Extracted Listing #' + listingId + '\nBrand: ' + mockData.brand + ' ' + mockData.model + ' ' + mockData.year + '\nPrice: $' + mockData.price.toLocaleString()
+      : '⚠️ Can\'t read this URL yet - filled with best guess.\nBrand: ' + mockData.brand + ' ' + mockData.model + ' ' + mockData.year + '\nPrice: $' + mockData.price.toLocaleString();
     
     window.showInlineSuccess(msg);
     
+    // IMPORTANT: Trigger full analysis to populate sections 3-4-5
+    setTimeout(function() { 
+      if (typeof checkDeal === 'function') checkDeal(); 
+      else if (window.checkDeal) window.checkDeal();
+    }, 500);
+    
+    // Scroll to deal section
     const dealSection = document.getElementById('sec-deal');
     if (dealSection) dealSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  window.toggleFinanceType = function(type) {
-    const financeBtn = document.getElementById('financeTypeBtn');
-    const leaseBtn = document.getElementById('leaseTypeBtn');
-    const disclaimer = document.getElementById('leaseDisclaimer');
-    
-    if (financeBtn && leaseBtn) {
-      financeBtn.style.display = type === 'finance' ? 'block' : 'none';
-      leaseBtn.style.display = type === 'lease' ? 'block' : 'none';
-    }
-    
-    if (disclaimer) disclaimer.style.display = type === 'lease' ? 'block' : 'none';
-    
-    if (!window.state) window.state = {};
-    if (window.state.financeType) window.state.financeType = type;
-  };
+  if (!window.toggleFinanceTypeOriginal) {
+    // Preserve original toggleFinanceType if it exists
+    window.toggleFinanceTypeOriginal = window.toggleFinanceType || null;
+  }
+  
+  // Our finance/lease toggle (don't overwrite existing if it exists)
+  if (typeof window.toggleFinanceType === 'undefined' || window.toggleFinanceType === window.toggleFinanceTypeOriginal) {
+    window.toggleFinanceType = function(type) {
+      const financeBtn = document.getElementById('financeTypeBtn');
+      const leaseBtn = document.getElementById('leaseTypeBtn');
+      const disclaimer = document.getElementById('leaseDisclaimer');
+      
+      if (financeBtn && leaseBtn) {
+        financeBtn.style.display = type === 'finance' ? 'block' : 'none';
+        leaseBtn.style.display = type === 'lease' ? 'block' : 'none';
+      }
+      
+      if (disclaimer) disclaimer.style.display = type === 'lease' ? 'block' : 'none';
+      
+      if (!window.state) window.state = {};
+      if (window.state.financeType) window.state.financeType = type;
+    };
+  }
 
   window.addEventListener('DOMContentLoaded', function() {
     const successMsg = document.getElementById('pasteSuccess');
     if (successMsg) successMsg.style.display = 'none';
-    
+  });
+  
+  // Initialize finance/lease if it doesn't exist
+  if (typeof window.toggleFinanceType === 'undefined' || window.toggleFinanceType === window.toggleFinanceTypeOriginal) {
     const financeBtn = document.getElementById('financeTypeBtn');
     const leaseBtn = document.getElementById('leaseTypeBtn');
     const disclaimer = document.getElementById('leaseDisclaimer');
@@ -4835,7 +4853,7 @@ const debouncedCheckDeal = (function() {
       if (!window.state) window.state = {};
       window.state.financeType = 'finance';
     }
-  });
+  }
 })();
 </script>
 </body>
