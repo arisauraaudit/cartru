@@ -2718,6 +2718,19 @@ function selectModelTrim(model) {
   state.model = model;
   updateWizardProgress(4);
   showDealInputs();
+
+  // Update chip highlight across accordion/flat views
+  document.querySelectorAll('.accordion-trim-chip, .flat-trim-chip').forEach(c => {
+    c.classList.toggle('trim-selected', c.textContent === model);
+  });
+
+  state.msrpEstimate = estimateMsrp(state.brand, model);
+  state.rangeEstimate = msrpToRange(state.msrpEstimate);
+  populateDealSection();
+  hideResultSection();
+  // Auto-trigger report with defaults
+  setTimeout(() => debouncedCheckDeal(), 200);
+  track('model_selected', { brand: state.brand, model, year: state.year });
 }
 
 function extractListing() {
@@ -2744,20 +2757,6 @@ function extractListing() {
   document.getElementById('brandGrid').scrollIntoView({behavior:'smooth'});
   
   alert(`Extracted:\n${mockData.brand} ${mockData.model} ${mockData.year}\nPrice: $${mockData.price.toLocaleString()}`);
-}
-
-  // Update chip highlight across accordion/flat views
-  document.querySelectorAll('.accordion-trim-chip, .flat-trim-chip').forEach(c => {
-    c.classList.toggle('trim-selected', c.textContent === model);
-  });
-
-  state.msrpEstimate = estimateMsrp(state.brand, model);
-  state.rangeEstimate = msrpToRange(state.msrpEstimate);
-  populateDealSection();
-  hideResultSection();
-  // Auto-trigger report with defaults
-  setTimeout(() => debouncedCheckDeal(), 200);
-  track('model_selected', { brand: state.brand, model, year: state.year });
 }
 
 function resetModelAccordion() {
