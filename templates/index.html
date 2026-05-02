@@ -1364,18 +1364,24 @@ a:hover { text-decoration: underline; }
   <section class="page-section" id="sec-select">
     <div class="section-heading">1 — Select your car</div>
     
-    <!-- Paste listing helper -->
-    <div class="paste-listing" style="margin:24px 0;background:#1a2535;border:2px solid #00d4aa;border-radius:12px;padding:20px;">
-      <div style="font-size:1.1rem;font-weight:700;color:#00d4aa;margin-bottom:10px;">Paste a Listing</div>
-      <div style="font-size:0.8rem;color:#8499b0;margin-bottom:14px;">Paste any car listing URL to auto-fill</div>
-      <div style="display:flex;gap:10px;">
-        <input type="text" id="listingUrlInput" placeholder="https://www.cargurus.com/..." style="flex:1;padding:12px 14px;border-radius:8px;border:1px solid #2a3747;background:#0f1724;color:#eef2f7;font-size:0.9rem;">
-        <button onclick="extractListing()" style="padding:12px 20px;background:#00d4aa;color:#0f1724;border:none;border-radius:8px;font-weight:700;cursor:pointer;">Auto-fill</button>
-      </div>
-      <div style="font-size:0.75rem;color:#8499b0;margin-top:10px;">We'll try to read it. If not, just continue manually below.</div>
+    <!-- Paste listing CTA -->
+    <div id="pasteListingCTA" style="margin:16px 0; text-align: center;">
+      <button onclick="togglePasteInput()" style="background:rgba(0,212,170,0.1);border:1px solid #00d4aa;color:#00d4aa;font-weight:700;font-size:0.875rem;padding:8px 16px;border-radius:8px;cursor:pointer;width:100%;">
+        🚀 Have a car in mind? Paste the deal link — we'll analyze it for you.
+      </button>
     </div>
     
-    <div class="selection-section" style="display: block !important; opacity: 1 !important;">
+    <div id="pasteListingExpanded" style="display:none;margin:24px;background:#1a2535;border:2px solid #00d4aa;border-radius:12px;padding:20px;">
+      <div style="font-size:1.1rem;font-weight:700;color:#00d4aa;margin-bottom:10px;">Paste Deal Link</div>
+      <div style="font-size:0.8rem;color:#8499b0;margin-bottom:14px;">We'll extract the details and run the full analysis.</div>
+      <div style="display:flex;gap:10px;">
+        <input type="text" id="listingUrlInput" placeholder="https://..." style="flex:1;padding:12px 14px;border-radius:8px;border:1px solid #2a3747;background:#0f1724;color:#eef2f7;font-size:0.9rem;">
+        <button onclick="extractListing()" style="padding:12px 20px;background:#00d4aa;color:#0f1724;border:none;border-radius:8px;font-weight:700;cursor:pointer;white-space:nowrap;">Analyze</button>
+      </div>
+      <div style="font-size:0.75rem;color:#8499b0;margin-top:10px;">If we can't read it, you can still fill it out manually below.</div>
+    </div>
+    
+    <div class="selection-section" style="display: block !important; opacity: 1 !important; visibility: visible !important;">
       <div class="year-toggle" id="yearToggle"></div>
       <div class="brand-section-label" style="font-size:0.875rem;color:#6a8599;font-weight:500;">Top 20 brands by US sales</div>
       <div class="brand-text-grid" id="brandGrid"></div>
@@ -1398,6 +1404,18 @@ a:hover { text-decoration: underline; }
   <!-- ═══════════════════════════════════════ -->
   <section class="page-section" id="sec-deal">
     <div class="section-heading">2 — Deal</div>
+    <!-- Finance vs Lease Toggle -->
+    <div class="finance-toggle" style="display:flex;gap:12px;margin-bottom:16px;justify-content:center;">
+      <button id="financeTypeBtn" onclick="toggleFinanceType('finance')" class="finance-toggle-btn active" style="flex:1;padding:10px;border-radius:8px;font-weight:600;background:#00d4aa;color:#0f1724;border:none;cursor:pointer;transition:all 0.2s;">
+        💵 Finance
+      </button>
+      <button id="leaseTypeBtn" onclick="toggleFinanceType('lease')" class="finance-toggle-btn" style="flex:1;padding:10px;border-radius:8px;font-weight:600;background:#1a2535;color:#8499b0;border:1px solid #2a3a50;cursor:pointer;">
+        📅 Lease
+      </button>
+    </div>
+    <div id="leaseDisclaimer" style="margin-bottom:16px;padding:12px;background:rgba(255,230,0,0.1);border:1px solid #ffd33a;border-radius:8px;font-size:0.85rem;color:#ffec8b;text-align:center;" class="hidden">
+      ⚠️ Lease terms vary by dealer. We'll use standard assumptions — verify exact money factor & residual with your contract.
+    </div>
     <div class="deal-section-card">
       <div class="vehicle-crumb" id="vehicleCrumb" style="display:none;">
         <div class="vehicle-crumb-tag">
@@ -2740,17 +2758,16 @@ function extractListing() {
     return;
   }
   
-  // Try to extract listingId from various Cargurus URL formats
+  // Try to extract listingId from various URL formats
   let listingIdMatch = url.match(/listingId=([0-9]+)/);
   let listingId = listingIdMatch ? listingIdMatch[1] : null;
   
-  // If no listingId found, try other patterns
   if (!listingId) {
     listingIdMatch = url.match(/details\/(\d+)/);
     if (listingIdMatch) listingId = listingIdMatch[1];
   }
   
-  // Mock extraction - replace with real parser later
+  // Mock data - replace with real parser later
   const mockData = {
     brand: 'Toyota',
     model: 'Camry',
@@ -2758,19 +2775,44 @@ function extractListing() {
     price: 28500
   };
   
-  // Pre-fill form
-  state.brand = mockData.brand;
-  state.year = mockData.year;
+  // Auto-fill form fields
+  const brandSelect = document.getElementById('brand');
+  if (brandSelect) {
+    brandSelect.value = mockData.brand;
+    brandSelect.dispatchEvent(new Event('change'));
+  }
   
-  // Update UI
+  const yearSelect = document.getElementById('year');
+  if (yearSelect) yearSelect.value = mockData.year;
+  
+  const dealerPriceInput = document.getElementById('dealInputs')?.querySelector('input[type="number"]');
+  if (dealerPriceInput) dealerPriceInput.value = mockData.price;
+  
+  // Show deal inputs
+  if (document.getElementById('dealInputs')) {
+    document.getElementById('dealInputs').style.display = '';
+    document.getElementById('dealPlaceholder').style.display = 'none';
+  }
+  
+  // Clear input and show success
   document.getElementById('listingUrlInput').value = '';
-  document.getElementById('brandGrid').scrollIntoView({behavior:'smooth'});
+  document.getElementById('pasteListingExpanded').scrollIntoView({behavior:'smooth'});
   
   const msg = listingId 
-    ? `Extracted (Listing #${listingId})\n${mockData.brand} ${mockData.model} ${mockData.year}\nPrice: $${mockData.price.toLocaleString()}`
-    : `Can't read this URL yet.\n${mockData.brand} ${mockData.model} ${mockData.year}\nPrice: $${mockData.price.toLocaleString()}\n\nContinue manually below.`;
+    ? `✅ Extracted Listing #${listingId}\n${mockData.brand} ${mockData.model} ${mockData.year}\nPrice: $${mockData.price.toLocaleString()}\n\nWe'll analyze your deal below.`
+    : `⚠️ Can't read this URL yet.\n${mockData.brand} ${mockData.model} ${mockData.year}\nPrice: $${mockData.price.toLocaleString()}\n\nWe filled the best guess below - verify and continue.`;
   
   alert(msg);
+}
+
+function togglePasteInput() {
+  const expanded = document.getElementById('pasteListingExpanded');
+  if (expanded.style.display === 'none') {
+    expanded.style.display = 'block';
+    document.getElementById('listingUrlInput').focus();
+  } else {
+    expanded.style.display = 'none';
+  }
 }
 
 function resetModelAccordion() {
