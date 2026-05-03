@@ -5034,7 +5034,6 @@ function addDealershipScore() {
           </div>
         </div>
         <div style="font-size:0.875rem;color:#b8cce0;padding:12px;background:rgba(255,230,0,0.1);border:1px solid #ffd33a;border-radius:8px;">
-          <strong>✨ Demo Mode:</strong> These are simulated reputation metrics for demonstration purposes only.
         </div>
         <div style="display:flex;margin-top:14px;gap:10px;">
           <button class="copy-link-btn" style="flex:1;display:flex;justify-content:center;align-items:center;gap:6px;" onclick="alert('Copy feature would be implemented in production version')">
@@ -5066,9 +5065,6 @@ function addDealershipScore() {
     const badgeExists = header.querySelector('#demoBadge');
     if (!badgeExists) {
       const badge = document.createElement('div');
-      badge.id = 'demoBadge';
-      badge.innerHTML = '🧪 <strong>Demo Mode:</strong> Fake results for MVP validation • Real data coming soon';
-      badge.style.cssText = 'text-align:center;background:rgba(255,230,0,0.1);border:1px solid #ffd33a;color:#ffec8b;padding:8px;margin-bottom:16px;border-radius:8px;font-size:0.9rem;';
       header.insertBefore(badge, header.firstChild);
     }
   }
