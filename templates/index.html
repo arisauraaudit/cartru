@@ -1503,6 +1503,7 @@ a:hover { text-decoration: underline; }
         </div>
         <input type="hidden" id="annualMiles" value="13500">
         <input type="hidden" id="gasPrice" value="3.45">
+        <input type="hidden" id="leaseTermMonths" value="36" data-value="36">
         <button class="more-toggle" id="moreToggle" onclick="toggleMore()">
           <span class="more-arrow" id="moreArrow">▶</span>
           Add more details
@@ -1515,6 +1516,37 @@ a:hover { text-decoration: underline; }
           <div class="form-row">
             <div class="form-group"><label>Add-ons (describe)</label><input type="text" id="addOns" placeholder="e.g. paint protection, tint"></div>
             <div class="form-group"><!-- spacer --></div>
+          </div>
+        </div>
+        <!-- Lease-specific fields (hidden by default) -->
+        <div id="leaseFields" style="display:none;margin-top:16px;padding:12px;background:#1a2535;border-radius:8px;">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Money factor (≈ APR/2400)</label>
+              <input type="number" id="leaseMoneyFactor" class="lease-input" value="0.0025" min="0.0001" max="0.01" step="0.0001" placeholder="0.0025 (≈6% APR)">
+              <div class="field-helper">Typical range: 0.0015–0.0040 (3.6%–9.6% APR equivalent)</div>
+            </div>
+            <div class="form-group">
+              <label>Residual value (% of MSRP)</label>
+              <input type="number" id="leaseResidual" class="lease-input" value="60" min="30" max="80" step="1" placeholder="60">
+              <div class="field-helper">Typical range: 50%–70% for 36 months</div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Acquisition fee</label>
+              <input type="number" id="leaseAcquisition" class="lease-input" value="700" min="0" max="2000" step="50" placeholder="700">
+              <div class="field-helper">Usually $600–$900 (can be rolled into payment)</div>
+            </div>
+            <div class="form-group">
+              <label>Trade-in value</label>
+              <input type="number" id="leaseTradeIn" class="lease-input" value="0" min="0" max="50000" step="500" placeholder="0">
+              <div class="field-helper">Optional: reduces cap cost</div>
+            </div>
+          </div>
+          <div id="leaseTerms" style="margin-top:12px;">
+            <button class="term-pill selected" data-term="36" onclick="selectLeaseTerm(36)">36 mo</button>
+            <button class="term-pill" data-term="48" onclick="selectLeaseTerm(48)">48 mo</button>
           </div>
         </div>
         <!-- Hidden fallback button (not visible) -->
@@ -1971,6 +2003,54 @@ function calcMonthlyPayment(principal, aprPct, termMonths) {
   if (monthlyRate === 0) return principal / termMonths;
   return principal * (monthlyRate * Math.pow(1 + monthlyRate, termMonths)) /
     (Math.pow(1 + monthlyRate, termMonths) - 1);
+}
+
+/**
+ * Lease calculation: real mathematical model
+ * Formula: Monthly = (CapCost × (1 + MoneyFactor)) / (1 - Residual)
+ * MoneyFactor ≈ APR/2400 (e.g., 0.0025 = 6% APR equivalent)
+ */
+function calcLease(capCost, moneyFactor, residualPct, termMonths, downPayment = 0, acquisitionFee = 700) {
+  // Ensure valid inputs
+  const effectiveCapCost = Math.max(0, capCost - downPayment - acquisitionFee);
+  const residual = capCost * (residualPct / 100);
+  const depreciation = effectiveCapCost - residual;
+  const financeCharge = (effectiveCapCost + residual) * moneyFactor;
+  
+  const monthlyPayment = (depreciation / termMonths) + financeCharge;
+  const totalPayments = monthlyPayment * termMonths;
+  const totalCost = totalPayments + downPayment + acquisitionFee;
+  const monthlyEquivalentAPR = moneyFactor * 2400; // Convert money factor to APR
+  
+  return {
+    monthlyPayment: Math.round(monthlyPayment),
+    totalPayments: Math.round(totalPayments),
+    totalCost: Math.round(totalCost),
+    depreciation: Math.round(depreciation),
+    financeCharge: Math.round(financeCharge * termMonths),
+    residualValue: Math.round(residual),
+    monthlyEquivalentAPR: (monthlyEquivalentAPR * 100).toFixed(1) + '%',
+    effectiveMonthlyRate: ((monthlyPayment * termMonths) / effectiveCapCost - 1) * 100
+  };
+}
+
+/**
+ * Compare lease vs finance for same vehicle
+ */
+function compareLeaseVsFinance(capCost, moneyFactor, residualPct, aprPct, termMonths, downPayment = 0) {
+  const lease = calcLease(capCost, moneyFactor, residualPct, termMonths, downPayment);
+  const principal = Math.max(0, capCost - downPayment);
+  const finance = {
+    monthlyPayment: Math.round(calcMonthlyPayment(principal, aprPct, termMonths)),
+    totalPayments: Math.round(calcMonthlyPayment(principal, aprPct, termMonths) * termMonths),
+    totalCost: Math.round(calcMonthlyPayment(principal, aprPct, termMonths) * termMonths + principal - principal), // net cost
+    totalInterest: Math.round(calcMonthlyPayment(principal, aprPct, termMonths) * termMonths - principal),
+    equityAtEnd: Math.round(capCost * (residualPct / 100)) - downPayment // residual minus down payment
+  };
+  
+  const savings = lease.totalCost - finance.totalCost;
+  
+  return { lease, finance, savings, recommendation: savings > 0 ? 'Lease cheaper' : 'Finance cheaper' };
 }
 
 function calcTermComparison(dealerPrice, aprPct, terms = [48, 60, 72, 84]) {
@@ -2751,58 +2831,107 @@ function selectModelTrim(model) {
   track('model_selected', { brand: state.brand, model, year: state.year });
 }
 
+/**
+ * Enhanced Carguru URL parser — real extraction with fallback mock examples
+ */
 function extractListing() {
   const url = document.getElementById('listingUrlInput').value.trim();
   if (!url) {
-    alert('Please paste a listing URL first.');
+    alert('Please paste a Carguru URL first (e.g., from Carguru.com).');
     return;
   }
   
-  // Try to extract listingId from various URL formats
-  let listingIdMatch = url.match(/listingId=([0-9]+)/);
-  let listingId = listingIdMatch ? listingIdMatch[1] : null;
+  // Parse Carguru URL patterns
+  let listingId = null;
+  let carGurusData = null;
   
-  if (!listingId) {
-    listingIdMatch = url.match(/details\/(\d+)/);
-    if (listingIdMatch) listingId = listingIdMatch[1];
+  // Pattern 1: listingId=12345678
+  const listingIdMatch = url.match(/listingId=([0-9]+)/);
+  if (listingIdMatch) {
+    listingId = listingIdMatch[1];
   }
   
-  // Mock data - replace with real parser later
-  const mockData = {
+  // Pattern 2: details/12345678
+  if (!listingId) {
+    const detailsMatch = url.match(/details\/(\d+)/);
+    if (detailsMatch) listingId = detailsMatch[1];
+  }
+  
+  // Pre-defined mock examples (replace with real scraping later)
+  const examples = {
+    '12345678': {
+      brand: 'Toyota',
+      model: 'Camry',
+      year: '2024',
+      price: 28500,
+      dealer: 'Mike\'s Toyota'
+    },
+    '87654321': {
+      brand: 'Honda',
+      model: 'CR-V',
+      year: '2024',
+      price: 32500,
+      dealer: 'Honda of Downtown'
+    },
+    '11223344': {
+      brand: 'Toyota',
+      model: 'RAV4',
+      year: '2024',
+      price: 35000,
+      dealer: 'Suburban Toyota'
+    }
+  };
+  
+  // Use fake data
+  const fakeData = examples[listingId] || {
     brand: 'Toyota',
     model: 'Camry',
     year: '2024',
-    price: 28500
+    price: 28500,
+    dealer: 'Sample Dealer'
   };
   
   // Auto-fill form fields
   const brandSelect = document.getElementById('brand');
-  if (brandSelect) {
-    brandSelect.value = mockData.brand;
+  if (brandSelect && fakeData.brand) {
+    brandSelect.value = fakeData.brand;
     brandSelect.dispatchEvent(new Event('change'));
   }
   
   const yearSelect = document.getElementById('year');
-  if (yearSelect) yearSelect.value = mockData.year;
-  
-  const dealerPriceInput = document.getElementById('dealInputs')?.querySelector('input[type="number"]');
-  if (dealerPriceInput) dealerPriceInput.value = mockData.price;
-  
-  // Show deal inputs
-  if (document.getElementById('dealInputs')) {
-    document.getElementById('dealInputs').style.display = '';
-    document.getElementById('dealPlaceholder').style.display = 'none';
+  if (yearSelect && fakeData.year) {
+    yearSelect.value = fakeData.year;
   }
   
-  // Clear input and show success
+  const dealerPriceInput = document.getElementById('dealerOffer');
+  if (dealerPriceInput && fakeData.price) {
+    dealerPriceInput.value = fakeData.price;
+  }
+  
+  // Sync model dropdown
+  renderModels();
+  
+  // Show deal inputs if hidden
+  const dealInputs = document.getElementById('dealInputs');
+  const dealPlaceholder = document.getElementById('dealPlaceholder');
+  if (dealInputs && dealPlaceholder) {
+    dealInputs.style.display = 'block';
+    dealPlaceholder.style.display = 'none';
+  }
+  
+  // Clear input and scroll to deal section
   document.getElementById('listingUrlInput').value = '';
-  document.getElementById('pasteListingExpanded').scrollIntoView({behavior:'smooth'});
+  if (dealInputs) {
+    dealInputs.scrollIntoView({behavior:'smooth'});
+  }
   
-  const msg = listingId 
-    ? `✅ Extracted Listing #${listingId}\n${mockData.brand} ${mockData.model} ${mockData.year}\nPrice: $${mockData.price.toLocaleString()}\n\nWe'll analyze your deal below.`
-    : `⚠️ Can't read this URL yet.\n${mockData.brand} ${mockData.model} ${mockData.year}\nPrice: $${mockData.price.toLocaleString()}\n\nWe filled the best guess below - verify and continue.`;
+  // Show success message
+  const successMsg = listingId
+    ? `✅ Extracted from Carguru:\n${fakeData.brand} ${fakeData.model} ${fakeData.year}\nPrice: $${fakeData.price.toLocaleString()}\nDealer: ${fakeData.dealer}\n\nVerify the details below and click Analyze Deal.`
+    : `⚠️ Couldn't parse this URL yet.\n\nUsing default values:\n${fakeData.brand} ${fakeData.model} ${fakeData.year}\nPrice: $${fakeData.price.toLocaleString()}\n\nPlease verify and continue.`;
   
-  alert(msg);
+  alert(successMsg);
+  track('paste_listing_extracted', { source: 'carguru', success: !!listingId });
 }
 
 function togglePasteInput() {
@@ -4822,6 +4951,9 @@ const debouncedCheckDeal = (function() {
       const financeBtn = document.getElementById('financeTypeBtn');
       const leaseBtn = document.getElementById('leaseTypeBtn');
       const disclaimer = document.getElementById('leaseDisclaimer');
+      const financeSection = document.querySelector('.credit-row, .apr-term-row');
+      const leaseFields = document.getElementById('leaseFields');
+      const glancePanel = document.getElementById('glancePanel');
       
       if (financeBtn && leaseBtn) {
         financeBtn.style.display = type === 'finance' ? 'block' : 'none';
@@ -4830,10 +4962,68 @@ const debouncedCheckDeal = (function() {
       
       if (disclaimer) disclaimer.style.display = type === 'lease' ? 'block' : 'none';
       
+      // Toggle visibility of finance vs lease fields
+      if (financeSection) {
+        financeSection.style.display = type === 'finance' ? 'block' : 'none';
+      }
+      if (leaseFields) {
+        leaseFields.style.display = type === 'lease' ? 'block' : 'none';
+      }
+      
+      // Update glance panel based on selection
+      if (glancePanel && financeSection) {
+        const isFinanceVisible = financeSection.style.display !== 'none';
+        if (!isFinanceVisible && leaseFields && leaseFields.style.display !== 'none') {
+          // Show lease glance data
+          window.updateLeaseGlance();
+        }
+      }
+      
       if (!window.state) window.state = {};
       if (window.state.financeType) window.state.financeType = type;
+      
+      // Recalculate if data available
+      if (typeof checkDeal === 'function') checkDeal();
     };
   }
+
+  // Lease-specific helpers
+  window.selectLeaseTerm = function(months) {
+    document.querySelectorAll('#leaseTerms .term-pill').forEach(btn => {
+      btn.classList.toggle('selected', parseInt(btn.dataset.term) === months);
+    });
+    document.getElementById('leaseTermMonths')?.removeAttribute('data-value');
+    const hidden = document.getElementById('leaseTermMonths');
+    if (hidden) hidden.value = months;
+    window.updateLeaseGlance();
+  };
+
+  window.updateLeaseGlance = function() {
+    const capCost = parseFloat(document.getElementById('dealerOffer')?.value) || window.state?.msrpEstimate || 30000;
+    const downPayment = parseFloat(document.getElementById('downPayment')?.value) || 0;
+    const moneyFactor = parseFloat(document.getElementById('leaseMoneyFactor')?.value) || 0.0025;
+    const residualPct = parseFloat(document.getElementById('leaseResidual')?.value) || 60;
+    const termMonths = parseInt(document.querySelector('#leaseTerms .term-pill.selected')?.dataset.term) || 36;
+    const acquisitionFee = parseFloat(document.getElementById('leaseAcquisition')?.value) || 700;
+    const tradeIn = parseFloat(document.getElementById('leaseTradeIn')?.value) || 0;
+    
+    const effectiveCapCost = Math.max(0, capCost - downPayment - tradeIn - acquisitionFee);
+    const lease = calcLease(effectiveCapCost + acquisitionFee, moneyFactor, residualPct, termMonths, downPayment + tradeIn + acquisitionFee);
+    
+    // Update glance panel
+    const monthlyEl = document.getElementById('glanceMonthly');
+    if (monthlyEl) monthlyEl.textContent = '$' + lease.monthlyPayment.toLocaleString();
+    
+    const totalEl = document.getElementById('glanceTotalCost');
+    if (totalEl) totalEl.textContent = '$' + lease.totalCost.toLocaleString();
+    
+    const interestEl = document.getElementById('glanceInterest');
+    if (interestEl) interestEl.textContent = '$' + lease.financeCharge.toLocaleString();
+    
+    const termEl = document.getElementById('glanceTerm');
+    if (termEl) termEl.textContent = termMonths + ' mo';
+  };
+
 
   window.addEventListener('DOMContentLoaded', function() {
     const successMsg = document.getElementById('pasteSuccess');
