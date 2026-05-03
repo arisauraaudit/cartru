@@ -1404,18 +1404,19 @@ a:hover { text-decoration: underline; }
   <!-- ═══════════════════════════════════════ -->
   <section class="page-section" id="sec-deal">
     <div class="section-heading">2 — Deal</div>
-    <!-- Payment Method Toggle (Finance / Lease / Cash) -->
-    <div class="payment-toggle" style="display:flex;gap:12px;margin-bottom:16px;justify-content:center;">
-      <button id="financeTypeBtn" onclick="togglePaymentType('finance')" class="payment-btn selected" style="flex:1;padding:10px;border-radius:8px;font-weight:600;cursor:pointer;transition:all 0.2s;background:#00d4aa;color:#0f1724;border:none;">
-        💵 Finance
-      </button>
-      <button id="leaseTypeBtn" onclick="togglePaymentType('lease')" class="payment-btn" style="flex:1;padding:10px;border-radius:8px;font-weight:600;cursor:pointer;transition:all 0.2s;background:#1a2535;color:#8499b0;border:1px solid #2a3a50;">
-        📅 Lease
-      </button>
-      <button id="cashTypeBtn" onclick="togglePaymentType('cash')" class="payment-btn" style="flex:1;padding:10px;border-radius:8px;font-weight:600;cursor:pointer;transition:all 0.2s;background:#1a2535;color:#8499b0;border:1px solid #2a3a50;">
-        💰 Cash
-      </button>
-    </div>
+      <!-- Payment Method Toggle -->
+      <div class="payment-toggle-section" style="display:flex;gap:12px;margin-bottom:24px;justify-content:center;">
+        <button id="financeTypeBtn" onclick="togglePaymentType('finance')" class="payment-btn selected" style="flex:1;padding:10px;border-radius:8px;font-weight:600;cursor:pointer;transition:all 0.2s;background:#00d4aa;color:#0f1724;border:none;">
+          💵 Finance
+        </button>
+        <button id="leaseTypeBtn" onclick="togglePaymentType('lease')" class="payment-btn" style="flex:1;padding:10px;border-radius:8px;font-weight:600;cursor:pointer;transition:all 0.2s;background:#1a2535;color:#8499b0;border:1px solid #2a3a50;">
+          📅 Lease
+        </button>
+        <button id="cashTypeBtn" onclick="togglePaymentType('cash')" class="payment-btn" style="flex:1;padding:10px;border-radius:8px;font-weight:600;cursor:pointer;transition:all 0.2s;background:#1a2535;color:#8499b0;border:1px solid #2a3a50;">
+          💰 Cash
+        </button>
+      </div>
+    <!-- Mode-specific disclaimers -->
     <div id="leaseDisclaimer" style="display:none;margin-bottom:16px;padding:12px;background:rgba(255,230,0,0.1);border:1px solid #ffd33a;border-radius:8px;font-size:0.85rem;color:#ffec8b;text-align:center;">
       ⚠️ Lease terms vary by dealer. We'll use standard assumptions — verify exact money factor & residual with your contract.
     </div>
@@ -1431,19 +1432,50 @@ a:hover { text-decoration: underline; }
       </div>
       <div id="dealPlaceholder" class="section-placeholder">Select a car above to set up your deal.</div>
       <div id="dealInputs" style="display:none;">
+        
+        <!-- Deal Basics (Shared Fields) -->
+        <div class="deal-basics-section" style="margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid #2a3a50;">
+          <h3 style="font-size:0.9rem;font-weight:700;color:#e2e8f0;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.5px;">Deal Basics</h3>
+          
+          <div class="form-row" style="margin-bottom:16px;">
+            <div class="form-group" style="flex:1 1 48%;">
+              <label for="dealerOffer">Dealer Price</label>
+              <div class="offer-input-wrap" style="display:flex;align-items:center;">
+                <span class="offer-dollar">$</span>
+                <input type="number" id="dealerOffer" class="offer-input" placeholder="28500" min="1000" max="200000" style="flex:1;">
+              </div>
+              <div class="field-helper">Enter total dealer price before tax/fees</div>
+            </div>
+            
+            <div class="form-group" style="flex:1 1 48%;">
+              <label for="zipCode">ZIP Code</label>
+              <input type="text" id="zipCode" class="zip-input" placeholder="03222" maxlength="5" style="flex:1;">
+              <div class="field-helper">For tax & fee calculation</div>
+            </div>
+          </div>
+          
+          <div class="form-row" style="margin-bottom:8px;">
+            <div class="form-group" style="flex:1 1 100%;">
+              <label>Incentives (optional)</label>
+              <input type="number" id="incentives" class="offer-input" placeholder="0" min="0" max="10000" style="flex:1;">
+              <div class="field-helper">Rebates, loyalty discounts, etc.</div>
+            </div>
+          </div>
+        </div>
+        
         <div class="offer-wrap">
-          <label class="offer-label" for="dealerOffer">Dealer price</label>
-          <div class="offer-sublabel" id="offerSublabel">~5% below MSRP · typical average discount — edit to match your offer</div>
+          <label class="offer-label" for="dealerOffer" style="display:none;">Dealer price</label>
+          <div class="offer-sublabel" id="offerSublabel" style="display:none;">~5% below MSRP · typical average discount — edit to match your offer</div>
           <div class="offer-input-row">
             <span class="offer-dollar">$</span>
-            <input type="number" id="dealerOffer" class="offer-input" placeholder="Enter dealer price" min="1000" max="200000" autocomplete="off">
+            <input type="number" id="dealerOffer" class="offer-input" placeholder="28500" min="1000" max="200000" autocomplete="off" style="display:none;">
           </div>
-          <div class="live-signal-preview" id="liveSignalPreview">
+          <div class="live-signal-preview" id="liveSignalPreview" style="display:none;">
             <div class="live-signal-badge" id="liveSignalBadge"></div>
             <div class="live-signal-vs" id="liveSignalVs"></div>
           </div>
         </div>
-        <div class="msrp-row" id="msrpRow">
+        <div class="msrp-row" id="msrpRow" style="margin-bottom:24px;">
           <span class="msrp-suggest-label">Suggested MSRP:</span>
           <span class="msrp-suggest-value" id="msrpDisplay">~$32,000</span>
           <button class="msrp-edit-btn" onclick="toggleMsrpEdit()" title="Edit MSRP">✎</button>
