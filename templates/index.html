@@ -1555,6 +1555,14 @@ a:hover { text-decoration: underline; }
             <button class="term-pill" data-term="48" onclick="selectLeaseTerm(48)">48 mo</button>
           </div>
         </div>
+        
+        <!-- Cash Mode Input (hidden by default) -->
+        <div id="cashFields" style="display:none;margin-top:16px;padding:16px;background:#1a2535;border-radius:8px;">
+          <div class="offer-wrap"><label class="offer-label" for="cashOffer">Full cash price</label>
+            <input type="number" id="cashOffer" class="cash-input" placeholder="Enter total cash price" min="1000" max="200000" step="500" style="width:100%;padding:12px;border-radius:8px;border:1px solid #2a3a50;background:#0f1724;color:#e2e8f0;font-size:1rem;"></div>
+          <div style="text-align:center;font-size:0.9rem;color:#8499b0;padding:12px;">💳 Full payment upfront · No interest · No monthly obligation</div>
+        </div>
+        
         <!-- Hidden fallback button (not visible) -->
         <button class="btn-check-hidden" id="checkDealBtn" onclick="checkDeal()">Check this deal</button>
         <div style="font-size:0.875rem;color:#8499b0;text-align:center;margin-top:8px;">Analysis updates automatically as you edit.</div>
@@ -5094,6 +5102,22 @@ const debouncedCheckDeal = (function() {
     
     const termEl = document.getElementById('glanceTerm');
     if (termEl) termEl.textContent = termMonths + ' mo';
+  };
+
+  window.updateCashGlance = function() {
+    const cashPrice = parseFloat(document.getElementById('dealerOffer')?.value) || parseFloat(document.getElementById('cashOffer')?.value) || window.state?.msrpEstimate || 30000;
+    
+    // Cash mode shows full price, no monthly payment
+    document.getElementById('glanceMonthly').textContent = '—';
+    document.getElementById('glanceInterest').textContent = '—';
+    document.getElementById('glanceTotalCost').textContent = '$' + cashPrice.toLocaleString();
+    document.getElementById('glanceTerm').textContent = 'Cash';
+    
+    // Save to unified deal state
+    window.state.currentDeal = {
+      type: 'cash',
+      cashPrice: Math.round(cashPrice)
+    };
   };
 
 
