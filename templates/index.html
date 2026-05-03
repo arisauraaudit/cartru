@@ -2006,18 +2006,23 @@ function calcMonthlyPayment(principal, aprPct, termMonths) {
 }
 
 /**
- * Lease calculation: real mathematical model
- * Formula: Monthly = (CapCost × (1 + MoneyFactor)) / (1 - Residual)
- * MoneyFactor ≈ APR/2400 (e.g., 0.0025 = 6% APR equivalent)
+ * Lease calculation: Industry-standard formula
+ * Monthly Payment = (Depreciation Fee) + (Finance Charge)
+ * 
+ * Depreciation Fee = (Cap Cost - Residual Value) / Term Months
+ * Residual Value = Effective Cap Cost × Residual %
+ * Finance Charge = (Cap Cost + Residual Value) × Money Factor
+ * 
+ * Money Factor × 2400 = APR Equivalent (e.g., 0.0025 = 6% APR)
  */
-function calcLease(capCost, moneyFactor, residualPct, termMonths, downPayment = 0, acquisitionFee = 700) {
+function calcLease(capCost, moneyFactor, residualPct, termMonths, downPayment = 0, acquisitionFee = 0) {
   // Ensure valid inputs
   const effectiveCapCost = Math.max(0, capCost - downPayment - acquisitionFee);
-  const residual = capCost * (residualPct / 100);
-  const depreciation = effectiveCapCost - residual;
+  const residual = effectiveCapCost * (residualPct / 100); // Residual on cap cost, not MSRP
+  const depreciationFee = (effectiveCapCost - residual) / termMonths;
   const financeCharge = (effectiveCapCost + residual) * moneyFactor;
   
-  const monthlyPayment = (depreciation / termMonths) + financeCharge;
+  const monthlyPayment = depreciationFee + financeCharge;
   const totalPayments = monthlyPayment * termMonths;
   const totalCost = totalPayments + downPayment + acquisitionFee;
   const monthlyEquivalentAPR = moneyFactor * 2400; // Convert money factor to APR
@@ -3297,32 +3302,76 @@ function updateLiveSignal() {
 }
 
 // ══════════════════════════════════════════════════════════
-// Live glance panel (debounced)
+// Live glance panel (debounced) — unified with lease support
 // ══════════════════════════════════════════════════════════
 
 function updateGlancePanel() {
   const price  = parseFloat(document.getElementById('dealerOffer').value);
-  const aprPct = parseFloat(document.getElementById('aprInput').value) || DEFAULTS.apr;
-  const term   = state.loanTerm;
-
-  state.apr = aprPct;
+  const isLeaseMode = window.state && window.state.financeType === 'lease';
 
   if (!price || price < 1000) {
     document.getElementById('glancePanel').classList.remove('visible');
     return;
   }
 
-  const dp0           = getDownPayment(price);
-  const principal0    = Math.max(0, price - dp0);
-  const mp            = calcMonthlyPayment(principal0, aprPct, term);
-  const totalInterest = (mp * term) - principal0;
-  const totalCost     = price + totalInterest;
-  const years         = term / 12;
+  if (isLeaseMode) {
+    // Lease mode: use lease calculation
+    const msrpVal = document.getElementById('msrpInlineInput').value || state.msrpEstimate;
+    const downPayment = parseFloat(document.getElementById('downPayment').value) || 0;
+    const moneyFactor = parseFloat(document.getElementById('leaseMoneyFactor').value) || 0.0025;
+    const residualPct = parseFloat(document.getElementById('leaseResidual').value) || 60;
+    const termMonths = parseInt(document.getElementById('leaseTermMonths').value) || 36;
+    const acquisitionFee = parseFloat(document.getElementById('leaseAcquisition').value) || 0;
+    const tradeIn = parseFloat(document.getElementById('leaseTradeIn').value) || 0;
+    
+    const effectiveCapCost = Math.max(0, msrpVal - downPayment - tradeIn - acquisitionFee);
+    const residual = effectiveCapCost * (residualPct / 100);
+    const depreciationFee = (effectiveCapCost - residual) / termMonths;
+    const financeCharge = (effectiveCapCost + residual) * moneyFactor;
+    const monthlyPayment = depreciationFee + financeCharge;
+    const totalPayments = monthlyPayment * termMonths;
+    const totalCost = totalPayments + downPayment + acquisitionFee;
+    
+    const years = termMonths / 12;
+    document.getElementById('glanceMonthly').textContent   = `$${fmt(monthlyPayment)}/mo`;
+    document.getElementById('glanceInterest').textContent  = `$${fmt(financeCharge * termMonths)}`;
+    document.getElementById('glanceTotalCost').textContent = `$${fmt(totalCost)}`;
+    document.getElementById('glanceTerm').textContent      = `${termMonths} mo`;
+    
+    // Save to unified deal state
+    window.state.currentDeal = {
+      type: 'lease',
+      monthlyPayment: Math.round(monthlyPayment),
+      totalCost: Math.round(totalCost),
+      residualValue: Math.round(residual),
+      financeCharge: Math.round(financeCharge * termMonths)
+    };
+  } else {
+    // Finance mode: use finance calculation
+    const aprPct = parseFloat(document.getElementById('aprInput').value) || DEFAULTS.apr;
+    const term   = state.loanTerm;
+    state.apr = aprPct;
 
-  document.getElementById('glanceMonthly').textContent   = `$${fmt(mp)}/mo`;
-  document.getElementById('glanceInterest').textContent  = `$${fmt(totalInterest)}`;
-  document.getElementById('glanceTotalCost').textContent = `$${fmt(totalCost)}`;
-  document.getElementById('glanceTerm').textContent      = `${years} yr`;
+    const dp0           = getDownPayment(price);
+    const principal0    = Math.max(0, price - dp0);
+    const mp            = calcMonthlyPayment(principal0, aprPct, term);
+    const totalInterest = (mp * term) - principal0;
+    const totalCost     = price + totalInterest;
+    const years         = term / 12;
+
+    document.getElementById('glanceMonthly').textContent   = `$${fmt(mp)}/mo`;
+    document.getElementById('glanceInterest').textContent  = `$${fmt(totalInterest)}`;
+    document.getElementById('glanceTotalCost').textContent = `$${fmt(totalCost)}`;
+    document.getElementById('glanceTerm').textContent      = `${years} yr`;
+    
+    // Save to unified deal state
+    window.state.currentDeal = {
+      type: 'finance',
+      monthlyPayment: Math.round(mp),
+      totalCost: Math.round(totalCost),
+      totalInterest: Math.round(totalInterest)
+    };
+  }
 
   document.getElementById('glancePanel').classList.add('visible');
 }
@@ -3335,14 +3384,21 @@ const debouncedSignal = debounce(updateLiveSignal, 180);
 // ══════════════════════════════════════════════════════════
 
 function checkDeal() {
+  // Initialize unified state if needed
+  if (!window.state.currentDeal) {
+    window.state.currentDeal = null;
+  }
+  
   const rawOffer   = document.getElementById('dealerOffer').value;
   const offer      = rawOffer ? parseFloat(rawOffer) : null;
+  const isLeaseMode = window.state && window.state.financeType === 'lease';
   const msrpVal    = document.getElementById('msrpInlineInput').value || state.msrpEstimate;
   const aprPct     = parseFloat(document.getElementById('aprInput').value) || DEFAULTS.apr;
   const miles      = parseInt(document.getElementById('annualMiles').value) || DEFAULTS.annualMiles;
   const gasP       = parseFloat(document.getElementById('gasPrice').value) || DEFAULTS.gasPrice;
 
   const payload = {
+    deal_type:  isLeaseMode ? 'lease' : 'finance',
     year:               state.year,
     make:               state.brand,
     model:              state.model,
@@ -3354,9 +3410,15 @@ function checkDeal() {
     dealer_fees:        document.getElementById('dealerFees').value || 0,
     add_ons:            document.getElementById('addOns').value || '',
     apr:                aprPct / 100,
-    loan_term:          state.loanTerm,
+    loan_term:          isLeaseMode ? null : state.loanTerm,
     gas_price:          gasP,
     annual_miles:       miles,
+    // Include lease data if available from glance panel
+    lease_data: window.state.currentDeal && isLeaseMode ? {
+      monthly_payment: window.state.currentDeal.monthlyPayment,
+      total_cost: window.state.currentDeal.totalCost,
+      residual_value: window.state.currentDeal.residualValue
+    } : null
   };
 
   track('deal_checked', { make: state.brand, model: state.model, year: state.year });
