@@ -1404,17 +1404,23 @@ a:hover { text-decoration: underline; }
   <!-- ═══════════════════════════════════════ -->
   <section class="page-section" id="sec-deal">
     <div class="section-heading">2 — Deal</div>
-    <!-- Finance vs Lease Toggle -->
-    <div class="finance-toggle" style="display:flex;gap:12px;margin-bottom:16px;justify-content:center;">
-      <button id="financeTypeBtn" onclick="toggleFinanceType('finance')" style="flex:1;padding:10px;border-radius:8px;font-weight:600;cursor:pointer;transition:all 0.2s;background:#00d4aa;color:#0f1724;border:none;">
+    <!-- Payment Method Toggle (Finance / Lease / Cash) -->
+    <div class="payment-toggle" style="display:flex;gap:12px;margin-bottom:16px;justify-content:center;">
+      <button id="financeTypeBtn" onclick="togglePaymentType('finance')" class="payment-btn selected" style="flex:1;padding:10px;border-radius:8px;font-weight:600;cursor:pointer;transition:all 0.2s;background:#00d4aa;color:#0f1724;border:none;">
         💵 Finance
       </button>
-      <button id="leaseTypeBtn" onclick="toggleFinanceType('lease')" style="flex:1;padding:10px;border-radius:8px;font-weight:600;cursor:pointer;transition:all 0.2s;background:#1a2535;color:#8499b0;border:1px solid #2a3a50;">
+      <button id="leaseTypeBtn" onclick="togglePaymentType('lease')" class="payment-btn" style="flex:1;padding:10px;border-radius:8px;font-weight:600;cursor:pointer;transition:all 0.2s;background:#1a2535;color:#8499b0;border:1px solid #2a3a50;">
         📅 Lease
+      </button>
+      <button id="cashTypeBtn" onclick="togglePaymentType('cash')" class="payment-btn" style="flex:1;padding:10px;border-radius:8px;font-weight:600;cursor:pointer;transition:all 0.2s;background:#1a2535;color:#8499b0;border:1px solid #2a3a50;">
+        💰 Cash
       </button>
     </div>
     <div id="leaseDisclaimer" style="display:none;margin-bottom:16px;padding:12px;background:rgba(255,230,0,0.1);border:1px solid #ffd33a;border-radius:8px;font-size:0.85rem;color:#ffec8b;text-align:center;">
       ⚠️ Lease terms vary by dealer. We'll use standard assumptions — verify exact money factor & residual with your contract.
+    </div>
+    <div id="cashDisclaimer" style="display:none;margin-bottom:16px;padding:12px;background:rgba(150,150,150,0.1);border:1px solid #9ca3af;border-radius:8px;font-size:0.85rem;color:#d1d5db;text-align:center;">
+      💳 Cash purchase — full payment upfront. No interest, no fees (except taxes & doc fees).
     </div>
     <div class="deal-section-card">
       <div class="vehicle-crumb" id="vehicleCrumb" style="display:none;">
@@ -5007,42 +5013,46 @@ const debouncedCheckDeal = (function() {
     window.toggleFinanceTypeOriginal = window.toggleFinanceType || null;
   }
   
-  // Our finance/lease toggle (don't overwrite existing if it exists)
-  if (typeof window.toggleFinanceType === 'undefined' || window.toggleFinanceType === window.toggleFinanceTypeOriginal) {
-    window.toggleFinanceType = function(type) {
+  // Unified payment type toggle (Finance / Lease / Cash)
+  if (typeof window.togglePaymentType === 'undefined' || window.togglePaymentType === window.toggleFinanceType) {
+    window.togglePaymentType = function(type) {
       const financeBtn = document.getElementById('financeTypeBtn');
       const leaseBtn = document.getElementById('leaseTypeBtn');
-      const disclaimer = document.getElementById('leaseDisclaimer');
+      const cashBtn = document.getElementById('cashTypeBtn');
+      const leaseDisclaimer = document.getElementById('leaseDisclaimer');
+      const cashDisclaimer = document.getElementById('cashDisclaimer');
       const financeSection = document.querySelector('.credit-row, .apr-term-row');
       const leaseFields = document.getElementById('leaseFields');
+      const cashFields = document.getElementById('cashFields');
       const glancePanel = document.getElementById('glancePanel');
       
-      if (financeBtn && leaseBtn) {
-        financeBtn.style.display = type === 'finance' ? 'block' : 'none';
-        leaseBtn.style.display = type === 'lease' ? 'block' : 'none';
-      }
+      // Update button styles
+      if (financeBtn) financeBtn.className = type === 'finance' ? 'payment-btn selected' : 'payment-btn';
+      if (leaseBtn) leaseBtn.className = type === 'lease' ? 'payment-btn selected' : 'payment-btn';
+      if (cashBtn) cashBtn.className = type === 'cash' ? 'payment-btn selected' : 'payment-btn';
       
-      if (disclaimer) disclaimer.style.display = type === 'lease' ? 'block' : 'none';
+      // Show appropriate disclaimer
+      if (leaseDisclaimer) leaseDisclaimer.style.display = type === 'lease' ? 'block' : 'none';
+      if (cashDisclaimer) cashDisclaimer.style.display = type === 'cash' ? 'block' : 'none';
       
-      // Toggle visibility of finance vs lease fields
-      if (financeSection) {
-        financeSection.style.display = type === 'finance' ? 'block' : 'none';
-      }
-      if (leaseFields) {
-        leaseFields.style.display = type === 'lease' ? 'block' : 'none';
-      }
+      // Toggle visibility of sections
+      if (financeSection) financeSection.style.display = type === 'finance' ? 'block' : 'none';
+      if (leaseFields) leaseFields.style.display = type === 'lease' ? 'block' : 'none';
+      if (cashFields) cashFields.style.display = type === 'cash' ? 'block' : 'none';
       
       // Update glance panel based on selection
-      if (glancePanel && financeSection) {
-        const isFinanceVisible = financeSection.style.display !== 'none';
-        if (!isFinanceVisible && leaseFields && leaseFields.style.display !== 'none') {
-          // Show lease glance data
+      if (glancePanel) {
+        if (type === 'finance') {
+          updateGlancePanel(); // Already handles finance logic internally
+        } else if (type === 'lease') {
           window.updateLeaseGlance();
+        } else if (type === 'cash') {
+          updateCashGlance();
         }
       }
       
       if (!window.state) window.state = {};
-      if (window.state.financeType) window.state.financeType = type;
+      if (window.state.paymentType) window.state.paymentType = type;
       
       // Recalculate if data available
       if (typeof checkDeal === 'function') checkDeal();
