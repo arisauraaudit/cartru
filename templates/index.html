@@ -5156,22 +5156,12 @@ const debouncedCheckDeal = (function() {
   window.addEventListener('DOMContentLoaded', function() {
     const successMsg = document.getElementById('pasteSuccess');
     if (successMsg) successMsg.style.display = 'none';
-  });
-  
-  // Initialize finance/lease if it doesn't exist
-  if (typeof window.toggleFinanceType === 'undefined' || window.toggleFinanceType === window.toggleFinanceTypeOriginal) {
-    const financeBtn = document.getElementById('financeTypeBtn');
-    const leaseBtn = document.getElementById('leaseTypeBtn');
-    const disclaimer = document.getElementById('leaseDisclaimer');
     
-    if (financeBtn && leaseBtn && disclaimer) {
-      financeBtn.style.display = 'block';
-      leaseBtn.style.display = 'none';
-      disclaimer.style.display = 'none';
-      if (!window.state) window.state = {};
-      window.state.financeType = 'finance';
+    // Initialize payment mode to Finance by default
+    if (typeof window.togglePaymentType === 'function') {
+      window.togglePaymentType('finance');
     }
-  }
+  });
 })();
 </script>
 <!-- DEMO MODE - Fake Deal Analysis Generator -->
