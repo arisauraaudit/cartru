@@ -5066,10 +5066,15 @@ const debouncedCheckDeal = (function() {
       const cashFields = document.getElementById('cashFields');
       const glancePanel = document.getElementById('glancePanel');
       
-      // Update button styles
-      if (financeBtn) financeBtn.className = type === 'finance' ? 'payment-btn selected' : 'payment-btn';
-      if (leaseBtn) leaseBtn.className = type === 'lease' ? 'payment-btn selected' : 'payment-btn';
-      if (cashBtn) cashBtn.className = type === 'cash' ? 'payment-btn selected' : 'payment-btn';
+      // Update button styles using classList (preserves all CSS classes)
+      [financeBtn, leaseBtn, cashBtn].forEach(btn => {
+        if (btn) {
+          btn.classList.remove('selected');
+          if (type === 'finance' && btn === financeBtn) btn.classList.add('selected');
+          if (type === 'lease' && btn === leaseBtn) btn.classList.add('selected');
+          if (type === 'cash' && btn === cashBtn) btn.classList.add('selected');
+        }
+      });
       
       // Show appropriate disclaimer
       if (leaseDisclaimer) leaseDisclaimer.style.display = type === 'lease' ? 'block' : 'none';
