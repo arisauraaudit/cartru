@@ -1406,13 +1406,13 @@ a:hover { text-decoration: underline; }
     <div class="section-heading">2 — Deal</div>
       <!-- Payment Method Toggle -->
       <div class="payment-toggle-section" style="display:flex;gap:12px;margin-bottom:24px;justify-content:center;">
-        <button id="financeTypeBtn" onclick="togglePaymentType('finance')" class="payment-btn selected" style="flex:1;padding:10px;border-radius:8px;font-weight:600;cursor:pointer;transition:all 0.2s;background:#00d4aa;color:#0f1724;border:none;">
+        <button id="financeTypeBtn" onclick="togglePaymentType('finance')" class="payment-btn selected" style="flex:1;padding:10px;border-radius:8px;font-weight:600;cursor:pointer;transition:all 0.2s;" data-mode="finance">
           💵 Finance
         </button>
-        <button id="leaseTypeBtn" onclick="togglePaymentType('lease')" class="payment-btn" style="flex:1;padding:10px;border-radius:8px;font-weight:600;cursor:pointer;transition:all 0.2s;background:#1a2535;color:#8499b0;border:1px solid #2a3a50;">
+        <button id="leaseTypeBtn" onclick="togglePaymentType('lease')" class="payment-btn" style="flex:1;padding:10px;border-radius:8px;font-weight:600;cursor:pointer;transition:all 0.2s;" data-mode="lease">
           📅 Lease
         </button>
-        <button id="cashTypeBtn" onclick="togglePaymentType('cash')" class="payment-btn" style="flex:1;padding:10px;border-radius:8px;font-weight:600;cursor:pointer;transition:all 0.2s;background:#1a2535;color:#8499b0;border:1px solid #2a3a50;">
+        <button id="cashTypeBtn" onclick="togglePaymentType('cash')" class="payment-btn" style="flex:1;padding:10px;border-radius:8px;font-weight:600;cursor:pointer;transition:all 0.2s;" data-mode="cash">
           💰 Cash
         </button>
       </div>
